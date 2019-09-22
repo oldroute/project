@@ -109,3 +109,6 @@ if not CodeInlineAdmin in TreeItemFlatAdmin.inlines:
 if not ExecutorInlineAdmin in TreeItemFlatAdmin.inlines:
     TreeItemFlatAdmin.inlines = list(TreeItemFlatAdmin.inlines)[:] + [ExecutorInlineAdmin]
 admin.site.register(TreeItemFlat, TreeItemFlatAdmin)
+
+
+admin.site.register(Lang)

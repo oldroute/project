@@ -31,4 +31,9 @@ urlpatterns = [
     url(r'^$', TemplateView.as_view(template_name='frontpage.html'))
 ]
 
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns = [
+        url('__debug__/', include(debug_toolbar.urls)),
+    ] + urlpatterns
 

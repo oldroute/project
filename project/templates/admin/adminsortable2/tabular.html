@@ -1,0 +1,58 @@
+{% load i18n admin_urls admin_static admin_modify %}
+<div class="inline-group sortable" id="{{ inline_admin_formset.formset.prefix }}-group">
+  <div class="tabular inline-related {% if forloop.last %}last-related{% endif %}">
+{{ inline_admin_formset.formset.management_form }}
+<fieldset class="module {{ inline_admin_formset.classes }}">
+   <h2>{{ inline_admin_formset.opts.verbose_name_plural|capfirst }}</h2>
+   {{ inline_admin_formset.formset.non_form_errors }}
+   <table>
+     <thead><tr><th>{% trans "Sort" %}</th>
+     {% for field in inline_admin_formset.fields %}
+       {% if not field.widget.is_hidden %}
+         <th{% if forloop.first %} colspan="2"{% endif %}{% if field.required %} class="required"{% endif %}>{{ field.label|capfirst }}
+         {% if field.help_text %}&nbsp;<img src="{% static "admin/img/icon-unknown.svg" %}" class="help help-tooltip" width="10" height="10" alt="({{ field.help_text|striptags }})" title="{{ field.help_text|striptags }}" />{% endif %}
+         </th>
+       {% endif %}
+     {% endfor %}
+     {% if inline_admin_formset.formset.can_delete %}<th>{% trans "Delete?" %}</th>{% endif %}
+     </tr></thead>
+
+     <tbody>
+     {% for inline_admin_form in inline_admin_formset %}
+        {% if inline_admin_form.form.non_field_errors %}
+            <tr><td style="padding: 10px" colspan="{{ inline_admin_form|cell_count|add:1 }}">{{ inline_admin_form.form.non_field_errors }}</td></tr>
+        {% endif %}
+        <tr class="form-row {% cycle "row1" "row2" %} {% if inline_admin_form.original or inline_admin_form.show_url %}has_original{% endif %}{% if forloop.last %} empty-form{% endif %}"
+             id="{{ inline_admin_formset.formset.prefix }}-{% if not forloop.last %}{{ forloop.counter0 }}{% else %}empty{% endif %}">
+        <td style="padding: 10px" class="drag">&nbsp;</td>
+
+        {% for fieldset in inline_admin_form %}
+          {% for line in fieldset %}
+            {% for field in line %}
+              <td style="padding: 10px">
+                <a href="/admin/book/topic/{{ inline_admin_form.original.pk|admin_urlquote }}/change/">
+                    <strong>{{ field.contents }}</strong>
+                </a>
+              </td>
+            {% endfor %}
+          {% endfor %}
+        {% endfor %}
+        {% if inline_admin_formset.formset.can_delete %}
+          <td style="padding: 10px" class="delete">{% if inline_admin_form.original %}{{ inline_admin_form.deletion_field.field }}{% endif %}</td>
+        {% endif %}
+        </tr>
+     {% endfor %}
+     </tbody>
+   </table>
+</fieldset>
+  </div>
+</div>
+
+<script type="application/json" class="inline-tabular-config">
+{
+  "prefix": "{{ inline_admin_formset.formset.prefix|escapejs }}",
+  "addText": "{% filter escapejs %}{% blocktrans with inline_admin_formset.opts.verbose_name|capfirst as verbose_name %}Add another {{ verbose_name }}{% endblocktrans %}{% endfilter %}",
+  "deleteText": "{% filter escapejs %}{% trans 'Remove' %}{% endfilter %}"
+}
+</script>
+<div class="default_order_field" default_order_field="{{ inline_admin_formset.formset.default_order_field }}" default_order_direction="{{ inline_admin_formset.formset.default_order_direction }}"></div>

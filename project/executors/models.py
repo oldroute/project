@@ -9,6 +9,18 @@ from django.contrib.postgres.fields import JSONField, ArrayField
 from django.urls import reverse
 
 
+class Lang(models.Model):
+
+    class Meta:
+        verbose_name = "язык программирования"
+        verbose_name_plural = "языки программирования"
+
+    title = models.CharField(verbose_name="заголовок", max_length=255)
+
+    def __str__(self):
+        return self.title
+
+
 class Executor(models.Model):
 
     # Доступные исполнители

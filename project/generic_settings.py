@@ -75,13 +75,15 @@ INSTALLED_APPS = (
     'allauth.socialaccount',
     'tinymce',
     'mptt',
+    'adminsortable2',
     'project',
     'project.sources',
     'project.courses',
     'project.executors',
     'project.groups',
     'project.modules',
-    'project.news'
+    'project.news',
+    'project.book',
 )
 
 MIDDLEWARE = [
@@ -98,9 +100,9 @@ MIDDLEWARE = [
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': "project",
-        'USER': "project",
-        'PASSWORD': "project",
+        'NAME': "pt",
+        'USER': "pt",
+        'PASSWORD': "pt",
         'PORT': 5432,
     }
 }
