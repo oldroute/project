@@ -48,7 +48,11 @@ class Topic(Base):
         verbose_name_plural = "темы"
         ordering = ('order_key',)
 
-    course = models.ForeignKey(Course, verbose_name='курс', related_name='topics')
+    course = models.ForeignKey(
+        Course, verbose_name='курс',
+        related_name='topics',
+        blank=True, null=True
+    )
 
 
 class Task(Base):
