@@ -28,11 +28,14 @@
         {% for fieldset in inline_admin_form %}
           {% for line in fieldset %}
             {% for field in line %}
+              {% if field.contents %}
               <td style="padding: 10px">
-                <a href="/admin/book/topic/{{ inline_admin_form.original.pk|admin_urlquote }}/change/">
+                <!--<a href="/admin/book/topic/{{ inline_admin_form.original.pk|admin_urlquote }}/change/">-->
+                <a href="{% url 'admin:change_topic' course_pk=inline_admin_formset.model_admin.instance.id topic_pk=inline_admin_form.original.pk|admin_urlquote %}">
                     <strong>{{ field.contents }}</strong>
                 </a>
               </td>
+              {% endif %}
             {% endfor %}
           {% endfor %}
         {% endfor %}

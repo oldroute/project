@@ -1,3 +1,4 @@
+import re
 from django.contrib import admin
 from django.views.generic import RedirectView
 from adminsortable2.admin import SortableAdminMixin, SortableInlineAdminMixin
@@ -94,32 +95,30 @@ class TopicAdmin(admin.ModelAdmin):
 
     def __init__(self, model, admin_site, course=None):
         super().__init__(model, admin_site)
-        print('====init====', course)
         self._course = course
 
     def save_model(self, request, obj, form, change):
-        obj.course = self._course
+        obj.course = self._course or obj.course
         obj.order_key = Topic.objects.filter(course=self._course).count()
-        print('====save====', obj.course)
         obj.save()
-
-    def add_topic(self, request, course_pk):
-
-        course = self.get_object_with_change_permissions(request, Course, course_pk)
-        course_admin = TopicAdmin(Topic, self.admin_site, course)
-        return course_admin.add_view(request, extra_context={'course': course})
-
-    def change_topic(self, request, course_pk):
-
-        course = self.get_object_with_change_permissions(request, Course, course_pk)
-        course_admin = TopicAdmin(Topic, self.admin_site, course)
-        return course_admin.change_view(request, extra_context={'course': course})
-
-    def get_urls(self):
-        return [
-            url(r'^(?P<course_pk>[0-9]+)/topics/add/$', self.admin_site.admin_view(self.add_topic), name='add_topic'),
-            url(r'^(?P<course_pk>[0-9]+)/topics/change/$', self.admin_site.admin_view(self.change_topic), name='change_topic'),
-        ] + super().get_urls()
+    #
+    # def add_topic(self, request, course_pk):
+    #
+    #     course = self.get_object_with_change_permissions(request, Course, course_pk)
+    #     course_admin = TopicAdmin(Topic, self.admin_site, course)
+    #     return course_admin.add_view(request, extra_context={'course': course})
+    #
+    # def change_topic(self, request, course_pk):
+    #
+    #     course = self.get_object_with_change_permissions(request, Course, course_pk)
+    #     course_admin = TopicAdmin(Topic, self.admin_site, course)
+    #     return course_admin.change_view(request, extra_context={'course': course})
+    #
+    # def get_urls(self):
+    #     return [
+    #         url(r'^(?P<course_pk>[0-9]+)/topics/add/$', self.admin_site.admin_view(self.add_topic), name='add_topic'),
+    #         url(r'^(?P<course_pk>[0-9]+)/topics/change/$', self.admin_site.admin_view(self.change_topic), name='change_topic'),
+    #     ] + super().get_urls()
 
     # def response_add(self, request, obj, post_url_continue=None):
     #     """
@@ -189,45 +188,44 @@ class TopicAdmin(admin.ModelAdmin):
     #         msg = format_html(_('The {name} "{obj}" was added successfully.'), **msg_dict)
     #         self.message_user(request, msg, messages.SUCCESS)
     #         return self.response_post_save_add(request, obj)
-    def response_change(self, request, obj):
-
-        opts = self.model._meta
-        pk_value = obj._get_pk_val()
-        preserved_filters = self.get_preserved_filters(request)
-
-        msg_dict = {'name': force_text(opts.verbose_name), 'obj': format_html('<a href="{}">{}</a>', urlquote(request.path), obj),}
-        if "_continue" in request.POST:
-            msg = format_html(
-                _('The {name} "{obj}" was changed successfully. You may edit it again below.'),
-                **msg_dict
-            )
-            self.message_user(request, msg, messages.SUCCESS)
-            redirect_url = request.path
-            redirect_url = add_preserved_filters({'preserved_filters': preserved_filters, 'opts': opts}, redirect_url)
-            return HttpResponseRedirect(redirect_url)
-
-        elif "_saveasnew" in request.POST:
-            msg = format_html(
-                _('The {name} "{obj}" was added successfully. You may edit it again below.'),
-                **msg_dict
-            )
-            self.message_user(request, msg, messages.SUCCESS)
-            redirect_url = reverse('admin:%s_%s_change' % (opts.app_label, opts.model_name), args=(pk_value,), current_app=self.admin_site.name)
-            redirect_url = add_preserved_filters({'preserved_filters': preserved_filters, 'opts': opts}, redirect_url)
-            return HttpResponseRedirect(redirect_url)
-
-        elif "_addanother" in request.POST:
-            msg = format_html(_('The {name} "{obj}" was changed successfully. You may add another {name} below.'), **msg_dict)
-            self.message_user(request, msg, messages.SUCCESS)
-            redirect_url = reverse('admin:%s_%s_add' % (opts.app_label, opts.model_name), current_app=self.admin_site.name)
-            redirect_url = add_preserved_filters({'preserved_filters': preserved_filters, 'opts': opts}, redirect_url)
-            return HttpResponseRedirect(redirect_url)
-
-        else:
-            msg = format_html(_('The {name} "{obj}" was changed successfully.'), **msg_dict)
-            self.message_user(request, msg, messages.SUCCESS)
-            return self.response_post_save_change(request, obj)
-
+    # def response_change(self, request, obj):
+    #
+    #     opts = self.model._meta
+    #     pk_value = obj._get_pk_val()
+    #     preserved_filters = self.get_preserved_filters(request)
+    #
+    #     msg_dict = {'name': force_text(opts.verbose_name), 'obj': format_html('<a href="{}">{}</a>', urlquote(request.path), obj),}
+    #     if "_continue" in request.POST:
+    #         msg = format_html(
+    #             _('The {name} "{obj}" was changed successfully. You may edit it again below.'),
+    #             **msg_dict
+    #         )
+    #         self.message_user(request, msg, messages.SUCCESS)
+    #         redirect_url = request.path
+    #         redirect_url = add_preserved_filters({'preserved_filters': preserved_filters, 'opts': opts}, redirect_url)
+    #         return HttpResponseRedirect(redirect_url)
+    #
+    #     elif "_saveasnew" in request.POST:
+    #         msg = format_html(
+    #             _('The {name} "{obj}" was added successfully. You may edit it again below.'),
+    #             **msg_dict
+    #         )
+    #         self.message_user(request, msg, messages.SUCCESS)
+    #         redirect_url = reverse('admin:%s_%s_change' % (opts.app_label, opts.model_name), args=(pk_value,), current_app=self.admin_site.name)
+    #         redirect_url = add_preserved_filters({'preserved_filters': preserved_filters, 'opts': opts}, redirect_url)
+    #         return HttpResponseRedirect(redirect_url)
+    #
+    #     elif "_addanother" in request.POST:
+    #         msg = format_html(_('The {name} "{obj}" was changed successfully. You may add another {name} below.'), **msg_dict)
+    #         self.message_user(request, msg, messages.SUCCESS)
+    #         redirect_url = reverse('admin:%s_%s_add' % (opts.app_label, opts.model_name), current_app=self.admin_site.name)
+    #         redirect_url = add_preserved_filters({'preserved_filters': preserved_filters, 'opts': opts}, redirect_url)
+    #         return HttpResponseRedirect(redirect_url)
+    #
+    #     else:
+    #         msg = format_html(_('The {name} "{obj}" was changed successfully.'), **msg_dict)
+    #         self.message_user(request, msg, messages.SUCCESS)
+    #         return self.response_post_save_change(request, obj)
 
 
 @admin.register(Course)
@@ -241,7 +239,7 @@ class CourseAdmin(SortableAdminMixin, admin.ModelAdmin):
     raw_id_fields = ("author",)
 
     def set_instance(self, request):
-        object_id = int(request.META['PATH_INFO'].strip('/').split('/')[-2])
+        object_id = re.search(r'\d+', request.META['PATH_INFO']).group(0)
         self.instance = self.model.objects.get(pk=object_id)
 
     def change_view(self, request, object_id, form_url='', extra_context=None):
@@ -255,14 +253,19 @@ class CourseAdmin(SortableAdminMixin, admin.ModelAdmin):
         return obj
 
     def add_topic(self, request, course_pk):
-
         course = self.get_object_with_change_permissions(request, Course, course_pk)
-        course_admin = TopicAdmin(Topic, self.admin_site, course)
-        return course_admin.add_view(request, extra_context={'course': course})
+        topic_admin = TopicAdmin(Topic, self.admin_site, course)
+        return topic_admin.add_view(request, extra_context={'course': course})
+
+    def change_topic(self, request, course_pk, topic_pk):
+        course = self.get_object_with_change_permissions(request, Course, course_pk)
+        topic_admin = TopicAdmin(Topic, self.admin_site, course)
+        return topic_admin.change_view(request, object_id=topic_pk, extra_context={'course': course})
 
     def get_urls(self):
         return [
             url(r'^(?P<course_pk>[0-9]+)/topics/add/$', self.admin_site.admin_view(self.add_topic), name='add_topic'),
+            url(r'^(?P<course_pk>[0-9]+)/topics/(?P<topic_pk>[0-9]+)/change/$', self.admin_site.admin_view(self.change_topic), name='change_topic'),
         ] + super().get_urls()
 
 
