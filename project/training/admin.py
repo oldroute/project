@@ -1,6 +1,4 @@
 import re
-import six
-import json
 from django.contrib import admin
 from adminsortable2.admin import SortableAdminMixin, SortableInlineAdminMixin
 from .models import Course, Topic, TaskItem
@@ -9,8 +7,6 @@ from django.conf.urls import url
 from django.contrib import messages
 from django.contrib.admin.templatetags.admin_urls import add_preserved_filters
 from django.core.exceptions import PermissionDenied
-from django.template.response import TemplateResponse
-
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.utils.encoding import force_text
