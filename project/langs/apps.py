@@ -2,5 +2,5 @@
 from django.apps import AppConfig
 
 
-class BookAppConfig(AppConfig):
-    name = "project.book"
+class LangsAppConfig(AppConfig):
+    name = "project.langs"

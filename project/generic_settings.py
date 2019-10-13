@@ -83,7 +83,9 @@ INSTALLED_APPS = (
     'project.groups',
     'project.modules',
     'project.news',
-    'project.book',
+    'project.tasks',
+    'project.training',
+    'project.langs',
 )
 
 MIDDLEWARE = [

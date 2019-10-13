@@ -5,7 +5,7 @@ from datetime import datetime
 from django.db import models
 from django.contrib.auth.models import User
 from project.courses.models import TreeItem
-from django.contrib.postgres.fields import JSONField, ArrayField
+from django.contrib.postgres.fields import JSONField
 from django.urls import reverse
 
 

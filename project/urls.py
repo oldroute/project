@@ -14,6 +14,7 @@ urlpatterns = [
     url(r'^groups/', include('project.groups.urls')),
     url(r'^modules/', include('project.modules.urls')),
     url(r'^tinymce/', include('tinymce.urls')),
+    url(r'^training/', include('project.training.urls')),
 
     url(r'^login/$', MyLoginView.as_view(), name='account_login'),
     url(r'^logout/$', MyLogoutView.as_view(), {'next_page': '/'}, name='account_logout'),
