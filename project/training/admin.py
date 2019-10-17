@@ -42,7 +42,7 @@ class TaskItemInline(SortableInlineAdminMixin, admin.TabularInline):
 
     model = TaskItem
     extra = 0
-    fields = ('order_key', 'task')
+    fields = ('order_key', 'task', 'show')
     raw_id_fields = ("task",)
 
 
@@ -50,8 +50,7 @@ class TaskItemInline(SortableInlineAdminMixin, admin.TabularInline):
 class TopicAdmin(admin.ModelAdmin):
 
     raw_id_fields = ("author",)
-    exclude = ('order_key', 'course')
-    prepopulated_fields = {'slug': ['title']}
+    fields = ('show', 'title', 'author', 'content')
     inlines = (TaskItemInline,)
 
     def __init__(self, model, admin_site, course=None):
@@ -163,7 +162,7 @@ class TopicAdmin(admin.ModelAdmin):
         initial.update({
             'course': self._course,
             'author': request.user,
-            'order_key': Topic.objects.filter(course=self._course).count()
+            'order_key': Topic.objects.filter(course=self._course).count() + 1
         })
         return initial
 
@@ -254,10 +253,9 @@ class CourseAdmin(SortableAdminMixin, admin.ModelAdmin):
     model = Course
     list_display = ('order_key', 'title', 'author', 'show')
     list_display_links = ('title',)
-    fields = ('title', 'slug', 'author', 'lang', 'content')
+    fields = ('show', 'title', 'slug', 'lang', 'author', 'content')
     prepopulated_fields = {'slug': ['title']}
     inlines = [TopicInline]
-    exclude = ('order_key',)
     raw_id_fields = ("author",)
 
     def set_instance(self, request):
@@ -286,7 +284,7 @@ class CourseAdmin(SortableAdminMixin, admin.ModelAdmin):
         initial = super().get_changeform_initial_data(request)
         initial.update({
             'author': request.user,
-            'order_key': Course.objects.all().count()
+            'order_key': Course.objects.all().count() + 1
         })
         return initial
 
