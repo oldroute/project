@@ -1,0 +1,95 @@
+{% extends 'training/base.html' %}
+{% load static taskitem_tags %}
+
+
+{% block main %}
+    <div class="container">
+        <div class="row">
+            {# courses_breadcrumbs #}
+        </div>
+        <div class="row content">
+            <div class="left-col">
+                <div class="white fp-content">
+                    <h1 class="text-center">{{ object.numbered_title }}{% if solution.status_success %}<span>[ Решено ]</span>{% endif %}</h1>
+                    <h3>Условие</h3><br/>
+                        {{ object.task.content|safe }}
+                    <form method="POST" id="{{ form.prefix }}-editor-form" class="editor-form mt-2">
+
+                        {% csrf_token %}
+                        {% if solution and solution.status_success %}
+                            <input type="hidden" name="code_solved" value="True">
+                        {% endif %}
+
+                        {% show_ace_field form.input %}
+
+                        {% show_ace_field form.content %}
+
+                        <div class="ace-control-bar">
+                            <div class="control-bar-col bar-col-1">
+                                <div class="control-btn versions {% if disable_btns %} disabled{% endif %}{% if not solution %} not-versions{% endif %}"
+                                     title="История решения"
+                                     onclick="window.open('{% url 'training:solution' slug=object.topic.course.slug topic_pk=object.topic.pk taskitem_pk=object.pk %}', '_blank')"
+                                ></div>
+                                <div class="control-btn save-version{% if disable_btns %} disabled{% endif %}"  title="Сохранить версию решения" onclick="ace_ajax.save_version($('{{ form.id }}'))"></div>
+                                <div class="control-btn save{% if disable_btns %} disabled{% endif %}" title="Быстрое сохранение" onclick="ace_ajax.fast_save($('{{ form.id }}'))"></div>
+                            </div>
+
+                            <div class="control-bar-col bar-col-2">
+                                <div class="control-btn check-tests{% if disable_btns %} disabled{% endif %}" title="Протестировать решение" onclick="ace_ajax.check_tests($('{{ form.id }}'), $('#ace-tests'))"></div>
+                                <div class="control-btn run{% if disable_btns %} disabled{% endif %}" title="Отладка" onclick="ace_ajax.execute($('{{ form.id }}'))"></div>
+                            </div>
+
+                            <div class="control-bar-col bar-col-3 msg-box">
+                                <span class="msg msg-loader hide"></span>
+                                <span class="msg loader hide"><span>{</span><span>}</span></span>
+                                <span class="msg msg-success hide"></span>
+                                <span class="msg msg-warning hide"></span>
+                                <span class="msg msg-error hide"></span>
+                            </div>
+                        </div>
+
+                        {% show_ace_field form.output %}
+
+                        {% show_ace_field form.error %}
+
+                    </form>
+                </div>
+                {% if object.task.tests %}
+                    <div class="fp-content">
+                        <h3>Тесты</h3>
+                    </div>
+                    <div class="white fp-content" id="ace-tests">
+                        <div class="ace-tests white fp-content">
+                            <div class="tests-container">
+                                <table class="table tests-table">
+                                    <thead>
+                                    <tr>
+                                        <th>№</th>
+                                        <th>Ввод</th>
+                                        <th>Правильный ответ</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for test in object.task.tests %}
+                                        <tr>
+                                            <td><div>{{ forloop.counter }}</div></td>
+                                            <td><div><pre>{{ test.input }}</pre></div></td>
+                                            <td><div><pre>{{ test.output }}</pre></div></td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="right-col white">
+                <h1 class="">Навигация по курсу</h1>
+                <hr>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

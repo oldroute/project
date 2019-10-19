@@ -1,7 +1,5 @@
 import re
 from django.contrib import admin
-from adminsortable2.admin import SortableAdminMixin, SortableInlineAdminMixin
-from .models import Course, Topic, TaskItem
 from django.shortcuts import get_object_or_404
 from django.conf.urls import url
 from django.contrib import messages
@@ -17,6 +15,8 @@ from django.contrib.admin.exceptions import DisallowedModelAdminToField
 from django.contrib.admin.utils import quote, unquote
 from django.db import router
 from django.contrib.admin.utils import get_deleted_objects
+from adminsortable2.admin import SortableAdminMixin, SortableInlineAdminMixin
+from .models import *
 
 
 IS_POPUP_VAR = '_popup'
@@ -304,3 +304,8 @@ class CourseAdmin(SortableAdminMixin, admin.ModelAdmin):
             url(r'^(?P<course_pk>[0-9]+)/topics/(?P<topic_pk>[0-9]+)/change/$', self.admin_site.admin_view(self.change_topic), name='change_topic'),
         ] + super().get_urls()
 
+
+@admin.register(Solution)
+class SolutionAdmin(admin.ModelAdmin):
+    model = Solution
+    raw_id_fields = ('user',)

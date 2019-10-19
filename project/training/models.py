@@ -107,7 +107,11 @@ class TaskItem(models.Model):
 
     @property
     def lang(self):
-        return self.topic.lang
+        return self.topic.langs
+
+    @property
+    def numbered_title(self):
+        return '%s %s' % (self.number, self.title)
 
     def __str__(self):
         return self.title
@@ -126,10 +130,11 @@ class TaskItem(models.Model):
         self.save()
 
     def get_absolute_url(self):
+        print('=====>', self.url)
         return self.url
 
 
-class TaskSolution(models.Model):
+class Solution(models.Model):
 
     class Meta:
         verbose_name = "решение задачи"
@@ -141,11 +146,11 @@ class TaskSolution(models.Model):
     UNLUCK  = 'unluck'
     NONE    = 'none'
 
-    taskitem = models.ForeignKey(TaskItem, verbose_name='задача')
+    taskitem = models.ForeignKey(TaskItem, verbose_name='задача', related_name='_solution')
     user = models.ForeignKey(UserModel, verbose_name="пользователь")
     last_changes = JSONField(verbose_name="последние изменения", blank=True, null=True)
     best = JSONField(verbose_name="лучшее решение", blank=True, null=True)
-    versions = JSONField(verbose_name="сохраненные решения", default=list)
+    versions = JSONField(verbose_name="сохраненные решения", default=list, blank=True, null=True)
     url = models.CharField(max_length=1000, blank=True, null=True)
 
     def get_formated_time(self, str_date):
@@ -249,10 +254,10 @@ class TaskSolution(models.Model):
         self.save()
 
     def __str__(self):
-        return self.id
+        return '%s: %s' % (self.user.get_full_name(), self.taskitem.title)
 
     def get_absolute_url(self):
         return self.url
 
 
-__all__ = ['Course', 'Topic', 'TaskItem', 'TaskSolution']
+__all__ = ['Course', 'Topic', 'TaskItem', 'Solution']
