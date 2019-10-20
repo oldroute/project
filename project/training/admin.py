@@ -29,7 +29,7 @@ class TopicInline(SortableInlineAdminMixin, admin.TabularInline):
 
     model = Topic
     extra = 0
-    fields = ('order_key', 'title')
+    fields = ('order_key', 'title', 'show')
     show_change_link = True
     readonly_fields = ('title',)
 
@@ -162,7 +162,6 @@ class TopicAdmin(admin.ModelAdmin):
         initial.update({
             'course': self._course,
             'author': request.user,
-            'order_key': Topic.objects.filter(course=self._course).count() + 1
         })
         return initial
 

@@ -18,14 +18,14 @@ class Course(models.Model):
         verbose_name_plural = "курсы"
         ordering = ('order_key',)
 
-    show = models.BooleanField(verbose_name="отображать", default=False)
+    show = models.BooleanField(verbose_name="отображать", default=True)
     title = models.CharField(verbose_name="заголовок", max_length=255)
     slug = models.SlugField(verbose_name="слаг", max_length=255, unique=True)
     lang = models.ForeignKey(Lang, verbose_name="язык программирования")
     author = models.ForeignKey(UserModel, verbose_name="автор", on_delete=models.SET_NULL, blank=True, null=True)
     content = HTMLField(verbose_name="содержимое", default="", blank=True, null=True)
 
-    order_key = models.PositiveIntegerField(verbose_name='порядок', default=1)
+    order_key = models.PositiveIntegerField(verbose_name='порядок', blank=True, null=True)
     last_modified = models.DateTimeField(verbose_name="дата последнего изменения", auto_now=True)
     url = models.CharField(max_length=1000, blank=True, null=True)
 
@@ -37,10 +37,16 @@ class Course(models.Model):
         return self.title
 
     def update_cache_data(self):
+        if self.order_key is None:
+            self.order_key = Course.objects.all().count() + 1
         self.url = reverse('training:course', kwargs={'slug': self.slug})
-        self.save()
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.update_cache_data()
+        super().save()
         for topic in self.topics:
-            topic.update_cache_data()
+            topic.save()
 
     def get_absolute_url(self):
         return self.url
@@ -52,13 +58,13 @@ class Topic(models.Model):
         verbose_name_plural = "темы"
         ordering = ('order_key',)
 
-    show = models.BooleanField(verbose_name="отображать", default=False)
+    show = models.BooleanField(verbose_name="отображать", default=True)
     title = models.CharField(verbose_name="заголовок", max_length=255)
     author = models.ForeignKey(UserModel, verbose_name="автор", on_delete=models.SET_NULL, blank=True, null=True)
     content = HTMLField(verbose_name="содержимое", default="", blank=True, null=True)
 
     course = models.ForeignKey(Course, verbose_name='курс', related_name='_topics')
-    order_key = models.PositiveIntegerField(verbose_name='порядок', default=1)
+    order_key = models.PositiveIntegerField(verbose_name='порядок', blank=True, null=True)
     last_modified = models.DateTimeField(verbose_name="дата последнего изменения", auto_now=True)
     url = models.CharField(max_length=1000, blank=True, null=True)
 
@@ -77,11 +83,22 @@ class Topic(models.Model):
     def __str__(self):
         return self.title
 
+    @property
+    def numbered_title(self):
+        return '%s %s' % (self.number, self.title)
+
     def update_cache_data(self):
+        if self.order_key is None:
+            self.order_key = Topic.objects.filter(course=self.course).count()
+
         self.url = reverse(
             'training:topic', kwargs={'slug': self.course.slug, 'topic_pk': self.id}
         )
-        self.save()
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.update_cache_data()
+        super().save()
         for taskitem in self.taskitems:
             taskitem.update_cache_data()
 
@@ -96,10 +113,10 @@ class TaskItem(models.Model):
         verbose_name_plural = "задачи"
         ordering = ('order_key',)
 
-    show = models.BooleanField(verbose_name="отображать", default=False)
+    show = models.BooleanField(verbose_name="отображать", default=True)
     task = models.ForeignKey(Task, verbose_name='задача', related_name='topics')
 
-    order_key = models.PositiveIntegerField(verbose_name='порядок', default=0)
+    order_key = models.PositiveIntegerField(verbose_name='порядок', blank=True, null=True)
     number = models.CharField(max_length=255, blank=True, null=True)
     topic = models.ForeignKey(Topic, verbose_name='тема', related_name='_taskitems')
     title = models.CharField(max_length=255, blank=True, null=True)
@@ -110,6 +127,10 @@ class TaskItem(models.Model):
         return self.topic.langs
 
     @property
+    def solution_url(self):
+        return self.url + 'solution/'
+
+    @property
     def numbered_title(self):
         return '%s %s' % (self.number, self.title)
 
@@ -117,6 +138,8 @@ class TaskItem(models.Model):
         return self.title
 
     def update_cache_data(self):
+        if self.order_key is None:
+            self.order_key = TaskItem.objects.all().count()
         self.number = '%s.%s' % (self.topic.order_key, self.order_key)
         self.title = self.task.title
         self.url = reverse(
@@ -127,10 +150,13 @@ class TaskItem(models.Model):
                 'taskitem_pk': self.id
             }
         )
-        self.save()
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.update_cache_data()
+        super().save()
 
     def get_absolute_url(self):
-        print('=====>', self.url)
         return self.url
 
 

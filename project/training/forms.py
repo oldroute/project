@@ -3,10 +3,9 @@ from django import forms
 
 class SolutionForm(forms.Form):
 
-    def __init__(self, instance, **kwargs):
-        kwargs['initial'] = {'last_changes': instance.last_changes}
-        kwargs['prefix'] = kwargs.get('prefix', '0')
-        self.id = '#%s-editor-form' % kwargs['prefix']
+    def __init__(self, solution, **kwargs):
+        if solution:
+            kwargs['initial'] = {'content': solution.last_changes}
         super().__init__(**kwargs)
 
     input = forms.CharField(

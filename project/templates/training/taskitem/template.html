@@ -13,7 +13,7 @@
                     <h1 class="text-center">{{ object.numbered_title }}{% if solution.status_success %}<span>[ Решено ]</span>{% endif %}</h1>
                     <h3>Условие</h3><br/>
                         {{ object.task.content|safe }}
-                    <form method="POST" id="{{ form.prefix }}-editor-form" class="editor-form mt-2">
+                    <form method="POST" id="editor__form" class="editor-form mt-2">
 
                         {% csrf_token %}
                         {% if solution and solution.status_success %}
@@ -26,17 +26,19 @@
 
                         <div class="ace-control-bar">
                             <div class="control-bar-col bar-col-1">
-                                <div class="control-btn versions {% if disable_btns %} disabled{% endif %}{% if not solution %} not-versions{% endif %}"
-                                     title="История решения"
-                                     onclick="window.open('{% url 'training:solution' slug=object.topic.course.slug topic_pk=object.topic.pk taskitem_pk=object.pk %}', '_blank')"
-                                ></div>
-                                <div class="control-btn save-version{% if disable_btns %} disabled{% endif %}"  title="Сохранить версию решения" onclick="ace_ajax.save_version($('{{ form.id }}'))"></div>
-                                <div class="control-btn save{% if disable_btns %} disabled{% endif %}" title="Быстрое сохранение" onclick="ace_ajax.fast_save($('{{ form.id }}'))"></div>
+                                {% if request.user.is_active %}
+                                    <div class="control-btn versions {% if not solution %} not-versions{% endif %}"
+                                         title="История решения"
+                                         onclick="window.open('{{ object.solution_url }}', '_blank')"
+                                    ></div>
+                                    <div class="control-btn save-version" id="editor__save-version-btn" title="Сохранить версию решения"></div>
+                                    <div class="control-btn save" id="editor__fast-save-btn" title="Быстрое сохранение"></div>
+                                {% endif %}
                             </div>
 
                             <div class="control-bar-col bar-col-2">
-                                <div class="control-btn check-tests{% if disable_btns %} disabled{% endif %}" title="Протестировать решение" onclick="ace_ajax.check_tests($('{{ form.id }}'), $('#ace-tests'))"></div>
-                                <div class="control-btn run{% if disable_btns %} disabled{% endif %}" title="Отладка" onclick="ace_ajax.execute($('{{ form.id }}'))"></div>
+                                <div class="control-btn check-tests" id="editor__tests-btn" title="Протестировать решение"></div>
+                                <div class="control-btn run" id="editor__execute-btn" title="Отладка"></div>
                             </div>
 
                             <div class="control-bar-col bar-col-3 msg-box">
@@ -58,10 +60,10 @@
                     <div class="fp-content">
                         <h3>Тесты</h3>
                     </div>
-                    <div class="white fp-content" id="ace-tests">
+                    <div class="white fp-content">
                         <div class="ace-tests white fp-content">
                             <div class="tests-container">
-                                <table class="table tests-table">
+                                <table class="table tests-table" id="form__tests-table">
                                     <thead>
                                     <tr>
                                         <th>№</th>
@@ -93,3 +95,7 @@
     </div>
 {% endblock %}
 
+{% block js %}
+    {{ block.super }}
+    <script>window.dispatchEvent(new Event('taskItemPageLoaded'))</script>
+{% endblock %}

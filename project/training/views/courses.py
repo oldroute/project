@@ -7,7 +7,7 @@ from django.views.generic import View
 from ..models import *
 
 
-def courses(request):
+def courses(request, **kwargs):
     return HttpResponse('OK')
 
 

@@ -12,8 +12,8 @@ class TaskItemView(View):
 
     def get(self, request, **kwargs):
         taskitem = TaskItem.objects.filter(id=kwargs['taskitem_pk']).select_related('task', 'topic', 'topic__course').first()
-        solution = Solution.objects.filter(taskitem=taskitem, user=request.user).first()
-        form = SolutionForm(instance=solution)
+        solution = Solution.objects.filter(taskitem=taskitem, user=request.user).first() if request.user.is_active else None
+        form = SolutionForm(solution=solution)
         context = {
             'object': taskitem,
             'solution': solution,
@@ -22,9 +22,9 @@ class TaskItemView(View):
         return render(request, 'training/taskitem/template.html', context)
 
     def post(self, request, **kwargs):
-        print('===', kwargs)
+        print('====', request.POST)
         return HttpResponse('OK')
 
 
-def solution(request):
+def solution(request, **kwargs):
     return HttpResponse('OK')
