@@ -5,7 +5,7 @@ DEBUG = False
 ALLOWED_HOSTS = ["*", ]
 
 LANGUAGE_CODE = 'ru-ru'
-PYTHON_PATH = '/usr/local/bin/python3.6'
+PYTHON_PATH = os.path.join(os.sep, 'usr', 'local', 'bin', 'python3.6')
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_L10N = True
@@ -13,13 +13,10 @@ USE_TZ = True
 
 PROJECT_ROOT = os.path.dirname(os.path.dirname(__file__))
 MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'media')
-try:
-    os.stat(MEDIA_ROOT)
-except:
-    os.mkdir(MEDIA_ROOT)
+TMP_DIR = os.path.join(MEDIA_ROOT, "tmp")
 
-MEDIA_URL    = '/media/'
-STATIC_URL   = '/static/'
+MEDIA_URL = '/media/'
+STATIC_URL = '/static/'
 ROOT_URLCONF = 'project.urls'
 WSGI_APPLICATION = 'project.wsgi.application'
 
@@ -135,11 +132,5 @@ DEFAULT_FROM_EMAIL = 'info@cappa.ru'
 ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
 ACCOUNT_EMAIL_REQUIRED = True
 # --- Executors config
-CODE_TMP_DIR = os.path.join(PROJECT_ROOT, "tmp")
-try:
-    os.stat(CODE_TMP_DIR)
-except:
-    os.mkdir(CODE_TMP_DIR)
-
 # Настройки профиля
 LOGIN_REDIRECT_URL = "/"

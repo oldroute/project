@@ -1,4 +1,5 @@
 from django.db import models
+from . import providers
 
 
 class Lang(models.Model):
@@ -7,7 +8,25 @@ class Lang(models.Model):
         verbose_name = "язык программирования"
         verbose_name_plural = "языки программирования"
 
-    title = models.CharField(verbose_name="заголовок", max_length=255)
+    PYTHON = "python"
+    CPP = "cpp"
+    CSHARP = "csharp"
+    PROVIDERS_CHOICES = (
+        (PYTHON, "Python 3.6"),
+        (CPP, "C++"),
+        (CSHARP, "C#"),
+    )
+
+    provider = models.CharField(
+        verbose_name="заголовок", max_length=255,
+        choices=PROVIDERS_CHOICES, unique=True
+    )
 
     def __str__(self):
-        return self.title
+        return self.provider
+
+    def debug(self, *args, **kwargs):
+        return getattr(providers, self.provider).debug(*args, **kwargs)
+
+    def tests(self, *args, **kwargs):
+        return getattr(providers, self.provider).tests(*args, **kwargs)

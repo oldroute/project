@@ -124,7 +124,7 @@ class TaskItem(models.Model):
 
     @property
     def lang(self):
-        return self.topic.langs
+        return self.topic.lang
 
     @property
     def solution_url(self):
@@ -166,107 +166,66 @@ class Solution(models.Model):
         verbose_name = "решение задачи"
         verbose_name_plural = "решения задач"
 
-    # Статус решения
-    SUCCESS = 'success'
-    PROCESS = 'process'
-    UNLUCK  = 'unluck'
-    NONE    = 'none'
+    class Status:
+        NONE = '0'
+        UNLUCK = '1'
+        PROCESS = '2'
+        SUCCESS = '3'
+        CHOICES = (
+            (NONE, 'нет попыток'),
+            (UNLUCK, 'нет прогресса'),
+            (PROCESS, 'есть прогресс'),
+            (SUCCESS, 'решено'),
+        )
 
     taskitem = models.ForeignKey(TaskItem, verbose_name='задача', related_name='_solution')
     user = models.ForeignKey(UserModel, verbose_name="пользователь")
-    last_changes = JSONField(verbose_name="последние изменения", blank=True, null=True)
-    best = JSONField(verbose_name="лучшее решение", blank=True, null=True)
-    versions = JSONField(verbose_name="сохраненные решения", default=list, blank=True, null=True)
-    url = models.CharField(max_length=1000, blank=True, null=True)
+    url = models.CharField(max_length=255, blank=True, null=True)
+    status = models.CharField(verbose_name='статус', max_length=255,  choices=Status.CHOICES, default=Status.NONE)
+    progress = models.PositiveIntegerField(verbose_name='Прогресс решения', blank=True, default=0)
+    last_changes = models.CharField(verbose_name="последние изменения", max_length=255, blank=True, default='')
+    version_best = JSONField(verbose_name="лучшее решение", blank=True, null=True)
+    version_list = JSONField(verbose_name="список сохраненных решений", default=list, blank=True, null=True)
 
-    def get_formated_time(self, str_date):
-
-        d = datetime.strptime(str_date, '%Y-%m-%d %H:%M:%S.%f')
-        return d.strftime('%Y.%m.%d [%H:%M]')
-
-    @property
-    def best_time(self):
-        if self.best:
-            return self.get_formated_time(self.best['datetime'])
+    def _create_version_data(self, content, tests_result):
+        if tests_result['num_success'] > 0 and tests_result['num'] > 0:
+            progress = round(100 * tests_result['num_success'] / tests_result['num'])
         else:
-            return ''
-
-    @property
-    def progress(self):
-        if self.best is None:
-            return None
-        else:
-            return int(self.best['progress'])
-
-    @property
-    def status_success(self):
-        return self.progress == 100
-
-    @property
-    def status_process(self):
-        return self.progress != 100
-
-    @property
-    def status_unluck(self):
-        return self.progress == 0
-
-    @property
-    def status_none(self):
-        return self.best is None
-
-    @property
-    def status(self):
-        if self.status_none:
-            return self.NONE
-        else:
-            if self.status_success:
-                return self.SUCCESS
-            elif self.status_unluck:
-                return self.UNLUCK
-            else:
-                return self.PROCESS
-
-    def __create_version(self, data):
-
+            progress = 0
         return {
-            "datetime": data['datetime'],
-            "input": data.get('input', ''),
-            "content": data['content'],
-            "progress": data['progress'],
+            "datetime": str(datetime.now()),
+            "content": content,
+            "progress": progress,
             "tests": {
-                'num': data.get("num", ''),
-                'num_success': data.get("success_num", ''),
+                'num': tests_result['num'],
+                'num_success': tests_result['num_success'],
             }
         }
 
-    def update_best(self, data=None, version=None):
-        if not version:
-            version = self.__create_version(data)
-
-        self.last_changes = version
-        if self.best is None:
-            self.best = version
+    def _set_status(self):
+        if self.progress == 0:
+            self.status = self.Status.UNLUCK
+        elif self.progress == 100:
+            self.status = self.Status.SUCCESS
         else:
-            if int(version['progress']) > self.progress:
-                self.best = version
+            self.status = self.Status.PROCESS
 
-    def add_version(self, data):
-        version = self.__create_version(data)
-        self.last_changes = version
-        self.versions.append(json.dumps(version, ensure_ascii=False))
-        self.update_best(version=version)
+    def update(self, content, tests_result):
+        version = self._create_version_data(content, tests_result)
+        self.last_changes = content
+        if version['progress'] > self.progress:
+            self.version_best = version
+            self.progress = version['progress']
+            self._set_status()
 
-    def get_versions(self):
-        data = []
-        for json_version in self.versions:
-            version = json.loads(json_version)
-            version['datetime'] = self.get_formated_time(version['datetime'])
-            version['content'] = {
-                'name': 'content',
-                'value': version['content'],
-            }
-            data.append(version)
-        return data
+    def create_version(self, content, tests_result):
+        version = self._create_version_data(content, tests_result)
+        self.last_changes = content
+        if version['progress'] > self.progress:
+            self.version_best = version
+            self.progress = version['progress']
+            self._set_status()
+        self.version_list.append(version)
 
     def update_cache_data(self):
         self.url = reverse(

@@ -1,8 +1,6 @@
 # -*- coding:utf-8 -*-
 from django.http import JsonResponse
-from django.template.loader import render_to_string
-from django.shortcuts import HttpResponse, render, get_object_or_404, Http404
-from django.core.exceptions import PermissionDenied
+from django.shortcuts import HttpResponse, render, Http404
 from django.views.generic import View
 from ..models import *
 from ..forms import *
@@ -10,20 +8,34 @@ from ..forms import *
 
 class TaskItemView(View):
 
+    def get_object(self, **kwargs):
+        try:
+            return TaskItem.objects \
+                .select_related('task', 'topic', 'topic__course', 'topic__course__lang') \
+                .get(id=kwargs['taskitem_pk'], topic_id=kwargs['topic_pk'])
+        except TaskItem.DoesNotExist:
+            raise Http404
+
     def get(self, request, **kwargs):
-        taskitem = TaskItem.objects.filter(id=kwargs['taskitem_pk']).select_related('task', 'topic', 'topic__course').first()
-        solution = Solution.objects.filter(taskitem=taskitem, user=request.user).first() if request.user.is_active else None
-        form = SolutionForm(solution=solution)
-        context = {
-            'object': taskitem,
-            'solution': solution,
-            'form': form
-        }
-        return render(request, 'training/taskitem/template.html', context)
+        taskitem = self.get_object(**kwargs)
+        solution = None
+        form_initial = {'lang': taskitem.lang.provider}
+        if request.user.is_active:
+            solution = Solution.objects.filter(taskitem=taskitem, user=request.user).first()
+            if solution:
+                form_initial['content'] = solution.last_changes
+        form = TaskItemForm(initial=form_initial)
+        return render(
+            request=request,
+            template_name='training/taskitem/template.html',
+            context={'object': taskitem, 'solution': solution, 'form': form}
+        )
 
     def post(self, request, **kwargs):
-        print('====', request.POST)
-        return HttpResponse('OK')
+        taskitem = self.get_object(**kwargs)
+        form = TaskItemForm(data=request.POST)
+        response = form.perform_operation(request.user, taskitem)
+        return JsonResponse(response.__dict__)
 
 
 def solution(request, **kwargs):

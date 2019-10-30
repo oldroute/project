@@ -10,15 +10,19 @@
         <div class="row content">
             <div class="left-col">
                 <div class="white fp-content">
-                    <h1 class="text-center">{{ object.numbered_title }}{% if solution.status_success %}<span>[ Решено ]</span>{% endif %}</h1>
+                    <h1 class="text-center">
+                        <span>{{ object.numbered_title }}</span>
+                        {% if solution.progress == 100 %}
+                            <span class="success">Решено</span>
+                        {% endif %}
+                    </h1>
                     <h3>Условие</h3><br/>
                         {{ object.task.content|safe }}
                     <form method="POST" id="editor__form" class="editor-form mt-2">
 
                         {% csrf_token %}
-                        {% if solution and solution.status_success %}
-                            <input type="hidden" name="code_solved" value="True">
-                        {% endif %}
+
+                        {{ form.lang }}
 
                         {% show_ace_field form.input %}
 
@@ -31,22 +35,24 @@
                                          title="История решения"
                                          onclick="window.open('{{ object.solution_url }}', '_blank')"
                                     ></div>
-                                    <div class="control-btn save-version" id="editor__save-version-btn" title="Сохранить версию решения"></div>
-                                    <div class="control-btn save" id="editor__fast-save-btn" title="Быстрое сохранение"></div>
+                                    <div id="editor__create-version-btn" class="control-btn save-version" title="Сохранить версию решения"></div>
+                                    <div id="editor__save-last-changes-btn" class="control-btn save" title="Быстрое сохранение"></div>
                                 {% endif %}
                             </div>
 
                             <div class="control-bar-col bar-col-2">
-                                <div class="control-btn check-tests" id="editor__tests-btn" title="Протестировать решение"></div>
-                                <div class="control-btn run" id="editor__execute-btn" title="Отладка"></div>
+                                <div id="editor__tests-btn" class="control-btn check-tests" title="Протестировать решение"></div>
+                                <div id="editor__debug-btn" class="control-btn run" title="Отладка"></div>
                             </div>
 
                             <div class="control-bar-col bar-col-3 msg-box">
-                                <span class="msg msg-loader hide"></span>
-                                <span class="msg loader hide"><span>{</span><span>}</span></span>
-                                <span class="msg msg-success hide"></span>
-                                <span class="msg msg-warning hide"></span>
-                                <span class="msg msg-error hide"></span>
+                                <span id="msg__loader-text" class="msg msg__loader-text"></span>
+                                <span id="msg__loader" class="msg msg__loader">
+                                    <span class="msg__loader-container"><span>{</span><span>}</span></span>
+                                </span>
+                                <span id="msg__success" class="msg msg__success"></span>
+                                <span id="msg__warning" class="msg msg__warning"></span>
+                                <span id="msg__error"   class="msg msg__error"></span>
                             </div>
                         </div>
 
@@ -61,27 +67,27 @@
                         <h3>Тесты</h3>
                     </div>
                     <div class="white fp-content">
-                        <div class="ace-tests white fp-content">
-                            <div class="tests-container">
-                                <table class="table tests-table" id="form__tests-table">
-                                    <thead>
-                                    <tr>
-                                        <th>№</th>
-                                        <th>Ввод</th>
-                                        <th>Правильный ответ</th>
+                        <div class="form__tests-container">
+                            <table class="form__tests-table" id="form__tests-table">
+                                <thead>
+                                <tr>
+                                    <th class="form__test-counter">№</th>
+                                    <th class="form__test-input">Ввод</th>
+                                    <th class="form__test-output">Правильный ответ</th>
+                                    <th class="form__test-result"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    {% for test in object.task.tests %}
+                                    <tr id="form__test-{{ forloop.counter0 }}">
+                                        <td class="form__test-counter"><div>{{ forloop.counter }}</div></td>
+                                        <td class="form__test-input"><pre>{{ test.input }}</pre></td>
+                                        <td class="form__test-output"><pre>{{ test.output }}</pre></td>
+                                        <td class="form__test-result"><pre></pre></td>
                                     </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for test in object.task.tests %}
-                                        <tr>
-                                            <td><div>{{ forloop.counter }}</div></td>
-                                            <td><div><pre>{{ test.input }}</pre></div></td>
-                                            <td><div><pre>{{ test.output }}</pre></div></td>
-                                        </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
-                            </div>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 {% endif %}

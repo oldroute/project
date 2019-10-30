@@ -9,11 +9,20 @@ var taskItemPage = function(e){
             $('.ace-editor').each(function(){
                 var id = '#' + $(this).attr('id'),
                     textarea = $(id + '-content'),
-                    editor = ace.edit($(this).attr('id'))
+                    editor = ace.edit($(this).attr('id')),
+                    lang = form.find("#id_lang").val()
                 editor.setOption("showPrintMargin", false)     // убрать верт черту
                 editor.setOption("maxLines", "Infinity")       // авто-высота
                 editor.setHighlightActiveLine(false);          // убрать строку вделения
                 editor.setReadOnly(textarea.attr('readonly'))  // для чтения
+                switch(lang){
+                    case 'python':
+                        editor.getSession().setMode("ace/mode/python"); break
+                    case 'cpp':
+                        editor.getSession().setMode("ace/mode/c_cpp"); break
+                    case 'csharp':
+                        editor.getSession().setMode("ace/mode/csharp"); break
+                }
 
                 // вписать код из textarea в ace-editor
                 var editorContent = textarea.text() ? textarea.text() : ""
@@ -38,31 +47,30 @@ var taskItemPage = function(e){
                 }
             })
         },
-        hideMsg: function(){ form.find('.msg').addClass('hide') },
+        hideMsg: function(){ $('.msg').hide() },
         disableBtns: function(){ form.find('.control-btn').addClass('disabled') },
         enableBtns: function(){ form.find('.control-btn').removeClass('disabled') },
         enableVersionsBtn: function(){ form.find('.control-btn.versions').removeClass('not-versions')},
         showLoader: function(msg){
             formControl.hideMsg();
-            form.find('.loader').first().removeClass('hide');
-            form.find('.msg-loader').first().html(msg).removeClass('hide');
+            $('#msg__loader').show();
+            $('#msg__loader-text').html(msg).show();
         },
-        showMsg(msg, status){
-            formControl.hideMsg(form)
-            switch(status){
-                case 'success':
-                    form.find('.msg-success').first().html(msg).removeClass('hide');
-                    break
-                case 'warning':
-                    form.find('.msg-warning').first().html(msg).removeClass('hide');
-                    break
-                case 'error':
-                    form.find('.msg-error').first().html(msg).removeClass('hide');
-                    break
+        showMsg(response){
+            formControl.hideMsg()
+            switch(response.status){
+                case 200:
+                    $('#msg__success').html(response.msg).show(); break
+                case 201:
+                    $('#msg__warning').html(response.msg).show(); break
+                case 202:
+                case 203:
+                case 204:
+                    $('#msg__error').html(response.msg).show(); break
             }
             setTimeout(function(){ formControl.hideMsg() }, 10000);
         },
-        serializeForm(submitType){
+        serializeForm(operation){
             // вернуть данные формы + submitType
             var data = {},
                 formArray = form.serializeArray();
@@ -73,58 +81,85 @@ var taskItemPage = function(e){
                     data[formArray[i].name] = value;
                 }
             }
-            data['submitType'] = submitType
+            data['operation'] = operation
             return data
         },
-        execute : function(e){
+        debug : function(e){
             // запрос на отладку кода из редактора
-            formControl.disableBtns();
             formControl.showLoader('Отладка');
-            $.post(form.attr('action'), formControl.serializeForm('execute'), function(response, textStatus){
-                formControl.showMsg(response.msg, response.status);
-                form.find('.ace-input div').first().replaceWith(response.input).show();
-                form.find('.ace-content div').first().replaceWith(response.content).show();
-                form.find('.ace-output div').first().replaceWith(response.output).show();
-                form.find('.ace-error div').first().replaceWith(response.error).show();
+            $.post(form.attr('action'), formControl.serializeForm(operation='debug'), function(response){
+                formControl.showMsg(response);
+                if(response.output){
+                    $('#id-output-content').html(response.output)
+                    $('.ace-output').show()
+                } else {
+                    $('.ace-output').hide()
+                }
+                if(response.error){
+                    $('#id-error-content').html(response.error)
+                    $('.ace-error').show()
+                } else {
+                    $('.ace-error').hide()
+                }
                 formControl.aceInit();
-                formControl.enableBtns(form);
             });
             return false;
         },
         tests : function(e){
             formControl.disableBtns();
             formControl.showLoader('Тестирование');
-            $.post(form.attr('action'), formControl.serializeForm('tests'), function(response, textStatus){
-                formControl.showMsg(response.msg, response.status);
-                form.find('.ace-input div').first().replaceWith(response.input).show();
-                form.find('.ace-content div').first().replaceWith(response.content).show();
-                form.find('.ace-output div').first().replaceWith(response.output).show();
-                form.find('.ace-error div').first().replaceWith(response.error).show();
-                $('#form__tests-table').replaceWith(response.tests).show();
+            $.post(form.attr('action'), formControl.serializeForm(operation='tests'), function(response){
+                formControl.showMsg(response);
+                if(response.tests_result){
+                    $('th.form__test-result').html('Вывод программы')
+                    response.tests_result.data.forEach(function(elem, index){
+                        var tr = $('#form__test-'+ index)
+                        if(elem.success){
+                            tr.removeClass('success unluck').addClass('success')
+                        } else {
+                            tr.removeClass('success unluck').addClass('unluck')
+                        }
+                        tr.find('.form__test-result pre').html(elem.output + elem.error)
+                    })
+                    if(response.tests_result.success){
+                        if(!document.querySelector('h1 .success')){
+                            var span = document.createElement('span')
+                            span.classList.add('success')
+                            span.textContent = 'Решено'
+                            document.querySelector('h1').appendChild(span)
+
+                        }
+                    }
+                }
+                if(response.success){
+                    // ...
+                }
                 formControl.aceInit();
-                formControl.enableBtns(form);
-                formControl.enableVersionsBtn(form);
+
             });
             return false;
         },
-        saveVersion: function(e){
-            formControl.disableBtns()
-            formControl.showLoader('Сохранение')
-            $.post(form.attr('action'), formControl.serializeForm('saveVersion'), function(response, textStatus){
-                formControl.showMsg(response.msg, response.status);
-                formControl.enableBtns();
+        version: function(e){
+            formControl.showLoader('Сохранение версии')
+            $.post(form.attr('action'), formControl.serializeForm(operation='create_version'), function(response){
+                formControl.showMsg(response);
                 formControl.enableVersionsBtn();
             });
             return false;
 
         },
-        fastSave: function(e){
-            formControl.disableBtns();
+        save: function(e){
             formControl.showLoader('Сохранение');
-            $.post(form.attr('action'), formControl.serializeForm('fastSave'), function(response, textStatus){
-                formControl.showMsg('Изменения сохранены', response.status);
-                formControl.enableBtns();
+            $.post(form.attr('action'), formControl.serializeForm(operation='save_last_changes'), function(response){
+                formControl.showMsg(response);
                 formControl.enableVersionsBtn();
+            });
+            return false;
+        },
+        autosave: function(e){
+            formControl.showLoader('Сохранение')
+            $.post(form.attr('action'), formControl.serializeForm(operation='save_last_changes'), function(response){
+                formControl.showMsg(response);
             });
             return false;
         }
@@ -136,16 +171,18 @@ var taskItemPage = function(e){
         newChanges = $('#id-content-content').first().text();
         var versionsBtn = $('.control-btn.save-version').first();
         if(newChanges != lastChanges && versionsBtn != undefined){
-            formControl.fastSave();
+            formControl.autosave();
             lastChanges = newChanges
         }
     }, 180000)
 
     // Обработчики кнопок
-    document.querySelector('#editor__execute-btn').addEventListener('click', formControl.execute)
+    document.querySelector('#editor__debug-btn').addEventListener('click', formControl.debug)
     document.querySelector('#editor__tests-btn').addEventListener('click', formControl.tests)
-    document.querySelector('#editor__save-version-btn').addEventListener('click', formControl.saveVersion)
-    document.querySelector('#editor__fast-save-btn').addEventListener('click', formControl.fastSave)
+    var versionBtn = document.querySelector('#editor__create-version-btn')
+    versionBtn && versionBtn.addEventListener('click', formControl.version)
+    var saveBtn = document.querySelector('#editor__save-last-changes-btn')
+    saveBtn && saveBtn.addEventListener('click', formControl.save)
 }
 
 window.addEventListener('taskItemPageLoaded', taskItemPage)
