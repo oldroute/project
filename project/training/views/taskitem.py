@@ -41,7 +41,12 @@ class TaskItemView(View):
 class SolutionView(View):
 
     def get_object(self, request):
-        return
+        # filter_params = {'url': request.path}
+        user_id = request.GET.get('user')
+        # if user_id:
+        #     filter_params['user_id'] = user_id
+        return Solution.objects.get(url=request.path, user=request.user)
 
     def get(self, request, *args, **kwargs):
+        solution = self.get_object(request)
         return HttpResponse('OK')

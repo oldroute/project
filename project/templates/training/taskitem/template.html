@@ -33,7 +33,7 @@
                                 {% if request.user.is_active %}
                                     <div class="control-btn versions {% if not solution %} not-versions{% endif %}"
                                          title="История решения"
-                                         onclick="window.open('{{ object.solution_url }}', '_blank')"
+                                         onclick="window.open('{{ object.get_absolute_url }}solution/', '_blank')"
                                     ></div>
                                     <div id="editor__create-version-btn" class="control-btn save-version" title="Сохранить версию решения"></div>
                                     <div id="editor__save-last-changes-btn" class="control-btn save" title="Быстрое сохранение"></div>

@@ -8,9 +8,15 @@ class TopicAdminForm(forms.ModelForm):
     class Meta:
         model = Topic
         fields = '__all__'
+        widgets = {'course': forms.HiddenInput}
 
-    def clean_slug(self):
-        slug = self.cleaned_data['slug']
-        if Topic.objects.filter(course=self.instance.course, slug=slug).exclude(id=self.instance.id).exists():
-            raise ValidationError('Значение не уникально в рамках курса')
-        return self.cleaned_data['slug']
+    def clean(self):
+        slug = self.cleaned_data.get('slug')
+        course = self.cleaned_data.get('course')
+        if slug and course:
+            qst = Topic.objects.filter(course=course, slug=slug)
+            if self.instance:
+                qst = qst.exclude(id=self.instance.id)
+            if qst.exists():
+                self.add_error('slug', ValidationError('Значение не уникально в рамках курса'))
+        return self.cleaned_data

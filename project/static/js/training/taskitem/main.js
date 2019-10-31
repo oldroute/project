@@ -109,7 +109,8 @@ var taskItemPage = function(e){
             formControl.disableBtns();
             formControl.showLoader('Тестирование');
             $.post(form.attr('action'), formControl.serializeForm(operation='tests'), function(response){
-                formControl.showMsg(response);
+                formControl.showMsg(response)
+                formControl.enableVersionsBtn()
                 if(response.tests_result){
                     $('th.form__test-result').html('Вывод программы')
                     response.tests_result.data.forEach(function(elem, index){
@@ -160,6 +161,7 @@ var taskItemPage = function(e){
             formControl.showLoader('Сохранение')
             $.post(form.attr('action'), formControl.serializeForm(operation='save_last_changes'), function(response){
                 formControl.showMsg(response);
+                formControl.enableVersionsBtn();
             });
             return false;
         }

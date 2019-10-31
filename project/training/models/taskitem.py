@@ -34,10 +34,6 @@ class TaskItem(models.Model):
         return self.topic.lang
 
     @property
-    def solution_url(self):
-        return self.url + 'solution/'
-
-    @property
     def numbered_title(self):
         return '%s %s' % (self.number, self.title)
 
@@ -152,7 +148,11 @@ class Solution(models.Model):
                 'taskitem': self.taskitem.slug
             }
         )
-        self.save()
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.update_cache_data()
+        super().save()
 
     def __str__(self):
         return '%s: %s' % (self.user.get_full_name(), self.taskitem.title)
