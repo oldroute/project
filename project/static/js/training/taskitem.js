@@ -180,9 +180,13 @@ var taskItemPage = function(e){
 
     // Обработчики кнопок
     document.querySelector('#editor__debug-btn').addEventListener('click', formControl.debug)
-    document.querySelector('#editor__tests-btn').addEventListener('click', formControl.tests)
+
+    var testsBtn = document.querySelector('#editor__tests-btn')
+    testsBtn && testsBtn.addEventListener('click', formControl.tests)
+
     var versionBtn = document.querySelector('#editor__create-version-btn')
     versionBtn && versionBtn.addEventListener('click', formControl.version)
+
     var saveBtn = document.querySelector('#editor__save-last-changes-btn')
     saveBtn && saveBtn.addEventListener('click', formControl.save)
 }

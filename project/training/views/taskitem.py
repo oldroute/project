@@ -1,6 +1,7 @@
 # -*- coding:utf-8 -*-
 from django.http import JsonResponse
 from django.shortcuts import HttpResponse, render, Http404
+from django.core.exceptions import PermissionDenied
 from django.views.generic import View
 from project.training.models import TaskItem, Solution
 from project.training.forms import TaskItemForm
@@ -41,12 +42,28 @@ class TaskItemView(View):
 class SolutionView(View):
 
     def get_object(self, request):
-        # filter_params = {'url': request.path}
-        user_id = request.GET.get('user')
-        # if user_id:
-        #     filter_params['user_id'] = user_id
-        return Solution.objects.get(url=request.path, user=request.user)
+        if request.user.is_active:
+            solution_user_id = request.GET.get('user')
+            if solution_user_id:
+                if request.user.is_superuser:
+                    try:
+                        return Solution.objects.get(url=request.path, user_id=solution_user_id)
+                    except Solution.DoesNotExist:
+                        raise Http404
+                else:
+                    raise PermissionDenied
+            else:
+                try:
+                    return Solution.objects.get(url=request.path, user_id=request.user.id)
+                except Solution.DoesNotExist:
+                    raise Http404
+        else:
+            raise Http404
 
     def get(self, request, *args, **kwargs):
         solution = self.get_object(request)
-        return HttpResponse('OK')
+        return render(
+            request,
+            template_name='training/solution/template.html',
+            context={'object': solution}
+        )

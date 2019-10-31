@@ -1,87 +1,59 @@
 {% extends 'training/base.html' %}
-{% load static taskitem_tags %}
+{% load static training_tags %}
 
 
-{% block main %}
-    <div class="container">
-        <div class="row">
-            {% comment %}
-            {% courses_breadcrumbs %}
-            <a class="breadcrumb" href='{{ object.get_absolute_url }}'>
-                {% include 'includes/svg/arrow-left.svg' %}
-                <span>{{ object.tree_name }}</span>
-            </a>
-            {% endcomment %}
+{% block content %}
+    <div class="left-col">
+        <div class="white fp-content">
+            <h1 class="text-center">Решение</h1>
+
+            <table class="solution-info">
+                <tr>
+                    <td>Задача:</td>
+                    <td>{{ object.taskitem.numbered_title }}</td>
+                </tr>
+                <tr>
+                    <td>Пользователь:</td>
+                    <td>{{ object.user.get_full_name|default:object.user.username }}</td>
+                </tr>
+                <tr>
+                    <td>Язык:</td>
+                    <td>{{ object.taskitem.lang }}</td>
+                </tr>
+                <tr>
+                    <td>Дата:</td>
+                    <td>{{ object.version_best.datetime|date_format }}</td>
+                </tr>
+                <tr class="status__{{ object.status }}">
+                    <td>Прогресс:</td>
+                    <td>{{ object.progress }} % (Пройдено тестов: {{ object.version_best.tests.num_success }} из {{ object.version_best.tests.num }})</td>
+                </tr>
+            </table>
+            <div id="version__content-0" class="ace-editor" data-lang="{{ object.taskitem.lang.provider }}">{{ object.version_best.content }}</div>
         </div>
-        <div class="row content">
-            <div class="left-col">
+
+        {% if object.version_list %}
+            <div class="fp-content">
+                <h3>Версии решения</h3>
+            </div>
+            {% for version in object.version_list %}
                 <div class="white fp-content">
-                    <h1 class="text-center">{{ object.tree_name }}</h1>
-
-                    <h3>Решение</h3><br/>
-
                     <table class="solution-info">
                         <tr>
-                            <td><h4>Пользователь:</h4></td>
-                            <td>{{ solution.user.get_full_name|default:solution.user.username }}</td>
+                            <td>Дата:</td>
+                            <td>{{ version.datetime|date_format }}</td>
                         </tr>
-                        <tr>
-                            <td><h4>Язык:</h4></td>
-                            <td>{{ solution.code.get_executor_name }}</td>
-                        </tr>
-                        <tr>
-                            <td><h4>Дата:</h4></td>
-                            <td>{{ solution.best_time }}</td>
-                        </tr>
-                        <tr class="{{ solution.status }}">
-                            <td><h4>Прогресс:</h4></td>
-                            <td>{{ solution.progress }} % (Пройдено тестов: {{ solution.best.tests.num_success }} из {{ solution.best.tests.num }})</td>
+                        <tr class="status__{{ object.status }}">
+                            <td>Прогресс:</td>
+                            <td>{{ version.progress }} % (Пройдено тестов: {{ version.tests.num_success }} из {{ version.tests.num }})</td>
                         </tr>
                     </table>
 
-                    <form id="editor-form-999" class="editor-form mt-2 mb-3"
-                          data-code_num="999">
-                        {% include 'executors/ace/widget.html' with field=form.content  code_num=999 %}
-                    </form>
+                    <div id="version__content-{{ forloop.counter }}" class="ace-editor" data-lang="{{ object.taskitem.lang.provider }}">{{ version.content }}</div>
+
                 </div>
-
-                {% if solution.versions %}
-                    <div class="fp-content">
-                        <h3>Версии решения</h3>
-                    </div>
-                    {% for version in solution.get_versions %}
-                        <div class="white fp-content">
-                            <table class="solution-info">
-                                <tr>
-                                    <td><h4>Дата:</h4></td>
-                                    <td>{{ version.datetime }}</td>
-                                </tr>
-                                <tr class="{{ solution.status }}">
-                                    <td><h4>Прогресс:</h4></td>
-                                    <td>{{ version.progress }} % (Пройдено тестов: {{ version.tests.num_success }} из {{ version.tests.num }})</td>
-                                </tr>
-                            </table>
-
-                            {% include 'executors/ace/widget.html' with field=version.content code_num=forloop.counter %}
-
-                        </div>
-                    {% endfor %}
-                {% endif %}
-
-            </div>
-            <div class="right-col white">
-                <h1 class="">Навигация по курсу</h1>
-                <hr>
-                {% get_navigation object as navigation %}
-                {% if navigation %}
-                    <ul>
-                    {% for item in navigation %}
-                        {% include 'courses/nav_item.html' %}
-                    {% endfor %}
-                    </ul>
-                {% endif %}
-            </div>
-        </div>
+            {% endfor %}
+        {% endif %}
     </div>
 {% endblock %}
 

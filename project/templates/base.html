@@ -53,10 +53,7 @@
             <div class="container">
                 <div class="row">
                     {% block breadcrumbs %}
-                        <a class="breadcrumb" href='/'>
-                            {% include 'includes/svg/arrow-left.svg' %}
-                            <span>Главная</span>
-                        </a>
+                        <a class="breadcrumb-home" href='/'></a>
                     {% endblock %}
                 </div>
                 <div class="row">
@@ -65,9 +62,7 @@
                     </div>
                 </div>
                 <div class="row content">
-                    <div class="content">
-                        {% block content %}{% endblock %}
-                    </div>
+                    {% block content %}{% endblock %}
                 </div>
             </div>
         {% endblock %}
@@ -109,7 +104,8 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/ace/1.4.4/ace.js"></script>
     <!--<script src="{% static 'js/ace/ace_ajax_submit3.js' %}"></script>-->
     <!--<script src="{% static 'js/ace/ace_init.js' %}"></script>-->
-    <script src="{% static 'js/training/taskitem/main.js' %}"></script>
+    <script src="{% static 'js/training/taskitem.js' %}"></script>
+    <script src="{% static 'js/training/solution.js' %}"></script>
 {% endblock %}
 
 </body>

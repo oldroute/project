@@ -60,6 +60,12 @@ class TaskItem(models.Model):
             }
         )
 
+    def get_breadcrumbs(self):
+        return [
+            {'title': self.topic.course.title,   'url': self.topic.course.url},
+            {'title': self.topic.numbered_title, 'url': self.topic.url},
+        ]
+
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         self.update_cache_data()
@@ -125,7 +131,12 @@ class Solution(models.Model):
     def update(self, content, tests_result):
         version = self._create_version_data(content, tests_result)
         self.last_changes = content
-        if version['progress'] > self.progress:
+        if self.version_best:
+            if version['progress'] > self.progress:
+                self.version_best = version
+                self.progress = version['progress']
+                self._set_status()
+        else:
             self.version_best = version
             self.progress = version['progress']
             self._set_status()
@@ -133,11 +144,20 @@ class Solution(models.Model):
     def create_version(self, content, tests_result):
         version = self._create_version_data(content, tests_result)
         self.last_changes = content
-        if version['progress'] > self.progress:
+        if self.version_best:
+            if version['progress'] > self.progress:
+                self.version_best = version
+                self.progress = version['progress']
+                self._set_status()
+        else:
             self.version_best = version
             self.progress = version['progress']
             self._set_status()
-        self.version_list.append(version)
+
+        if len(self.version_list) < 10:
+            self.version_list.append(version)
+        else:
+            self.version_list[9] = version
 
     def update_cache_data(self):
         self.url = reverse(
@@ -156,6 +176,13 @@ class Solution(models.Model):
 
     def __str__(self):
         return '%s: %s' % (self.user.get_full_name(), self.taskitem.title)
+
+    def get_breadcrumbs(self):
+        return [
+            {'title': self.taskitem.topic.course.title,   'url': self.taskitem.topic.course.url},
+            {'title': self.taskitem.topic.numbered_title, 'url': self.taskitem.topic.url},
+            {'title': self.taskitem.numbered_title,       'url': self.taskitem.url},
+        ]
 
     def get_absolute_url(self):
         return self.url

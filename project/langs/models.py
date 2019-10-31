@@ -23,7 +23,9 @@ class Lang(models.Model):
     )
 
     def __str__(self):
-        return self.provider
+        for choice in self.PROVIDERS_CHOICES:
+            if choice[0] == self.provider:
+                return choice[1]
 
     def debug(self, *args, **kwargs):
         return getattr(providers, self.provider).debug(*args, **kwargs)

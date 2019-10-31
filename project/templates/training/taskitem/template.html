@@ -2,102 +2,94 @@
 {% load static taskitem_tags %}
 
 
-{% block main %}
-    <div class="container">
-        <div class="row">
-            {# courses_breadcrumbs #}
-        </div>
-        <div class="row content">
-            <div class="left-col">
-                <div class="white fp-content">
-                    <h1 class="text-center">
-                        <span>{{ object.numbered_title }}</span>
-                        {% if solution.progress == 100 %}
-                            <span class="success">Решено</span>
-                        {% endif %}
-                    </h1>
-                    <h3>Условие</h3><br/>
-                        {{ object.task.content|safe }}
-                    <form method="POST" id="editor__form" class="editor-form mt-2">
-
-                        {% csrf_token %}
-
-                        {{ form.lang }}
-
-                        {% show_ace_field form.input %}
-
-                        {% show_ace_field form.content %}
-
-                        <div class="ace-control-bar">
-                            <div class="control-bar-col bar-col-1">
-                                {% if request.user.is_active %}
-                                    <div class="control-btn versions {% if not solution %} not-versions{% endif %}"
-                                         title="История решения"
-                                         onclick="window.open('{{ object.get_absolute_url }}solution/', '_blank')"
-                                    ></div>
-                                    <div id="editor__create-version-btn" class="control-btn save-version" title="Сохранить версию решения"></div>
-                                    <div id="editor__save-last-changes-btn" class="control-btn save" title="Быстрое сохранение"></div>
-                                {% endif %}
-                            </div>
-
-                            <div class="control-bar-col bar-col-2">
-                                <div id="editor__tests-btn" class="control-btn check-tests" title="Протестировать решение"></div>
-                                <div id="editor__debug-btn" class="control-btn run" title="Отладка"></div>
-                            </div>
-
-                            <div class="control-bar-col bar-col-3 msg-box">
-                                <span id="msg__loader-text" class="msg msg__loader-text"></span>
-                                <span id="msg__loader" class="msg msg__loader">
-                                    <span class="msg__loader-container"><span>{</span><span>}</span></span>
-                                </span>
-                                <span id="msg__success" class="msg msg__success"></span>
-                                <span id="msg__warning" class="msg msg__warning"></span>
-                                <span id="msg__error"   class="msg msg__error"></span>
-                            </div>
-                        </div>
-
-                        {% show_ace_field form.output %}
-
-                        {% show_ace_field form.error %}
-
-                    </form>
-                </div>
-                {% if object.task.tests %}
-                    <div class="fp-content">
-                        <h3>Тесты</h3>
-                    </div>
-                    <div class="white fp-content">
-                        <div class="form__tests-container">
-                            <table class="form__tests-table" id="form__tests-table">
-                                <thead>
-                                <tr>
-                                    <th class="form__test-counter">№</th>
-                                    <th class="form__test-input">Ввод</th>
-                                    <th class="form__test-output">Правильный ответ</th>
-                                    <th class="form__test-result"></th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                    {% for test in object.task.tests %}
-                                    <tr id="form__test-{{ forloop.counter0 }}">
-                                        <td class="form__test-counter"><div>{{ forloop.counter }}</div></td>
-                                        <td class="form__test-input"><pre>{{ test.input }}</pre></td>
-                                        <td class="form__test-output"><pre>{{ test.output }}</pre></td>
-                                        <td class="form__test-result"><pre></pre></td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+{% block content %}
+    <div class="left-col">
+        <div class="white fp-content">
+            <h1 class="text-center">
+                <span>{{ object.numbered_title }}</span>
+                {% if solution.progress == 100 %}
+                    <span class="success">Решено</span>
                 {% endif %}
-            </div>
-            <div class="right-col white">
-                <h1 class="">Навигация по курсу</h1>
-                <hr>
+            </h1>
+            <h3>Условие</h3><br/>
+                {{ object.task.content|safe }}
+            <form method="POST" id="editor__form" class="editor-form mt-2">
 
-            </div>
+                {% csrf_token %}
+
+                {{ form.lang }}
+
+                {% show_ace_field form.input %}
+
+                {% show_ace_field form.content %}
+
+                <div class="ace-control-bar">
+                    <div class="control-bar-col bar-col-1">
+                        {% if request.user.is_active %}
+                            <div class="control-btn versions {% if not solution %} not-versions{% endif %}"
+                                 title="История решения"
+                                 onclick="window.open('{{ object.get_absolute_url }}solution/', '_blank')"
+                            ></div>
+                            <div id="editor__create-version-btn" class="control-btn save-version" title="Сохранить версию решения"></div>
+                            <div id="editor__save-last-changes-btn" class="control-btn save" title="Быстрое сохранение"></div>
+                        {% endif %}
+                    </div>
+
+                    <div class="control-bar-col bar-col-2">
+                        {% if object.task.tests %}
+                            <div id="editor__tests-btn" class="control-btn check-tests" title="Протестировать решение"></div>
+                            <div id="editor__debug-btn" class="control-btn run" title="Отладка"></div>
+                        {% else %}
+                            <div id="editor__debug-btn" class="control-btn full-content run" title="Отладка"></div>
+                        {% endif %}
+                    </div>
+
+                    <div class="control-bar-col bar-col-3 msg-box">
+                        <span id="msg__loader-text" class="msg msg__loader-text"></span>
+                        <span id="msg__loader" class="msg msg__loader">
+                            <span class="msg__loader-container"><span>{</span><span>}</span></span>
+                        </span>
+                        <span id="msg__success" class="msg msg__success"></span>
+                        <span id="msg__warning" class="msg msg__warning"></span>
+                        <span id="msg__error"   class="msg msg__error"></span>
+                    </div>
+                </div>
+
+                {% show_ace_field form.output %}
+
+                {% show_ace_field form.error %}
+
+            </form>
         </div>
+        {% if object.task.tests %}
+            <div class="fp-content">
+                <h3>Тесты</h3>
+            </div>
+            <div class="white fp-content">
+                <div class="form__tests-container">
+                    <table class="form__tests-table" id="form__tests-table">
+                        <thead>
+                        <tr>
+                            <th class="form__test-counter">№</th>
+                            <th class="form__test-input">Ввод</th>
+                            <th class="form__test-output">Правильный ответ</th>
+                            <th class="form__test-result"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            {% for test in object.task.tests %}
+                            <tr id="form__test-{{ forloop.counter0 }}">
+                                <td class="form__test-counter"><div>{{ forloop.counter }}</div></td>
+                                <td class="form__test-input"><pre>{{ test.input }}</pre></td>
+                                <td class="form__test-output"><pre>{{ test.output }}</pre></td>
+                                <td class="form__test-result"><pre></pre></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        {% endif %}
     </div>
 {% endblock %}
 

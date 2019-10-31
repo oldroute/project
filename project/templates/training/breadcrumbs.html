@@ -1,0 +1,4 @@
+<a class="breadcrumb" href="{% url 'training:courses' %}">Курсы</a>
+{% for elem in object.get_breadcrumbs %}
+    <a class="breadcrumb" href='{{ elem.url }}'>{{ elem.title }}</a>
+{% endfor %}

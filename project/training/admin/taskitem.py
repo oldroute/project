@@ -14,4 +14,6 @@ class TaskItemInline(SortableInlineAdminMixin, admin.TabularInline):
 @admin.register(Solution)
 class SolutionAdmin(admin.ModelAdmin):
     model = Solution
+    exclude = ('url', 'last_changes', 'version_list')
+    readonly_fields = ('progress', 'status', 'taskitem', 'user')
     raw_id_fields = ('user',)
