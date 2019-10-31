@@ -1,109 +1,15 @@
-import json
+import random
+from unidecode import unidecode
 from django.db import models
-from tinymce.models import HTMLField
 from django.contrib.auth import get_user_model
 from django.contrib.postgres.fields import JSONField
 from datetime import datetime
 from django.urls import reverse
-
-from project.langs.models import Lang
+from django.utils.text import slugify
 from project.tasks.models import Task
+from project.training.models import Topic
 
 UserModel = get_user_model()
-
-
-class Course(models.Model):
-    class Meta:
-        verbose_name = "курс"
-        verbose_name_plural = "курсы"
-        ordering = ('order_key',)
-
-    show = models.BooleanField(verbose_name="отображать", default=True)
-    title = models.CharField(verbose_name="заголовок", max_length=255)
-    slug = models.SlugField(verbose_name="слаг", max_length=255, unique=True)
-    lang = models.ForeignKey(Lang, verbose_name="язык программирования")
-    author = models.ForeignKey(UserModel, verbose_name="автор", on_delete=models.SET_NULL, blank=True, null=True)
-    content = HTMLField(verbose_name="содержимое", default="", blank=True, null=True)
-
-    order_key = models.PositiveIntegerField(verbose_name='порядок', blank=True, null=True)
-    last_modified = models.DateTimeField(verbose_name="дата последнего изменения", auto_now=True)
-    url = models.CharField(max_length=1000, blank=True, null=True)
-
-    @property
-    def topics(self):
-        return self._topics.filter(show=True)
-
-    def __str__(self):
-        return self.title
-
-    def update_cache_data(self):
-        if self.order_key is None:
-            self.order_key = Course.objects.all().count() + 1
-        self.url = reverse('training:course', kwargs={'slug': self.slug})
-
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        self.update_cache_data()
-        super().save()
-        for topic in self.topics:
-            topic.save()
-
-    def get_absolute_url(self):
-        return self.url
-
-
-class Topic(models.Model):
-    class Meta:
-        verbose_name = "тема"
-        verbose_name_plural = "темы"
-        ordering = ('order_key',)
-
-    show = models.BooleanField(verbose_name="отображать", default=True)
-    title = models.CharField(verbose_name="заголовок", max_length=255)
-    author = models.ForeignKey(UserModel, verbose_name="автор", on_delete=models.SET_NULL, blank=True, null=True)
-    content = HTMLField(verbose_name="содержимое", default="", blank=True, null=True)
-
-    course = models.ForeignKey(Course, verbose_name='курс', related_name='_topics')
-    order_key = models.PositiveIntegerField(verbose_name='порядок', blank=True, null=True)
-    last_modified = models.DateTimeField(verbose_name="дата последнего изменения", auto_now=True)
-    url = models.CharField(max_length=1000, blank=True, null=True)
-
-    @property
-    def lang(self):
-        return self.course.lang
-
-    @property
-    def taskitems(self):
-        return self._taskitems.filter(show=True)
-
-    @property
-    def number(self):
-        return self.order_key
-
-    def __str__(self):
-        return self.title
-
-    @property
-    def numbered_title(self):
-        return '%s %s' % (self.number, self.title)
-
-    def update_cache_data(self):
-        if self.order_key is None:
-            self.order_key = Topic.objects.filter(course=self.course).count()
-
-        self.url = reverse(
-            'training:topic', kwargs={'slug': self.course.slug, 'topic_pk': self.id}
-        )
-
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        self.update_cache_data()
-        super().save()
-        for taskitem in self.taskitems:
-            taskitem.update_cache_data()
-
-    def get_absolute_url(self):
-        return self.url
 
 
 class TaskItem(models.Model):
@@ -115,6 +21,7 @@ class TaskItem(models.Model):
 
     show = models.BooleanField(verbose_name="отображать", default=True)
     task = models.ForeignKey(Task, verbose_name='задача', related_name='topics')
+    slug = models.SlugField(verbose_name="слаг", max_length=255, blank=True, null=True)
 
     order_key = models.PositiveIntegerField(verbose_name='порядок', blank=True, null=True)
     number = models.CharField(max_length=255, blank=True, null=True)
@@ -134,20 +41,26 @@ class TaskItem(models.Model):
     def numbered_title(self):
         return '%s %s' % (self.number, self.title)
 
-    def __str__(self):
-        return self.title
+    def _set_slug(self):
+        slug = slugify(unidecode(self.task.title))
+        if TaskItem.objects.filter(topic=self.topic, slug=slug).exclude(id=self.id).exists():
+             slug += str(random.randint(0, 999))
+        self.slug = slug
 
     def update_cache_data(self):
         if self.order_key is None:
             self.order_key = TaskItem.objects.all().count()
+        if self.slug is None:
+            self._set_slug()
+
         self.number = '%s.%s' % (self.topic.order_key, self.order_key)
         self.title = self.task.title
         self.url = reverse(
             'training:taskitem',
             kwargs={
-                'slug': self.topic.course.slug,
-                'topic_pk': self.topic.id,
-                'taskitem_pk': self.id
+                'course': self.topic.course.slug,
+                'topic': self.topic.slug,
+                'taskitem': self.slug
             }
         )
 
@@ -158,6 +71,9 @@ class TaskItem(models.Model):
 
     def get_absolute_url(self):
         return self.url
+
+    def __str__(self):
+        return self.title
 
 
 class Solution(models.Model):
@@ -231,9 +147,9 @@ class Solution(models.Model):
         self.url = reverse(
             'training:solution',
             kwargs={
-                'slug': self.taskitem.topic.course.slug,
-                'topic_pk': self.taskitem.topic.id,
-                'taskitem_pk': self.id
+                'course': self.taskitem.topic.course.slug,
+                'topic': self.taskitem.topic.slug,
+                'taskitem': self.taskitem.slug
             }
         )
         self.save()
@@ -245,4 +161,4 @@ class Solution(models.Model):
         return self.url
 
 
-__all__ = ['Course', 'Topic', 'TaskItem', 'Solution']
+__all__ = ['TaskItem', 'Solution']

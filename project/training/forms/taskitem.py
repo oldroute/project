@@ -1,5 +1,5 @@
 from django import forms
-from .models import *
+from project.training.models import Solution
 
 
 class Response:

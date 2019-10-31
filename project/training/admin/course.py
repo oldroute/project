@@ -16,7 +16,9 @@ from django.contrib.admin.utils import quote, unquote
 from django.db import router
 from django.contrib.admin.utils import get_deleted_objects
 from adminsortable2.admin import SortableAdminMixin, SortableInlineAdminMixin
-from .models import *
+from project.training.models import Course, Topic
+from project.training.admin import TaskItemInline
+from project.training.forms import TopicAdminForm
 
 
 IS_POPUP_VAR = '_popup'
@@ -38,19 +40,13 @@ class TopicInline(SortableInlineAdminMixin, admin.TabularInline):
         return 'admin/training/topic/tabular.html'
 
 
-class TaskItemInline(SortableInlineAdminMixin, admin.TabularInline):
-
-    model = TaskItem
-    extra = 0
-    fields = ('order_key', 'task', 'show')
-    raw_id_fields = ("task",)
-
-
 @admin.register(Topic)
 class TopicAdmin(admin.ModelAdmin):
 
+    form = TopicAdminForm
     raw_id_fields = ("author",)
-    fields = ('show', 'title', 'author', 'content')
+    fields = ('show', 'title', 'slug', 'author', 'content')
+    prepopulated_fields = {'slug': ['title']}
     inlines = (TaskItemInline,)
 
     def __init__(self, model, admin_site, course=None):
@@ -303,8 +299,3 @@ class CourseAdmin(SortableAdminMixin, admin.ModelAdmin):
             url(r'^(?P<course_pk>[0-9]+)/topics/(?P<topic_pk>[0-9]+)/change/$', self.admin_site.admin_view(self.change_topic), name='change_topic'),
         ] + super().get_urls()
 
-
-@admin.register(Solution)
-class SolutionAdmin(admin.ModelAdmin):
-    model = Solution
-    raw_id_fields = ('user',)

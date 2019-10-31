@@ -2,22 +2,22 @@
 from django.http import JsonResponse
 from django.shortcuts import HttpResponse, render, Http404
 from django.views.generic import View
-from ..models import *
-from ..forms import *
+from project.training.models import TaskItem, Solution
+from project.training.forms import TaskItemForm
 
 
 class TaskItemView(View):
 
-    def get_object(self, **kwargs):
+    def get_object(self, request):
         try:
             return TaskItem.objects \
-                .select_related('task', 'topic', 'topic__course', 'topic__course__lang') \
-                .get(id=kwargs['taskitem_pk'], topic_id=kwargs['topic_pk'])
+                .select_related('task', 'topic__course', 'topic__course__lang') \
+                .get(url=request.path)
         except TaskItem.DoesNotExist:
             raise Http404
 
-    def get(self, request, **kwargs):
-        taskitem = self.get_object(**kwargs)
+    def get(self, request, *args, **kwargs):
+        taskitem = self.get_object(request)
         solution = None
         form_initial = {'lang': taskitem.lang.provider}
         if request.user.is_active:
@@ -31,12 +31,17 @@ class TaskItemView(View):
             context={'object': taskitem, 'solution': solution, 'form': form}
         )
 
-    def post(self, request, **kwargs):
-        taskitem = self.get_object(**kwargs)
+    def post(self, request, *args, **kwargs):
+        taskitem = self.get_object(request)
         form = TaskItemForm(data=request.POST)
         response = form.perform_operation(request.user, taskitem)
         return JsonResponse(response.__dict__)
 
 
-def solution(request, **kwargs):
-    return HttpResponse('OK')
+class SolutionView(View):
+
+    def get_object(self, request):
+        return
+
+    def get(self, request, *args, **kwargs):
+        return HttpResponse('OK')
