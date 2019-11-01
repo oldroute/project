@@ -94,11 +94,9 @@ var ace_ajax = {
 
     },
     fast_save: function(form, msg='Сохранение'){
-        this.disableBtns(form);
         this.showLoader(form, msg);
         $.post(form.data('save-version-action'), this.serializeForm(form), function(response, textStatus){
             ace_ajax.showMsg(form, 'Изменения сохранены', response.status);
-            ace_ajax.enableBtns(form);
             ace_ajax.enableVersionsBtn(form);
         });
         return false;

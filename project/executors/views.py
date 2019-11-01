@@ -150,28 +150,33 @@ def save_version(request):
 
 def user_solution(request, user_id, code_id):
 
-    user_solution = get_object_or_404(UserSolution, user=user_id, code=code_id)
-    if user_solution.progress is None:
-        raise Http404
-    if not(request.user == user_solution.user or request.user.is_superuser):
-        raise PermissionDenied
-    else:
-        template = "executors/code_solution.html"
-        form = CodeForm(initial={
-            "content": user_solution.best["content"],
-            "input": user_solution.best["input"],
-            "output": None,
-            "error": None,
-        })
+    if request.user.is_active:
+        user_solution = get_object_or_404(UserSolution, user=user_id, code=code_id)
+        view_permission = False
+        if request.user == user_solution.user:
+            view_permission = True
+        else:
+            owners_ids = user_solution.user.membership.all().values_list('owners', flat=True)
+            if request.user.id in owners_ids:
+                view_permission = True
+        if view_permission:
+            template = "executors/code_solution.html"
+            form = CodeForm(initial={
+                "content": user_solution.best["content"],
+                "input": user_solution.best["input"],
+                "output": None,
+                "error": None,
+            })
 
-        treeitem = user_solution.code.treeitem
+            treeitem = user_solution.code.treeitem
 
-        context = {
-            "form": form,
-            "object": treeitem,
-            "solution": user_solution,
-            "executor_name": user_solution.code.get_executor_name(),
-            "disabled": True,
-            "code_num": user_solution.code.id
-        }
-        return render(request, template, context)
+            context = {
+                "form": form,
+                "object": treeitem,
+                "solution": user_solution,
+                "executor_name": user_solution.code.get_executor_name(),
+                "disabled": True,
+                "code_num": user_solution.code.id
+            }
+            return render(request, template, context)
+    raise PermissionDenied

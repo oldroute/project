@@ -74,7 +74,7 @@ class GroupCourse(View):
                 'course_data': course_item.get_course_data(themes.first()),
                 'group': group,
                 'course': course_item.course,
-                'show_solutions_links': request.user.is_superuser,
+                'show_solutions_links': request.user in group.owners.all(),
                 'themes_ids': list(themes.exclude(id=themes.first().id).values_list('id', flat=True))[::-1]
             }
             return render(request, self.template, context)
@@ -91,7 +91,7 @@ def group_course_theme(request, group_id, course_id, theme_id):
     context = {
         'table':  data['tables'][0],
         'group': group,
-        'show_solutions_links': request.user.is_superuser,
+        'show_solutions_links':request.user in group.owners.all(),
     }
     table_html = render_to_string('groups/includes/group_course_table.html', context, request)
     del data['members_col'][-1]

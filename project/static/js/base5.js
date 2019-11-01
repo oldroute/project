@@ -9,7 +9,7 @@ $(function(){
                 ace_ajax.fast_save($(this), 'Автосохранение');
             }
         });
-    }, 30000);
+    }, 180000);
 
     $('.editor-form').each(function(){
         // disable control empty forms
