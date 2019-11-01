@@ -34,7 +34,7 @@ def catalog_item(request, path=None):
                 if item.get_complete_slug() == path:
                     treeitem = item
 
-    if treeitem.level == 0:
+    if treeitem.type == TreeItem.COURSE:
         template = "courses/courseitem.html"
     else:
         template = "courses/treeitem.html"
