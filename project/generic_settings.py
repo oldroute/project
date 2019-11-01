@@ -109,14 +109,15 @@ SESSION_SAVE_EVERY_REQUEST = True
 # Настройки tinymce
 TINYMCE_DEFAULT_CONFIG = {
     'plugins': 'spellchecker',
-    'theme_advanced_buttons1': 'save,newdocument,|,justifyleft,justifycenter,justifyright,justifyfull,|, hr,bold,italic,underline,|, bullist,numlist,|,formatselect,removeformat,cut,copy,paste,pastetext,pasteword,|,fontselect,fontsizeselect,|,forecolor,backcolor,',
-    'theme_advanced_buttons2' : 'removeformat, cut,copy,paste,pastetext,pasteword,|,outdent,indent,blockquote,|,undo,redo,|,styleprops,spellchecker',
-    'theme_advanced_buttons3': 'sub,sup,|,charmap',
-    'theme_advanced_buttons4': ' code, |,bold,italic,underline,strikethrough',
+    'theme_advanced_buttons1':
+        'undo,redo,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,'
+        'bullist,numlist,blockquote,|,formatselect,|,fontsizeselect,|,forecolor,backcolor,|,'
+        'removeformat,|,code',
     'width': '100%',
-    'height': 300,
+    'height': 100,
     'theme_advanced_resizing': 'True',
     'extended_valid_elements ': '*[*]',
+    'content_style': '.mcecontentbody{font-size:14px;}',
 }
 
 

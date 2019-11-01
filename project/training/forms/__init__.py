@@ -1,2 +1,2 @@
 from .taskitem import TaskItemForm
-from .course import TopicAdminForm
+from .course import TopicAdminForm, ContentAdminForm

@@ -16,9 +16,9 @@ from django.contrib.admin.utils import quote, unquote
 from django.db import router
 from django.contrib.admin.utils import get_deleted_objects
 from adminsortable2.admin import SortableAdminMixin, SortableInlineAdminMixin
-from project.training.models import Course, Topic
+from project.training.models import Course, Topic, Content
 from project.training.admin import TaskItemInline
-from project.training.forms import TopicAdminForm
+from project.training.forms import TopicAdminForm, ContentAdminForm
 
 
 IS_POPUP_VAR = '_popup'
@@ -40,14 +40,22 @@ class TopicInline(SortableInlineAdminMixin, admin.TabularInline):
         return 'admin/training/topic/tabular.html'
 
 
+class ContentInline(SortableInlineAdminMixin, admin.StackedInline):
+
+    form = ContentAdminForm
+    model = Content
+    extra = 0
+    fields = ('order_key', 'type', 'text', 'ace')
+
+
 @admin.register(Topic)
 class TopicAdmin(admin.ModelAdmin):
 
     form = TopicAdminForm
     raw_id_fields = ("author",)
-    fields = ('show', 'title', 'slug', 'author', 'course', 'content')
+    fields = ('show', 'title', 'slug', 'author', 'course')
     prepopulated_fields = {'slug': ['title']}
-    inlines = (TaskItemInline,)
+    inlines = (ContentInline, TaskItemInline)
 
     def __init__(self, model, admin_site, course=None):
         super().__init__(model, admin_site)

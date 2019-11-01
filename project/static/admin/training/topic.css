@@ -1,0 +1,84 @@
+#content-group h3 .inline_label {
+    display: none;
+}
+#content-group .field-text label,
+#content-group .field-ace label {
+    display: none
+}
+#content-group .field-ace .ace-container .ace-editor-content {
+    display: none;
+}
+#content-group .field-text,
+#content-group .field-ace {
+    display: none;
+}
+
+/* ace */
+.ace-container {
+    padding: 15px 10px;
+    background-color:#f5f2f0;
+    font-size: 12px;
+    min-height: 120px;
+    border: 1px solid #CCC;
+}
+
+.ace-container.ace-content {
+    min-height: 70px;
+}
+
+.ace-container.ace-error,
+.ace-container.ace-output {
+    display: none;
+}
+
+.ace-container.ace-tests table {
+    width: 95%;
+}
+
+.ace-container.ace-tests .tests-title,
+.ace-container.ace-tests table th {
+    font-size: 12px;
+    padding-left: 10px;
+}
+
+.ace-container.ace-tests table tbody td{
+    padding:0;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.ace-container.ace-tests {
+    position: relative;
+    padding: 15px 0;
+}
+
+.tests-title {
+    margin: 10px 0;
+    display: flex;
+    justify-content: space-between;
+}
+
+.ace-container.ace-content label {
+    display:none;
+}
+
+.ace-editor {
+    position: relative;
+    width: 100%;
+    height: auto;
+    font-size:14px;
+    line-height: 1.5;
+    background-color:#f5f2f0;
+}
+
+.editor-form.static .ace-editor {
+    background-color: #eaeaea;
+}
+
+.editor-form.maximized .ace-editor {
+    border: solid 1px #eeeeee;
+}
+
+.ace-editor-content {
+    display:none;
+}

@@ -1,6 +1,7 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from project.training.models import Topic
+from project.training.models import Topic, Content
+from project.training.widgets import AceWidget
 
 
 class TopicAdminForm(forms.ModelForm):
@@ -20,3 +21,22 @@ class TopicAdminForm(forms.ModelForm):
             if qst.exists():
                 self.add_error('slug', ValidationError('Значение не уникально в рамках курса'))
         return self.cleaned_data
+
+
+class ContentAdminForm(forms.ModelForm):
+
+    class Meta:
+        model = Content
+        fields = '__all__'
+        widgets = {
+            'ace': AceWidget
+        }
+
+    class Media:
+        js = [
+            'js/ace-1.4.7/ace.js',
+            'admin/training/topic.js'
+        ]
+        css = {
+            'all': ['admin/training/topic.css']
+        }

@@ -57,7 +57,6 @@ class Topic(models.Model):
     title = models.CharField(verbose_name="заголовок", max_length=255)
     slug = models.SlugField(verbose_name="слаг", max_length=255)
     author = models.ForeignKey(UserModel, verbose_name="автор", on_delete=models.SET_NULL, blank=True, null=True)
-    content = HTMLField(verbose_name="содержимое", default="", blank=True, null=True)
 
     course = models.ForeignKey(Course, verbose_name='курс', related_name='_topics')
     order_key = models.PositiveIntegerField(verbose_name='порядок', blank=True, null=True)
@@ -103,4 +102,23 @@ class Topic(models.Model):
         return self.url
 
 
-__all__ = ['Course', 'Topic']
+class Content(models.Model):
+
+    class Meta:
+        verbose_name = "блок контента"
+        verbose_name_plural = "блоки контента"
+        ordering = ('order_key',)
+
+    CHOICES = (
+        ('ace', 'код'),
+        ('text', ' текст'),
+    )
+
+    ace = models.TextField(blank=True, null=True)
+    text = HTMLField(blank=True, null=True)
+    type = models.CharField(verbose_name='тип', max_length=255, choices=CHOICES, default='text')
+    topic = models.ForeignKey(Topic, related_name='content')
+    order_key = models.PositiveIntegerField(verbose_name='порядок', blank=True, null=True)
+
+
+__all__ = ['Course', 'Topic', 'Content']
