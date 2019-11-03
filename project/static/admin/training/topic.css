@@ -1,15 +1,24 @@
 #content-group h3 .inline_label {
     display: none;
 }
-#content-group .field-text label,
-#content-group .field-ace label {
-    display: none
+#content-group .field-ace_input label,
+#content-group .field-ace_content label {
+    margin-left: 12px;
 }
-#content-group .field-ace .ace-container .ace-editor-content {
+#content-group .field-text label {
+    display: none;
+}
+#content-group .field-type label {
+    width: 50px;
+}
+#content-group .field-ace_input .ace-container .ace-editor-content,
+#content-group .field-ace_content .ace-container .ace-editor-content {
     display: none;
 }
 #content-group .field-text,
-#content-group .field-ace {
+#content-group .field-ace_show_input,
+#content-group .field-ace_input,
+#content-group .field-ace_content {
     display: none;
 }
 
@@ -18,7 +27,6 @@
     padding: 15px 10px;
     background-color:#f5f2f0;
     font-size: 12px;
-    min-height: 120px;
     border: 1px solid #CCC;
 }
 
@@ -56,10 +64,6 @@
     margin: 10px 0;
     display: flex;
     justify-content: space-between;
-}
-
-.ace-container.ace-content label {
-    display:none;
 }
 
 .ace-editor {

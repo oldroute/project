@@ -29,35 +29,47 @@ var aceInit = function(){
     })
 }
 
-var showSelectedWidget = function(){
-    $('#content-group .field-type select').each(function(e){
-        if($(this).val() == 'text'){
-            $(this).parents('fieldset').find('.field-ace').hide()
-            $(this).parents('fieldset').find('.field-text').show()
-        } else if($(this).val() == 'ace'){
-            $(this).parents('fieldset').find('.field-ace').show()
-            $(this).parents('fieldset').find('.field-text').hide()
+var toggleWidgetAceInput = function(e){
+   if($(this).prop('checked')){
+        $(this).parents('fieldset').find('.field-ace_input').show()
+   } else {
+        $(this).parents('fieldset').find('.field-ace_input').hide()
+   }
+}
+
+var toggleWidget = function(e){
+    var fieldset = $(this).parents('fieldset')
+    if($(this).val() == 'text'){
+        fieldset.find('.field-ace_show_input').hide()
+        fieldset.find('.field-ace_input').hide()
+        fieldset.find('.field-ace_content').hide()
+        fieldset.find('.field-text').show()
+    } else if($(this).val() == 'ace'){
+        if(fieldset.find('.field-ace_show_input input[type=checkbox]').prop('checked')){
+            fieldset.find('.field-ace_input').show()
+        } else {
+            fieldset.find('.field-ace_input').hide()
         }
-    })
+        fieldset.find('.field-ace_show_input').show()
+        fieldset.find('.field-ace_content').show()
+        fieldset.find('.field-text').hide()
+    }
 }
 
 $(document).ready(function(){
     aceInit()
-    showSelectedWidget()
+    $('#content-group .field-type select').each(toggleWidget)
+
     /* инициализировать ace для нового блока кода */
     $('#content-group .add-row a').on('click', function(e){
         aceInit()
-        showSelectedWidget()
+         $('#content-group .field-type select').each(toggleWidget)
+         $('#content-group .field-ace_show_input input[type=checkbox]').each(toggleWidgetAceInput)
     })
 
+    /* Показать/скрыть блок ввода редактора */
+    $(document).on('change', '#content-group .field-ace_show_input input[type=checkbox]', toggleWidgetAceInput)
+
     /* Переключть тип виджета */
-    $(document).on('change', '#content-group .field-type select', function(e){
-        if($(this).val() == 'text'){
-            $(this).parents('fieldset').find('.field-ace').hide()
-            $(this).parents('fieldset').find('.field-text').show()
-        } else if($(this).val() == 'ace'){
-            $(this).parents('fieldset').find('.field-ace').show()
-            $(this).parents('fieldset').find('.field-text').hide()
-        }
-    })
+    $(document).on('change', '#content-group .field-type select', toggleWidget)
 })

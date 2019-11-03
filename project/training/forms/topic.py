@@ -29,7 +29,8 @@ class ContentAdminForm(forms.ModelForm):
         model = Content
         fields = '__all__'
         widgets = {
-            'ace': AceWidget
+            'ace_input': AceWidget,
+            'ace_content': AceWidget
         }
 
     class Media:
