@@ -11,7 +11,3 @@ def course(request, **kwargs):
     return HttpResponse('OK')
 
 
-class TopicView(View):
-
-    def get(self, request, **kwargs):
-        return HttpResponse('OK')

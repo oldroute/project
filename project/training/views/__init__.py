@@ -1,2 +1,3 @@
 from .taskitem import TaskItemView, SolutionView
-from .course import courses, course, TopicView
+from .topic import TopicView
+from .course import courses, course

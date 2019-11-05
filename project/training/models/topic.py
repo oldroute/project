@@ -2,6 +2,7 @@ from django.db import models
 from tinymce.models import HTMLField
 from django.contrib.auth import get_user_model
 from django.urls import reverse
+from django.template.loader import render_to_string
 from project.training.models import Course
 
 
@@ -23,6 +24,14 @@ class Topic(models.Model):
     order_key = models.PositiveIntegerField(verbose_name='порядок', blank=True, null=True)
     last_modified = models.DateTimeField(verbose_name="дата последнего изменения", auto_now=True)
     url = models.CharField(max_length=1000, blank=True, null=True)
+
+    @property
+    def content(self):
+        raw_html = ''
+        print('--content')
+        for content in self._content.all():
+            raw_html += content.raw_html
+        return raw_html
 
     @property
     def lang(self):
@@ -70,18 +79,36 @@ class Content(models.Model):
         verbose_name_plural = "блоки контента"
         ordering = ('order_key',)
 
+    ACE  = 'ace'
+    TEXT = 'text'
     CHOICES = (
-        ('ace', 'код'),
-        ('text', ' текст'),
+        (ACE, 'код'),
+        (TEXT, 'текст'),
     )
 
-    ace_input = models.TextField(verbose_name='Ввод', blank=True, null=True)
-    ace_content = models.TextField(verbose_name='Редактор', blank=True, null=True)
-    ace_show_input = models.BooleanField(verbose_name='Отображать ввод', default=False)
+    input = models.TextField(verbose_name='Ввод', blank=True, null=True)
+    content = models.TextField(verbose_name='Редактор', blank=True, null=True)
+    show_input = models.BooleanField(verbose_name='Отображать ввод', default=False)
     text = HTMLField(blank=True, null=True)
     type = models.CharField(verbose_name='тип', max_length=255, choices=CHOICES, default='text')
-    topic = models.ForeignKey(Topic, related_name='content')
+    topic = models.ForeignKey(Topic, related_name='_content')
     order_key = models.PositiveIntegerField(verbose_name='порядок', blank=True, null=True)
+
+    @property
+    def lang(self):
+        return self.topic.course.lang
+
+    @property
+    def raw_html(self):
+        context = {'object': self}
+        if self.type == self.ACE:
+            from project.training.forms import ContentForm
+            context['form'] = ContentForm(initial={
+                'content': self.content,
+                'input': self.input,
+                'lang': self.lang.provider
+            }, prefix=self.id)
+        return render_to_string('training/topic/parts/content_%s.html' % self.type, context)
 
 
 __all__ = ['Course', 'Topic', 'Content']

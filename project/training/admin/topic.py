@@ -42,7 +42,7 @@ class ContentInline(SortableInlineAdminMixin, admin.StackedInline):
     form = ContentAdminForm
     model = Content
     extra = 0
-    fields = ('order_key', 'type', 'ace_show_input', 'text', 'ace_input', 'ace_content')
+    fields = ('order_key', 'type', 'show_input', 'text', 'input', 'content')
 
 
 @admin.register(Topic)

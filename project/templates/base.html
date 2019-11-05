@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <title>{% block title %}CAPPA{% endblock %}</title>
     {% block css %}
-        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="{% static 'css/bootstrap-4.0.0.min.css' %}">
         <link rel="stylesheet" href="{% static 'css/style3.css' %}">
 
     {% endblock %}
@@ -101,9 +101,8 @@
 {% block js %}
     <script src="{% static 'js/jquery-3.3.1.js' %}"></script>
     <script src="{% static 'js/ace-1.4.7/ace.js' %}"></script>
-    <!--<script src="{% static 'js/ace/ace_ajax_submit3.js' %}"></script>-->
-    <!--<script src="{% static 'js/ace/ace_init.js' %}"></script>-->
     <script src="{% static 'js/training/taskitem.js' %}"></script>
+    <script src="{% static 'js/training/topic.js' %}"></script>
     <script src="{% static 'js/training/solution.js' %}"></script>
 {% endblock %}
 

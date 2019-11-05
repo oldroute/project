@@ -1,8 +1,8 @@
 #content-group h3 .inline_label {
     display: none;
 }
-#content-group .field-ace_input label,
-#content-group .field-ace_content label {
+#content-group .field-input label,
+#content-group .field-content label {
     margin-left: 12px;
 }
 #content-group .field-text label {
@@ -11,14 +11,14 @@
 #content-group .field-type label {
     width: 50px;
 }
-#content-group .field-ace_input .ace-container .ace-editor-content,
-#content-group .field-ace_content .ace-container .ace-editor-content {
+#content-group .field-input .ace-container .ace-editor-content,
+#content-group .field-content .ace-container .ace-editor-content {
     display: none;
 }
 #content-group .field-text,
-#content-group .field-ace_show_input,
-#content-group .field-ace_input,
-#content-group .field-ace_content {
+#content-group .field-show_input,
+#content-group .field-input,
+#content-group .field-content {
     display: none;
 }
 

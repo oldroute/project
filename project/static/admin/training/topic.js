@@ -31,27 +31,27 @@ var aceInit = function(){
 
 var toggleWidgetAceInput = function(e){
    if($(this).prop('checked')){
-        $(this).parents('fieldset').find('.field-ace_input').show()
+        $(this).parents('fieldset').find('.field-input').show()
    } else {
-        $(this).parents('fieldset').find('.field-ace_input').hide()
+        $(this).parents('fieldset').find('.field-input').hide()
    }
 }
 
 var toggleWidget = function(e){
     var fieldset = $(this).parents('fieldset')
     if($(this).val() == 'text'){
-        fieldset.find('.field-ace_show_input').hide()
-        fieldset.find('.field-ace_input').hide()
-        fieldset.find('.field-ace_content').hide()
+        fieldset.find('.field-show_input').hide()
+        fieldset.find('.field-input').hide()
+        fieldset.find('.field-content').hide()
         fieldset.find('.field-text').show()
     } else if($(this).val() == 'ace'){
-        if(fieldset.find('.field-ace_show_input input[type=checkbox]').prop('checked')){
-            fieldset.find('.field-ace_input').show()
+        if(fieldset.find('.field-show_input input[type=checkbox]').prop('checked')){
+            fieldset.find('.field-input').show()
         } else {
-            fieldset.find('.field-ace_input').hide()
+            fieldset.find('.field-input').hide()
         }
-        fieldset.find('.field-ace_show_input').show()
-        fieldset.find('.field-ace_content').show()
+        fieldset.find('.field-show_input').show()
+        fieldset.find('.field-content').show()
         fieldset.find('.field-text').hide()
     }
 }
@@ -64,11 +64,11 @@ $(document).ready(function(){
     $('#content-group .add-row a').on('click', function(e){
         aceInit()
          $('#content-group .field-type select').each(toggleWidget)
-         $('#content-group .field-ace_show_input input[type=checkbox]').each(toggleWidgetAceInput)
+         $('#content-group .field-show_input input[type=checkbox]').each(toggleWidgetAceInput)
     })
 
     /* Показать/скрыть блок ввода редактора */
-    $(document).on('change', '#content-group .field-ace_show_input input[type=checkbox]', toggleWidgetAceInput)
+    $(document).on('change', '#content-group .field-show_input input[type=checkbox]', toggleWidgetAceInput)
 
     /* Переключть тип виджета */
     $(document).on('change', '#content-group .field-type select', toggleWidget)

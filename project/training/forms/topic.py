@@ -2,6 +2,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 from project.training.models import Topic, Content
 from project.training.widgets import AceWidget
+from .utils import Response
 
 
 class TopicAdminForm(forms.ModelForm):
@@ -29,8 +30,8 @@ class ContentAdminForm(forms.ModelForm):
         model = Content
         fields = '__all__'
         widgets = {
-            'ace_input': AceWidget,
-            'ace_content': AceWidget
+            'input': AceWidget,
+            'content': AceWidget
         }
 
     class Media:
@@ -41,3 +42,39 @@ class ContentAdminForm(forms.ModelForm):
         css = {
             'all': ['admin/training/topic.css']
         }
+
+
+class ContentForm(forms.Form):
+
+    input = forms.CharField(label="Ввод", required=False)
+    content = forms.CharField()
+    output = forms.CharField(
+        label="Вывод", required=False,
+        widget=forms.Textarea(attrs={'readonly': True})
+    )
+    error = forms.CharField(
+        label="Ошибка", required=False,
+        widget=forms.Textarea(attrs={'readonly': True})
+    )
+    operation = forms.CharField(widget=forms.Select(choices='Operations.CHOICES'))
+    lang = forms.CharField(widget=forms.HiddenInput)
+
+    def perform_operation(self, topic):
+        if self.is_valid():
+            return getattr(self.Operations, self.cleaned_data['operation'])(self.cleaned_data, topic)
+        else:
+            return Response(msg='Некорректные данные формы', status='203')
+
+    class Operations:
+
+        CHOICES = (
+            ('debug', 'debug'),
+        )
+
+        @staticmethod
+        def debug(data, topic):
+            result = topic.lang.debug(data['input'], data['content'])
+            if result['error']:
+                return Response(202, 'Ошибка отладки', output=result['output'], error=result['error'])
+            else:
+                return Response(200, 'Готово', output=result['output'])
