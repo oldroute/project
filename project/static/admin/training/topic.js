@@ -1,13 +1,12 @@
 var aceInit = function(){
-    $('.ace-editor').each(function(){
-        var id = '#' + $(this).attr('id'),
-            textarea = $(id + '-content'),
-            editor = ace.edit($(this).attr('id'))
-            lang = JSON.parse($('.ace-config').html()).lang;
+    document.querySelectorAll('.js__editor').forEach(function(elem, index){
+        var textarea = elem.querySelector('.js__editor-content')
+        var editor = ace.edit(elem.querySelector('.js__editor-ace'))
         editor.setOption("showPrintMargin", false)     // убрать верт черту
         editor.setOption("maxLines", "Infinity")       // авто-высота
         editor.setHighlightActiveLine(false);          // убрать строку вделения
-        editor.setReadOnly(textarea.attr('readonly'))  // для чтения
+        editor.setReadOnly(textarea.getAttribute('readonly'))  // для чтения
+        var lang = JSON.parse(document.querySelector('.ace-config').innerHTML).lang
         switch(lang){
             case 'python':
                 editor.getSession().setMode("ace/mode/python"); break
@@ -17,15 +16,13 @@ var aceInit = function(){
                 editor.getSession().setMode("ace/mode/csharp"); break
         }
 
-        // вписать код из textarea в ace-editor
-        var editorContent = textarea.text() ? textarea.text() : ""
-        editor.setValue(editorContent, - 1)
+        // вписать код из textarea в ace editor
+        editor.setValue(textarea.innerHTML, - 1)
 
-        // после записи кода в ace-editor скопировать его в textarea
-        editor.on("change", function(e){
-            textarea.text(editor.getValue());
+        // после записи кода в ace editor скопировать его в textarea
+        editor.addEventListener('change', function(e){
+            textarea.innerHTML = editor.getValue()
         })
-
     })
 }
 
@@ -58,18 +55,18 @@ var toggleWidget = function(e){
 
 $(document).ready(function(){
     aceInit()
-    $('#content-group .field-type select').each(toggleWidget)
+    $('#_content-group .field-type select').each(toggleWidget)
 
     /* инициализировать ace для нового блока кода */
-    $('#content-group .add-row a').on('click', function(e){
+    $('#_content-group .add-row a').on('click', function(e){
         aceInit()
-         $('#content-group .field-type select').each(toggleWidget)
-         $('#content-group .field-show_input input[type=checkbox]').each(toggleWidgetAceInput)
+         $('#_content-group .field-type select').each(toggleWidget)
+         $('#_content-group .field-show_input input[type=checkbox]').each(toggleWidgetAceInput)
     })
 
     /* Показать/скрыть блок ввода редактора */
-    $(document).on('change', '#content-group .field-show_input input[type=checkbox]', toggleWidgetAceInput)
+    $(document).on('change', '#_content-group .field-show_input input[type=checkbox]', toggleWidgetAceInput)
 
     /* Переключть тип виджета */
-    $(document).on('change', '#content-group .field-type select', toggleWidget)
+    $(document).on('change', '#_content-group .field-type select', toggleWidget)
 })

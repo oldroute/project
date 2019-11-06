@@ -1,21 +1,19 @@
 var topicPage = function(e){
 
-    document.querySelectorAll('.editor-form').forEach(function(form, index){
+    document.querySelectorAll('.js__editor-form').forEach(function(form, index){
 
         // скрипт контрольной панели редактора кода
         var formControl = {
             aceInit: function(){
                 // инициализировать ace-editor
-                form.querySelectorAll('.ace-editor').forEach(function(elem, index){
-                    var textarea = form.querySelector('#' + elem.getAttribute('id') + '-content'),
-                        editor = ace.edit(elem.getAttribute('id')),
-                        lang = form.querySelector("input[name=lang]").value
-
+                form.querySelectorAll('.js__editor').forEach(function(elem, index){
+                    var textarea = elem.querySelector('.js__editor-content')
+                    var editor = ace.edit(elem.querySelector('.js__editor-ace'))
                     editor.setOption("showPrintMargin", false)     // убрать верт черту
                     editor.setOption("maxLines", "Infinity")       // авто-высота
                     editor.setHighlightActiveLine(false);          // убрать строку вделения
                     editor.setReadOnly(textarea.getAttribute('readonly'))  // для чтения
-                    switch(lang){
+                    switch(form.querySelector(".js__lang").value){
                         case 'python':
                             editor.getSession().setMode("ace/mode/python"); break
                         case 'cpp':
@@ -25,13 +23,13 @@ var topicPage = function(e){
                     }
 
                     // вписать код из textarea в ace-editor
-                    var editorContent = textarea.innerHTML
-                    editor.setValue(editorContent, - 1)
+                    editor.setValue(textarea.innerHTML, - 1)
 
                     // после записи кода в ace-editor скопировать его в textarea
                     editor.addEventListener('change', function(e){
+                        textarea.innerHTML = editor.getValue()
                         // если поле контента пустое то заблокировать панель редактора
-                        if(textarea.getAttribute('name') == 'content'){
+                        if(elem.classList.contains('js__content')){
                             if(editor.getValue() == ''){
                                 formControl.disableBtns()
                             } else {
@@ -41,37 +39,44 @@ var topicPage = function(e){
                     })
 
                     // если в редкаторе пусто то заблокировать панель редактора
-                    if(textarea.getAttribute('name') == 'content' && editorContent == ''){
+                    if(elem.classList.contains('js__content') && textarea.innerHTML == ''){
                         formControl.disableBtns()
                     }
                 })
             },
-            hideMsg: function(){ form.querySelectorAll('.msg').style('display', 'none') },
-            disableBtns: function(){ form.querySelector('.control-btn').classList.add('disabled') },
-            enableBtns: function(){ form.querySelector('.control-btn').classList.remove('disabled') },
+            hideMsg: function(){ form.querySelectorAll('.js__msg').forEach(function(elem){elem.style.display = 'none'})},
+            disableBtns: function(){ form.querySelector('.js__editor-btn').classList.add('disabled') },
+            enableBtns: function(){ form.querySelector('.js__editor-btn').classList.remove('disabled') },
             showLoader: function(msg){
                 formControl.hideMsg();
-                $('#msg__loader').show();
-                $('#msg__loader-text').html(msg).show();
+                form.querySelector('.js__msg-loader').style.display = 'block'
+                form.querySelector('.js__msg-loader-text').innerHTML = msg
+                form.querySelector('.js__msg-loader-text').style.display = 'block'
             },
             showMsg(response){
                 formControl.hideMsg()
                 switch(response.status){
                     case 200:
-                        $('#msg__success').html(response.msg).show(); break
+                        form.querySelector('.js__msg-success').innerHTML = response.msg
+                        form.querySelector('.js__msg-success').style.display = 'block'
+                        break
                     case 201:
-                        $('#msg__warning').html(response.msg).show(); break
+                        form.querySelector('.js__msg-warning').innerHTML = response.msg
+                        form.querySelector('.js__msg-warning').style.display = 'block'
+                        break
                     case 202:
                     case 203:
                     case 204:
-                        $('#msg__error').html(response.msg).show(); break
+                        form.querySelector('.js__msg-error').innerHTML = response.msg
+                        form.querySelector('.js__msg-error').style.display = 'block'
+                        break
                 }
                 setTimeout(function(){ formControl.hideMsg() }, 10000);
             },
             serializeForm(operation){
                 // вернуть данные формы + submitType
                 var data = {},
-                    formArray = form.serializeArray();
+                    formArray = $(form).serializeArray();
 
                 for (i=0; i<formArray.length; i++){
                     var value = formArray[i].value;
@@ -84,22 +89,24 @@ var topicPage = function(e){
             },
             debug : function(e){
                 // запрос на отладку кода из редактора
-                formControl.showLoader('Отладка');
-                $.post(form.attr('action'), formControl.serializeForm(operation='debug'), function(response){
+                formControl.showLoader('Отладка')
+                formControl.disableBtns()
+                $.post(form.getAttribute('action'), formControl.serializeForm(operation='debug'), function(response){
                     formControl.showMsg(response);
                     if(response.output){
-                        $('#id-output-content').html(response.output)
-                        $('.ace-output').show()
+                        form.querySelector('.js__output .js__editor-content').innerHTML = response.output
+                        form.querySelector('.js__output').style.display = 'block'
                     } else {
-                        $('.ace-output').hide()
+                        form.querySelector('.js__output').style.display = 'none'
                     }
                     if(response.error){
-                        $('#id-error-content').html(response.error)
-                        $('.ace-error').show()
+                        form.querySelector('.js__error .js__editor-content').innerHTML = response.error
+                        form.querySelector('.js__error').style.display = 'block'
                     } else {
-                        $('.ace-error').hide()
+                        form.querySelector('.js__error').style.display = 'none'
                     }
                     formControl.aceInit();
+                    formControl.enableBtns()
                 });
                 return false;
             }
@@ -108,9 +115,9 @@ var topicPage = function(e){
         formControl.aceInit()
 
         // Обработчики кнопок
-        /*
-        document.querySelector('#editor__debug-btn').addEventListener('click', formControl.debug)
-        */
+
+        form.querySelector('.js__editor-btn-debug').addEventListener('click', formControl.debug)
+
     })
 }
 

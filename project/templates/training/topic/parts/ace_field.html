@@ -1,10 +1,7 @@
-<div class="ace-container ace-{{ field.name }}">
-    <label for="id-{{ field.html_name }}">{{ field.label }}</label>
-    <div id="id-{{ field.html_name }}" class="ace-editor"></div>
-    <textarea
-        id="id-{{ field.html_name }}-content"
-        class="ace-editor-content"
-        name="{{ field.name }}"
+<div class="js__editor js__{{ field.name }}">
+    <label>{{ field.label }}</label>
+    <div class="js__editor-ace"></div>
+    <textarea class="js__editor-content" name="{{ field.name }}"
         {% for key, val in field.field.widget.attrs.items %} {{ key }}="{{ val }}"{% endfor %}
     >{{ field.value|default:'' }}</textarea>
 </div>

@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 from django.http import JsonResponse
-from django.shortcuts import HttpResponse, render, Http404
+from django.shortcuts import render, Http404
 from django.core.exceptions import PermissionDenied
 from django.views.generic import View
 from project.training.models import TaskItem, Solution

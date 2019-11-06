@@ -1,30 +1,30 @@
 {% load topic_tags %}
 
-<form method="POST" id="editor__form" class="editor-form mt-2">
+<form method="POST" class="editor-form js__editor-form">
 
     {% csrf_token %}
 
-    <input id="{{ form.lang.html_name }}" type="hidden" name="lang" value="{{ form.lang.value }}">
+    <input class="js__{{ form.lang.name }}" type="hidden" name="lang" value="{{ form.lang.value }}">
 
-    {% if object.show_input %}
+    {% if content.show_input %}
        {% show_ace_field form.input %}
     {% endif %}
 
     {% show_ace_field form.content %}
 
-    <div class="ace-control-bar">
-        <div class="control-bar-col bar-col-1"></div>
-        <div class="control-bar-col bar-col-2">
-            <div class="control-btn full-content run" title="Отладка"></div>
+    <div class="control__bar">
+        <div class="control__bar-col col__1"></div>
+        <div class="control__bar-col col__2">
+            <div class="control-btn js__editor-btn js__editor-btn-debug run" title="Отладка"></div>
         </div>
-        <div class="control-bar-col bar-col-3 msg-box">
-            <span class="msg msg__loader-text"></span>
-            <span class="msg msg__loader">
-                <span class="msg__loader-container"><span>{</span><span>}</span></span>
+        <div class="control__bar-col col__3">
+            <span class="js__msg js__msg-loader-text"></span>
+            <span class="js__msg js__msg-loader">
+                <span class="pulse"><span>{</span><span>}</span></span>
             </span>
-            <span class="msg msg__success"></span>
-            <span class="msg msg__warning"></span>
-            <span class="msg msg__error"></span>
+            <span class="js__msg js__msg-success"></span>
+            <span class="js__msg js__msg-warning"></span>
+            <span class="js__msg js__msg-error"></span>
         </div>
     </div>
 

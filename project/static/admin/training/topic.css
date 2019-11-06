@@ -1,72 +1,41 @@
-#content-group h3 .inline_label {
+#_content-group h3 .inline_label {
     display: none;
 }
-#content-group .field-input label,
-#content-group .field-content label {
+#_content-group .field-input label,
+#_content-group .field-content label {
     margin-left: 12px;
 }
-#content-group .field-text label {
+#_content-group .field-text label {
     display: none;
 }
-#content-group .field-type label {
+#_content-group .field-type label {
     width: 50px;
 }
-#content-group .field-input .ace-container .ace-editor-content,
-#content-group .field-content .ace-container .ace-editor-content {
+#_content-group .field-input .js__editor .js__editor-content,
+#_content-group .field-content .js__editor .js__editor-content {
     display: none;
 }
-#content-group .field-text,
-#content-group .field-show_input,
-#content-group .field-input,
-#content-group .field-content {
+#_content-group .field-text,
+#_content-group .field-show_input,
+#_content-group .field-input,
+#_content-group .field-content {
     display: none;
 }
 
 /* ace */
-.ace-container {
+.js__editor {
     padding: 15px 10px;
     background-color:#f5f2f0;
     font-size: 12px;
     border: 1px solid #CCC;
 }
 
-.ace-container.ace-content {
-    min-height: 70px;
-}
-
-.ace-container.ace-error,
-.ace-container.ace-output {
+.js__editor.ace-error,
+.js__editor.ace-output {
     display: none;
 }
 
-.ace-container.ace-tests table {
-    width: 95%;
-}
-
-.ace-container.ace-tests .tests-title,
-.ace-container.ace-tests table th {
-    font-size: 12px;
-    padding-left: 10px;
-}
-
-.ace-container.ace-tests table tbody td{
-    padding:0;
-    text-align: center;
-    vertical-align: middle;
-}
-
-.ace-container.ace-tests {
-    position: relative;
-    padding: 15px 0;
-}
-
-.tests-title {
-    margin: 10px 0;
-    display: flex;
-    justify-content: space-between;
-}
-
-.ace-editor {
+.js__editor-ace {
     position: relative;
     width: 100%;
     height: auto;
@@ -75,14 +44,14 @@
     background-color:#f5f2f0;
 }
 
-.editor-form.static .ace-editor {
+.editor-form.static .js__editor {
     background-color: #eaeaea;
 }
 
-.editor-form.maximized .ace-editor {
+.editor-form.maximized .js__editor {
     border: solid 1px #eeeeee;
 }
 
-.ace-editor-content {
+.js__editor-content {
     display:none;
 }

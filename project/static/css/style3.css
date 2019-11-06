@@ -82,39 +82,39 @@ div.row .btn {
 }
 
 /* ace editor */
-.ace-container {
+.js__editor {
     padding: 15px 10px;
     background-color:#f5f2f0;
     font-size: 12px;
-    margin-top: 10px
+    margin-bottom: 10px
 }
 
-.ace-container.ace-content {
+.js__editor.js__content {
     min-height: 70px;
 }
 
-.ace-container.ace-error,
-.ace-container.ace-output {
+.js__editor.js__error,
+.js__editor.js__output {
     display: none;
 }
 
-.ace-container.ace-tests table {
+.js__editor.ace-tests table {
     width: 95%;
 }
 
-.ace-container.ace-tests .tests-title,
-.ace-container.ace-tests table th {
+.js__editor.ace-tests .tests-title,
+.js__editor.ace-tests table th {
     font-size: 12px;
     padding-left: 10px;
 }
 
-.ace-container.ace-tests table tbody td{
+.js__editor.ace-tests table tbody td{
     padding:0;
     text-align: center;
     vertical-align: middle;
 }
 
-.ace-container.ace-tests {
+.js__editor.ace-tests {
     position: relative;
     padding: 15px 0;
 }
@@ -124,12 +124,7 @@ div.row .btn {
     display: flex;
     justify-content: space-between;
 }
-
-.ace-container.ace-content label {
-    display:none;
-}
-
-.ace-editor {
+.js__editor-ace {
     position: relative;
     width: 100%;
     height: auto;
@@ -138,56 +133,45 @@ div.row .btn {
     background-color:#f5f2f0;
 }
 
-.editor-form.static .ace-editor {
-    background-color: #eaeaea;
-}
-
-.editor-form.maximized .ace-editor {
-    border: solid 1px #eeeeee;
-}
-
-.ace-editor-content {
+.js__editor-content {
     display:none;
 }
 
-/* ace control bar */
+/****** editor control bar */
 
-.ace-control-bar {
-    margin: 10px 0 0;
+.control__bar {
+    margin-bottom: 10px;
     display: flex;
     justify-content: space-between;
+    background-color: #f5f2f0;
 }
 
-.control-bar-col {
+.control__bar-col {
     display: flex;
     background-color: #f5f2f0;
 }
 
-.control-bar-col.bar-col-1 {
+.control__bar-col.col__1 {
     width: calc(40% - 10px);
     min-width: calc(40% - 10px);
     max-width: calc(40% - 10px);
-    margin-right: 10px;
     justify-content: flex-start;
 }
 
-.control-bar-col.bar-col-2 {
-    width: 20%;
-    min-width: 20%;
-    max-width: 20%;
+.control__bar-col.col__2 {
     justify-content: center;
     background-color: #fff;
+    padding: 0 10px;
 }
 
-.control-bar-col.bar-col-3 {
+.control__bar-col.col__3 {
     width: calc(40% - 10px);
     min-width: calc(40% - 10px);
     max-width: calc(40% - 10px);
-    margin-left: 10px;
     justify-content: flex-end;
 }
-
-.control-btn {
+/* editor btns */
+.js__editor-btn {
     border-radius: 2px;
     cursor: pointer;
     height: 30px;
@@ -195,64 +179,61 @@ div.row .btn {
     transition: all 400ms ease;
 }
 
-.control-btn.full-content {
-    width: 100% !important;
-}
-
-.control-btn + .control-btn {
+.js__editor-btn + .js__editor-btn {
     margin-left: 10px;
 }
 
-
-.control-btn.run {
+.js__editor-btn.run {
     background: #afafaf url("/static/img/play.svg") no-repeat center;
     width: 100px;
 }
 
-.control-btn.check-tests {
+.js__editor-btn.check-tests {
     background: #afafaf url("/static/img/check.svg") no-repeat center;
     width: 100px;
 }
 
-.control-btn.run:hover,
-.control-btn.check-tests:hover {
+.js__editor-btn.run:hover,
+.js__editor-btn.check-tests:hover {
     background-color: #5fcf80
 }
 
-.control-btn.save-version {
+.js__editor-btn.save-version {
     background: #afafaf url("/static/img/save.svg") no-repeat center;
 }
 
-.control-btn.save {
+.js__editor-btn.save {
     background: #afafaf url("/static/img/fast-save.svg") no-repeat center;
 }
 
-.control-btn.versions {
+.js__editor-btn.versions {
     background: #afafaf url("/static/img/doc.svg") no-repeat center;
     margin-left: 10px;
 }
 
-.control-btn.save-version:hover,
-.control-btn.save:hover,
-.control-btn.versions:hover {
+.js__editor-btn.save-version:hover,
+.js__editor-btn.save:hover,
+.js__editor-btn.versions:hover {
     background-color: #337ab7
 }
 
-.control-btn.disabled,
-.control-btn.not-versions,
-.control-btn.disabled:hover {
+.js__editor-btn.disabled,
+.js__editor-btn.not-versions,
+.js__editor-btn.disabled:hover {
     opacity: 0.4;
     background-color: #afafaf;
     pointer-events: none;
 }
 
-.editor-form {
+.js__editor-form {
     position: relative;
     width:100%;
     height:auto;
+    margin-bottom: 15px;
 }
-/* ace messages */
-.msg {
+
+/********* editor messages */
+.js__msg {
     display: none;
     color: #337ab7;
     align-items: center;
@@ -266,7 +247,7 @@ div.row .btn {
   }
 }
 
-.msg__loader {
+.js__msg-loader {
   color: #337ab7;
   font-family: Consolas, Menlo, Monaco, monospace;
   font-weight: bold;
@@ -276,25 +257,25 @@ div.row .btn {
   width: 30px;
   height: 30px;
 }
-.msg__loader-container {
+.js__msg-loader .pulse {
     display: flex;
     align-items: center;
 }
 
-.msg__loader-container span {
+.js__msg-loader .pulse span {
     display: inline-block;
     animation: pulse 0.4s alternate infinite ease-in-out;
 }
 
-.msg__loader-container span:nth-child(odd) {
+.js__msg-loader .pulse span:nth-child(odd) {
     animation-delay: 0.4s;
 }
 
-.msg__loader-text {
+.js__msg-loader-text {
     line-height: 1.9;
 }
 
-.msg__success {
+.js__msg-success {
     background: url('/static/img/success.svg') no-repeat right center;
     padding-right: 40px;
     background-size: 40px 25px;
@@ -302,7 +283,7 @@ div.row .btn {
     line-height: 1.9;
 }
 
-.msg__warning {
+.js__msg-warning {
     background: url('/static/img/warning.svg') no-repeat right center;
     padding-right: 40px;
     background-size: 40px 25px;
@@ -310,7 +291,7 @@ div.row .btn {
     line-height: 1.9;
 }
 
-.msg__error {
+.js__msg-error {
     background: url('/static/img/error.svg') no-repeat right center;
     padding-right: 40px;
     background-size: 40px 25px;

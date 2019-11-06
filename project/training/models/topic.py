@@ -2,7 +2,6 @@ from django.db import models
 from tinymce.models import HTMLField
 from django.contrib.auth import get_user_model
 from django.urls import reverse
-from django.template.loader import render_to_string
 from project.training.models import Course
 
 
@@ -24,14 +23,6 @@ class Topic(models.Model):
     order_key = models.PositiveIntegerField(verbose_name='порядок', blank=True, null=True)
     last_modified = models.DateTimeField(verbose_name="дата последнего изменения", auto_now=True)
     url = models.CharField(max_length=1000, blank=True, null=True)
-
-    @property
-    def content(self):
-        raw_html = ''
-        print('--content')
-        for content in self._content.all():
-            raw_html += content.raw_html
-        return raw_html
 
     @property
     def lang(self):
@@ -97,18 +88,6 @@ class Content(models.Model):
     @property
     def lang(self):
         return self.topic.course.lang
-
-    @property
-    def raw_html(self):
-        context = {'object': self}
-        if self.type == self.ACE:
-            from project.training.forms import ContentForm
-            context['form'] = ContentForm(initial={
-                'content': self.content,
-                'input': self.input,
-                'lang': self.lang.provider
-            }, prefix=self.id)
-        return render_to_string('training/topic/parts/content_%s.html' % self.type, context)
 
 
 __all__ = ['Course', 'Topic', 'Content']
