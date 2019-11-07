@@ -179,7 +179,8 @@ var taskItemPage = function(e){
     }, 180000)
 
     // Обработчики кнопок
-    document.querySelector('#editor__debug-btn').addEventListener('click', formControl.debug)
+    var debugBtn = document.querySelector('#editor__debug-btn')
+    debugBtn && debugBtn.addEventListener('click', formControl.debug)
 
     var testsBtn = document.querySelector('#editor__tests-btn')
     testsBtn && testsBtn.addEventListener('click', formControl.tests)

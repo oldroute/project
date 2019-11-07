@@ -80,6 +80,8 @@ class Content(models.Model):
     input = models.TextField(verbose_name='Ввод', blank=True, null=True)
     content = models.TextField(verbose_name='Редактор', blank=True, null=True)
     show_input = models.BooleanField(verbose_name='Отображать ввод', default=False)
+    show_debug = models.BooleanField(verbose_name='Отображать отладчик', default=True)
+    readonly = models.BooleanField(verbose_name='Только для чтения', default=False)
     text = HTMLField(blank=True, null=True)
     type = models.CharField(verbose_name='тип', max_length=255, choices=CHOICES, default='text')
     topic = models.ForeignKey(Topic, related_name='_content')

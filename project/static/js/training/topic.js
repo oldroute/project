@@ -12,7 +12,7 @@ var topicPage = function(e){
                     editor.setOption("showPrintMargin", false)     // убрать верт черту
                     editor.setOption("maxLines", "Infinity")       // авто-высота
                     editor.setHighlightActiveLine(false);          // убрать строку вделения
-                    editor.setReadOnly(textarea.getAttribute('readonly'))  // для чтения
+                    editor.setReadOnly(Boolean(form.getAttribute('readonly') == 'True'))  // для чтения
                     switch(form.querySelector(".js__lang").value){
                         case 'python':
                             editor.getSession().setMode("ace/mode/python"); break
@@ -45,8 +45,14 @@ var topicPage = function(e){
                 })
             },
             hideMsg: function(){ form.querySelectorAll('.js__msg').forEach(function(elem){elem.style.display = 'none'})},
-            disableBtns: function(){ form.querySelector('.js__editor-btn').classList.add('disabled') },
-            enableBtns: function(){ form.querySelector('.js__editor-btn').classList.remove('disabled') },
+            disableBtns: function(){
+               debugBtn = form.querySelector('.js__editor-btn')
+               debugBtn && debugBtn.classList.add('disabled')
+            },
+            enableBtns: function(){
+               debugBtn = form.querySelector('.js__editor-btn')
+               debugBtn && debugBtn.classList.remove('disabled')
+            },
             showLoader: function(msg){
                 formControl.hideMsg();
                 form.querySelector('.js__msg-loader').style.display = 'block'
@@ -115,8 +121,8 @@ var topicPage = function(e){
         formControl.aceInit()
 
         // Обработчики кнопок
-
-        form.querySelector('.js__editor-btn-debug').addEventListener('click', formControl.debug)
+        var debugBtn = form.querySelector('.js__editor-btn-debug')
+        debugBtn && debugBtn.addEventListener('click', formControl.debug)
 
     })
 }
