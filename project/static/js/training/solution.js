@@ -1,13 +1,12 @@
 var solutionPage = function(e){
  // инициализировать ace-editor
-    $('.ace-editor').each(function(){
-        var editor = ace.edit($(this).attr('id')),
-            lang = $(this).attr('data-lang')
+    document.querySelectorAll('.js__editor').forEach(function(elem, index){
+        var editor = ace.edit(elem.querySelector('.js__editor-ace'))
         editor.setOption("showPrintMargin", false)     // убрать верт черту
         editor.setOption("maxLines", "Infinity")       // авто-высота
         editor.setHighlightActiveLine(false);          // убрать строку вделения
         editor.setReadOnly(true)                       // для чтения
-        switch(lang){
+        switch(elem.getAttribute('data-lang')){
             case 'python':
                 editor.getSession().setMode("ace/mode/python"); break
             case 'cpp':

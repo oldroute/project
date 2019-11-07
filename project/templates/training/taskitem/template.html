@@ -13,45 +13,45 @@
             </h1>
             <h3>Условие</h3><br/>
                 {{ object.task.content|safe }}
-            <form method="POST" id="editor__form" class="editor-form mt-2">
+            <form method="POST" class="editor-form js__editor-form">
 
                 {% csrf_token %}
 
-                {{ form.lang }}
+                <input class="js__{{ form.lang.name }}" type="hidden" name="lang" value="{{ form.lang.value }}">
 
                 {% show_ace_field form.input %}
 
                 {% show_ace_field form.content %}
 
-                <div class="ace-control-bar">
-                    <div class="control-bar-col bar-col-1">
+                <div class="control__bar">
+                    <div class="control__bar-col col__1">
                         {% if request.user.is_active %}
-                            <div class="control-btn versions {% if not solution %} not-versions{% endif %}"
+                            <div class="js__editor-btn js__editor-btn-versions {% if not solution %} not-versions{% endif %}"
                                  title="История решения"
                                  onclick="window.open('{{ object.get_absolute_url }}solution/', '_blank')"
                             ></div>
-                            <div id="editor__create-version-btn" class="control-btn save-version" title="Сохранить версию решения"></div>
-                            <div id="editor__save-last-changes-btn" class="control-btn save" title="Быстрое сохранение"></div>
+                            <div class="js__editor-btn js__editor-btn-version" title="Сохранить версию решения"></div>
+                            <div class="js__editor-btn js__editor-btn-save" title="Быстрое сохранение"></div>
                         {% endif %}
                     </div>
 
-                    <div class="control-bar-col bar-col-2">
+                    <div class="control__bar-col col__2">
                         {% if object.task.tests %}
-                            <div id="editor__tests-btn" class="control-btn check-tests" title="Протестировать решение"></div>
-                            <div id="editor__debug-btn" class="control-btn run" title="Отладка"></div>
+                            <div class="js__editor-btn js__editor-btn-tests" title="Протестировать решение"></div>
+                            <div class="js__editor-btn js__editor-btn-debug" title="Отладка"></div>
                         {% else %}
-                            <div id="editor__debug-btn" class="control-btn full-content run" title="Отладка"></div>
+                            <div class="js__editor-btn js__editor-btn-debug" title="Отладка"></div>
                         {% endif %}
                     </div>
 
-                    <div class="control-bar-col bar-col-3 msg-box">
-                        <span id="msg__loader-text" class="msg msg__loader-text"></span>
-                        <span id="msg__loader" class="msg msg__loader">
-                            <span class="msg__loader-container"><span>{</span><span>}</span></span>
+                    <div class="control__bar-col col__3">
+                        <span class="js__msg js__msg-loader-text"></span>
+                        <span class="js__msg js__msg-loader">
+                            <span class="pulse"><span>{</span><span>}</span></span>
                         </span>
-                        <span id="msg__success" class="msg msg__success"></span>
-                        <span id="msg__warning" class="msg msg__warning"></span>
-                        <span id="msg__error"   class="msg msg__error"></span>
+                        <span class="js__msg js__msg-success"></span>
+                        <span class="js__msg js__msg-warning"></span>
+                        <span class="js__msg js__msg-error"></span>
                     </div>
                 </div>
 
@@ -67,22 +67,22 @@
             </div>
             <div class="white fp-content">
                 <div class="form__tests-container">
-                    <table class="form__tests-table" id="form__tests-table">
+                    <table class="js__form__tests-table" id="form__tests-table">
                         <thead>
                         <tr>
                             <th class="form__test-counter">№</th>
                             <th class="form__test-input">Ввод</th>
                             <th class="form__test-output">Правильный ответ</th>
-                            <th class="form__test-result"></th>
+                            <th class="js__form__test-result"></th>
                         </tr>
                         </thead>
                         <tbody>
                             {% for test in object.task.tests %}
-                            <tr id="form__test-{{ forloop.counter0 }}">
+                            <tr class="js__form__test-{{ forloop.counter0 }}">
                                 <td class="form__test-counter"><div>{{ forloop.counter }}</div></td>
                                 <td class="form__test-input"><pre>{{ test.input }}</pre></td>
                                 <td class="form__test-output"><pre>{{ test.output }}</pre></td>
-                                <td class="form__test-result"><pre></pre></td>
+                                <td class="js__form__test-result"><pre></pre></td>
                             </tr>
                             {% endfor %}
                         </tbody>

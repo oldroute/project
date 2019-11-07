@@ -44,14 +44,20 @@ var topicPage = function(e){
                     }
                 })
             },
-            hideMsg: function(){ form.querySelectorAll('.js__msg').forEach(function(elem){elem.style.display = 'none'})},
+            hideMsg: function(){
+                form.querySelectorAll('.js__msg').forEach(function(msg){
+                    msg.style.display = 'none'
+                })
+            },
             disableBtns: function(){
-               debugBtn = form.querySelector('.js__editor-btn')
-               debugBtn && debugBtn.classList.add('disabled')
+               form.querySelectorAll('.js__editor-btn').forEach(function(btn){
+               btn.classList.add('disabled')
+               })
             },
             enableBtns: function(){
-               debugBtn = form.querySelector('.js__editor-btn')
-               debugBtn && debugBtn.classList.remove('disabled')
+               form.querySelectorAll('.js__editor-btn').forEach(function(btn){
+               btn.classList.remove('disabled')
+               })
             },
             showLoader: function(msg){
                 formControl.hideMsg();
@@ -113,8 +119,8 @@ var topicPage = function(e){
                     }
                     formControl.aceInit();
                     formControl.enableBtns()
-                });
-                return false;
+                })
+                return false
             }
         }
 

@@ -29,7 +29,9 @@
                     <td>{{ object.progress }} % (Пройдено тестов: {{ object.version_best.tests.num_success }} из {{ object.version_best.tests.num }})</td>
                 </tr>
             </table>
-            <div id="version__content-0" class="ace-editor" data-lang="{{ object.taskitem.lang.provider }}">{{ object.version_best.content }}</div>
+            <div class="js__editor" data-lang="{{ object.taskitem.lang.provider }}">
+                <div class="js__editor-ace">{{ object.version_best.content }}</div>
+            </div>
         </div>
 
         {% if object.version_list %}
@@ -49,7 +51,9 @@
                         </tr>
                     </table>
 
-                    <div id="version__content-{{ forloop.counter }}" class="ace-editor" data-lang="{{ object.taskitem.lang.provider }}">{{ version.content }}</div>
+                    <div class="js__editor" data-lang="{{ object.taskitem.lang.provider }}">
+                        <div class="js__editor-ace">{{ version.content }}</div>
+                    </div>
 
                 </div>
             {% endfor %}

@@ -183,37 +183,37 @@ div.row .btn {
     margin-left: 10px;
 }
 
-.js__editor-btn.run {
+.js__editor-btn-debug {
     background: #afafaf url("/static/img/play.svg") no-repeat center;
     width: 100px;
 }
 
-.js__editor-btn.check-tests {
+.js__editor-btn-tests {
     background: #afafaf url("/static/img/check.svg") no-repeat center;
     width: 100px;
 }
 
-.js__editor-btn.run:hover,
-.js__editor-btn.check-tests:hover {
+.js__editor-btn-debug:hover,
+.js__editor-btn-tests:hover {
     background-color: #5fcf80
 }
 
-.js__editor-btn.save-version {
+.js__editor-btn-version {
     background: #afafaf url("/static/img/save.svg") no-repeat center;
 }
 
-.js__editor-btn.save {
+.js__editor-btn-save {
     background: #afafaf url("/static/img/fast-save.svg") no-repeat center;
 }
 
-.js__editor-btn.versions {
+.js__editor-btn-versions {
     background: #afafaf url("/static/img/doc.svg") no-repeat center;
     margin-left: 10px;
 }
 
-.js__editor-btn.save-version:hover,
-.js__editor-btn.save:hover,
-.js__editor-btn.versions:hover {
+.js__editor-btn-version:hover,
+.js__editor-btn-save:hover,
+.js__editor-btn-versions:hover {
     background-color: #337ab7
 }
 
@@ -1341,35 +1341,35 @@ li.error {
     display: block;
 }
 
-.form__tests-table {
+.js__form__tests-table {
     width: 100%;
     max-width: 100%;
     background-color: transparent;
     border-collapse: collapse;
 }
 
-.form__tests-table thead tr th {
+.js__form__tests-table thead tr th {
     border-top: none;
     border-bottom: 1px solid #dee2e6;
     white-space: nowrap;
 }
 
-.form__tests-table tbody tr td {
+.js__form__tests-table tbody tr td {
     padding: 10px;
     vertical-align: middle;
     border-bottom: 1px solid #dee2e6;
 }
 
-.form__tests-table tbody tr.success {
+.js__form__tests-table tbody tr.success {
     background-color: #96ff8e;
 }
 
-.form__tests-table tbody tr.unluck {
+.js__form__tests-table tbody tr.unluck {
     background-color: #ffae95;
 }
 
-.form__tests-table tbody tr.success td,
-.form__tests-table tbody tr.unluck td {
+.js__form__tests-table tbody tr.success td,
+.js__form__tests-table tbody tr.unluck td {
     border-bottom: 5px solid #fff;
 }
 

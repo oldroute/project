@@ -1,21 +1,19 @@
 var taskItemPage = function(e){
 
     var lastChanges = ''
-    var form = $('#editor__form')
+    var form = document.querySelector('.js__editor-form')
     // скрипт контрольной панели редактора кода
     var formControl = {
         aceInit: function(){
             // инициализировать ace-editor
-            $('.ace-editor').each(function(){
-                var id = '#' + $(this).attr('id'),
-                    textarea = $(id + '-content'),
-                    editor = ace.edit($(this).attr('id')),
-                    lang = form.find("#id_lang").val()
+            form.querySelectorAll('.js__editor').forEach(function(elem, index){
+                var textarea = elem.querySelector('.js__editor-content')
+                var editor = ace.edit(elem.querySelector('.js__editor-ace'))
                 editor.setOption("showPrintMargin", false)     // убрать верт черту
                 editor.setOption("maxLines", "Infinity")       // авто-высота
                 editor.setHighlightActiveLine(false);          // убрать строку вделения
-                editor.setReadOnly(textarea.attr('readonly'))  // для чтения
-                switch(lang){
+                editor.setReadOnly(textarea.getAttribute('readonly'))  // для чтения
+                switch(form.querySelector(".js__lang").value){
                     case 'python':
                         editor.getSession().setMode("ace/mode/python"); break
                     case 'cpp':
@@ -25,15 +23,14 @@ var taskItemPage = function(e){
                 }
 
                 // вписать код из textarea в ace-editor
-                var editorContent = textarea.text() ? textarea.text() : ""
-                editor.setValue(editorContent, - 1)
+                editor.setValue(textarea.innerHTML, - 1)
 
                 // после записи кода в ace-editor скопировать его в textarea
-                editor.on("change", function(e){
-                    textarea.text(editor.getValue());
+                editor.addEventListener('change', function(e){
+                    textarea.innerHTML = editor.getValue()
                     // если поле контента пустое то заблокировать панель редактора
-                    if(id == '#id-content'){
-                        if(textarea.val().trim().length == 0){
+                    if(elem.classList.contains('js__content')){
+                        if(editor.getValue() == ''){
                             formControl.disableBtns()
                         } else {
                             formControl.enableBtns()
@@ -42,15 +39,30 @@ var taskItemPage = function(e){
                 })
 
                 // если в редкаторе пусто то заблокировать панель редактора
-                if(id == '#id-content' && editorContent == ''){
+                if(elem.classList.contains('js__content') && textarea.innerHTML == ''){
                     formControl.disableBtns()
                 }
             })
         },
-        hideMsg: function(){ $('.msg').hide() },
-        disableBtns: function(){ form.find('.control-btn').addClass('disabled') },
-        enableBtns: function(){ form.find('.control-btn').removeClass('disabled') },
-        enableVersionsBtn: function(){ form.find('.control-btn.versions').removeClass('not-versions')},
+        hideMsg: function(){
+            form.querySelectorAll('.js__msg').forEach(function(msg){
+                msg.style.display = 'none'
+            })
+        },
+        disableBtns: function(){
+           form.querySelectorAll('.js__editor-btn').forEach(function(btn){
+               btn.classList.add('disabled')
+           })
+        },
+        enableBtns: function(){
+           form.querySelectorAll('.js__editor-btn').forEach(function(btn){
+           btn.classList.remove('disabled')
+           })
+        },
+        enableVersionsBtn: function(){
+            var versionsBtn = form.querySelector('.js__editor-btn-versions')
+            versionsBtn && versionsBtn.classList.remove('not-versions')
+        },
         showLoader: function(msg){
             formControl.hideMsg();
             $('#msg__loader').show();
@@ -60,20 +72,26 @@ var taskItemPage = function(e){
             formControl.hideMsg()
             switch(response.status){
                 case 200:
-                    $('#msg__success').html(response.msg).show(); break
+                    form.querySelector('.js__msg-success').innerHTML = response.msg
+                    form.querySelector('.js__msg-success').style.display = 'block'
+                    break
                 case 201:
-                    $('#msg__warning').html(response.msg).show(); break
+                    form.querySelector('.js__msg-warning').innerHTML = response.msg
+                    form.querySelector('.js__msg-warning').style.display = 'block'
+                    break
                 case 202:
                 case 203:
                 case 204:
-                    $('#msg__error').html(response.msg).show(); break
+                    form.querySelector('.js__msg-error').innerHTML = response.msg
+                    form.querySelector('.js__msg-error').style.display = 'block'
+                    break
             }
             setTimeout(function(){ formControl.hideMsg() }, 10000);
         },
         serializeForm(operation){
             // вернуть данные формы + submitType
             var data = {},
-                formArray = form.serializeArray();
+                formArray = $(form).serializeArray();
 
             for (i=0; i<formArray.length; i++){
                 var value = formArray[i].value;
@@ -86,41 +104,46 @@ var taskItemPage = function(e){
         },
         debug : function(e){
             // запрос на отладку кода из редактора
-            formControl.showLoader('Отладка');
-            $.post(form.attr('action'), formControl.serializeForm(operation='debug'), function(response){
+            formControl.showLoader('Отладка')
+            formControl.disableBtns()
+            $.post(form.getAttribute('action'), formControl.serializeForm(operation='debug'), function(response){
                 formControl.showMsg(response);
                 if(response.output){
-                    $('#id-output-content').html(response.output)
-                    $('.ace-output').show()
+                    form.querySelector('.js__output .js__editor-content').innerHTML = response.output
+                    form.querySelector('.js__output').style.display = 'block'
                 } else {
-                    $('.ace-output').hide()
+                    form.querySelector('.js__output').style.display = 'none'
                 }
                 if(response.error){
-                    $('#id-error-content').html(response.error)
-                    $('.ace-error').show()
+                    form.querySelector('.js__error .js__editor-content').innerHTML = response.error
+                    form.querySelector('.js__error').style.display = 'block'
                 } else {
-                    $('.ace-error').hide()
+                    form.querySelector('.js__error').style.display = 'none'
                 }
-                formControl.aceInit();
-            });
-            return false;
+                formControl.aceInit()
+                formControl.enableBtns()
+            })
+            return false
         },
         tests : function(e){
-            formControl.disableBtns();
-            formControl.showLoader('Тестирование');
-            $.post(form.attr('action'), formControl.serializeForm(operation='tests'), function(response){
+            formControl.disableBtns()
+            formControl.showLoader('Тестирование')
+            $.post(form.getAttribute('action'), formControl.serializeForm(operation='tests'), function(response){
                 formControl.showMsg(response)
                 formControl.enableVersionsBtn()
+                table = document.querySelector('.js__form__tests-table')
                 if(response.tests_result){
-                    $('th.form__test-result').html('Вывод программы')
-                    response.tests_result.data.forEach(function(elem, index){
-                        var tr = $('#form__test-'+ index)
-                        if(elem.success){
-                            tr.removeClass('success unluck').addClass('success')
+                    table.querySelector('th.js__form__test-result').innerHTML = 'Вывод программы'
+                    response.tests_result.data.forEach(function(test, index){
+                        var tr = table.querySelector('.js__form__test-'+ index)
+                        if(test.success){
+                            tr.classList.remove('success', 'unluck')
+                            tr.classList.add('success')
                         } else {
-                            tr.removeClass('success unluck').addClass('unluck')
+                            tr.classList.remove('success', 'unluck')
+                            tr.classList.add('unluck')
                         }
-                        tr.find('.form__test-result pre').html(elem.output + elem.error)
+                        tr.querySelector('.js__form__test-result pre').innerHTML = test.output + test.error
                     })
                     if(response.tests_result.success){
                         if(!document.querySelector('h1 .success')){
@@ -132,9 +155,6 @@ var taskItemPage = function(e){
                         }
                     }
                 }
-                if(response.success){
-                    // ...
-                }
                 formControl.aceInit();
 
             });
@@ -142,53 +162,53 @@ var taskItemPage = function(e){
         },
         version: function(e){
             formControl.showLoader('Сохранение версии')
-            $.post(form.attr('action'), formControl.serializeForm(operation='create_version'), function(response){
-                formControl.showMsg(response);
-                formControl.enableVersionsBtn();
-            });
-            return false;
+            $.post(form.getAttribute('action'), formControl.serializeForm(operation='create_version'), function(response){
+                formControl.showMsg(response)
+                formControl.enableVersionsBtn()
+            })
+            return false
 
         },
         save: function(e){
             formControl.showLoader('Сохранение');
-            $.post(form.attr('action'), formControl.serializeForm(operation='save_last_changes'), function(response){
-                formControl.showMsg(response);
-                formControl.enableVersionsBtn();
-            });
-            return false;
+            $.post(form.getAttribute('action'), formControl.serializeForm(operation='save_last_changes'), function(response){
+                formControl.showMsg(response)
+                formControl.enableVersionsBtn()
+            })
+            return false
         },
         autosave: function(e){
             formControl.showLoader('Сохранение')
-            $.post(form.attr('action'), formControl.serializeForm(operation='save_last_changes'), function(response){
-                formControl.showMsg(response);
-                formControl.enableVersionsBtn();
-            });
-            return false;
+            $.post(form.getAttribute('action'), formControl.serializeForm(operation='save_last_changes'), function(response){
+                formControl.showMsg(response)
+                formControl.enableVersionsBtn()
+            })
+            return false
         }
     }
 
     formControl.aceInit()
     // Автосохранение раз в 3 мин. при условии что решение изменялось
     window.setInterval(function(){
-        newChanges = $('#id-content-content').first().text();
-        var versionsBtn = $('.control-btn.save-version').first();
-        if(newChanges != lastChanges && versionsBtn != undefined){
+        newChanges = form.querySelector('.js__content .js__editor-content').innerHTML
+        var versionsBtn = form.querySelector('.js__editor-btn-versions')
+        if(versionsBtn && newChanges != lastChanges){
             formControl.autosave();
             lastChanges = newChanges
         }
     }, 180000)
 
     // Обработчики кнопок
-    var debugBtn = document.querySelector('#editor__debug-btn')
+    var debugBtn = form.querySelector('.js__editor-btn-debug')
     debugBtn && debugBtn.addEventListener('click', formControl.debug)
 
-    var testsBtn = document.querySelector('#editor__tests-btn')
+    var testsBtn = form.querySelector('.js__editor-btn-tests')
     testsBtn && testsBtn.addEventListener('click', formControl.tests)
 
-    var versionBtn = document.querySelector('#editor__create-version-btn')
+    var versionBtn = form.querySelector('.js__editor-btn-version')
     versionBtn && versionBtn.addEventListener('click', formControl.version)
 
-    var saveBtn = document.querySelector('#editor__save-last-changes-btn')
+    var saveBtn = form.querySelector('.js__editor-btn-save')
     saveBtn && saveBtn.addEventListener('click', formControl.save)
 }
 
