@@ -752,6 +752,10 @@ main .content {
     width: 100%;
 }
 
+.text table tr td {
+    padding: 5px 10px;
+}
+
 .white {
     padding: 30px;
     background-color: #fff;

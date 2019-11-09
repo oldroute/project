@@ -38,3 +38,6 @@ class Task(models.Model):
     source = models.ForeignKey(Source, verbose_name="источник", on_delete=models.SET_NULL, null=True, blank=True)
     source_raw_id = models.CharField(verbose_name="id в источнике", max_length=255, null=True, blank=True)
     tests = JSONField(verbose_name='тесты', default=list, blank=True, null=True)
+
+    def __str__(self):
+        return self.title

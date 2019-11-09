@@ -9,7 +9,7 @@ class TaskAdmin(admin.ModelAdmin):
     model = Task
     exclude = ('order_key',)
     raw_id_fields = ("author",)
-
+    list_filter = ('source',)
 
 @admin.register(Source)
 class SourceAdmin(SortableAdminMixin, admin.ModelAdmin):
