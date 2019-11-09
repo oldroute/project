@@ -8,6 +8,8 @@ from django.urls import reverse
 from django.utils.text import slugify
 from project.tasks.models import Task
 from project.training.models import Topic
+from project.training.fields import OrderField
+
 
 UserModel = get_user_model()
 
@@ -17,13 +19,13 @@ class TaskItem(models.Model):
     class Meta:
         verbose_name = "задача"
         verbose_name_plural = "задачи"
-        ordering = ('order_key',)
+        ordering = ['order_key']
 
     show = models.BooleanField(verbose_name="отображать", default=True)
     task = models.ForeignKey(Task, verbose_name='задача', related_name='topics')
     slug = models.SlugField(verbose_name="слаг", max_length=255, blank=True, null=True)
 
-    order_key = models.PositiveIntegerField(verbose_name='порядок', blank=True, null=True)
+    order_key = OrderField(verbose_name='порядок', blank=True)
     number = models.CharField(max_length=255, blank=True, null=True)
     topic = models.ForeignKey(Topic, verbose_name='тема', related_name='_taskitems')
     title = models.CharField(max_length=255, blank=True, null=True)
@@ -44,8 +46,6 @@ class TaskItem(models.Model):
         self.slug = slug
 
     def update_cache_data(self):
-        if self.order_key is None:
-            self.order_key = TaskItem.objects.all().count()
         if self.slug is None:
             self._set_slug()
 
@@ -62,6 +62,7 @@ class TaskItem(models.Model):
 
     def get_breadcrumbs(self):
         return [
+            {'title': 'Курсы', 'url': reverse('training:courses')},
             {'title': self.topic.course.title,   'url': self.topic.course.url},
             {'title': self.topic.numbered_title, 'url': self.topic.url},
         ]
@@ -179,6 +180,7 @@ class Solution(models.Model):
 
     def get_breadcrumbs(self):
         return [
+            {'title': 'Курсы', 'url': reverse('training:courses')},
             {'title': self.taskitem.topic.course.title,   'url': self.taskitem.topic.course.url},
             {'title': self.taskitem.topic.numbered_title, 'url': self.taskitem.topic.url},
             {'title': self.taskitem.numbered_title,       'url': self.taskitem.url},

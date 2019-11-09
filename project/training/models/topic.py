@@ -3,6 +3,7 @@ from tinymce.models import HTMLField
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from project.training.models import Course
+from project.training.fields import OrderField
 
 
 UserModel = get_user_model()
@@ -12,7 +13,7 @@ class Topic(models.Model):
     class Meta:
         verbose_name = "тема"
         verbose_name_plural = "темы"
-        ordering = ('order_key',)
+        ordering = ['order_key']
 
     show = models.BooleanField(verbose_name="отображать", default=True)
     title = models.CharField(verbose_name="заголовок", max_length=255)
@@ -20,7 +21,7 @@ class Topic(models.Model):
     author = models.ForeignKey(UserModel, verbose_name="автор", on_delete=models.SET_NULL, blank=True, null=True)
 
     course = models.ForeignKey(Course, verbose_name='курс', related_name='_topics')
-    order_key = models.PositiveIntegerField(verbose_name='порядок', blank=True, null=True)
+    order_key = OrderField(verbose_name='порядок', blank=True)
     last_modified = models.DateTimeField(verbose_name="дата последнего изменения", auto_now=True)
     url = models.CharField(max_length=1000, blank=True, null=True)
 
@@ -43,10 +44,13 @@ class Topic(models.Model):
     def numbered_title(self):
         return '%s %s' % (self.number, self.title)
 
-    def update_cache_data(self):
-        if self.order_key is None:
-            self.order_key = Topic.objects.filter(course=self.course).count()
+    def get_breadcrumbs(self):
+        return [
+            {'title': 'Курсы', 'url': reverse('training:courses')},
+            {'title': self.course.title, 'url': self.course.url},
+        ]
 
+    def update_cache_data(self):
         self.url = reverse(
             'training:topic',
             kwargs={'course': self.course.slug, 'topic': self.slug}
@@ -68,7 +72,7 @@ class Content(models.Model):
     class Meta:
         verbose_name = "блок контента"
         verbose_name_plural = "блоки контента"
-        ordering = ('order_key',)
+        ordering = ['order_key']
 
     ACE  = 'ace'
     TEXT = 'text'
@@ -85,7 +89,7 @@ class Content(models.Model):
     text = HTMLField(blank=True, null=True)
     type = models.CharField(verbose_name='тип', max_length=255, choices=CHOICES, default='text')
     topic = models.ForeignKey(Topic, related_name='_content')
-    order_key = models.PositiveIntegerField(verbose_name='порядок', blank=True, null=True)
+    order_key = OrderField(verbose_name='порядок', blank=True)
 
     @property
     def lang(self):

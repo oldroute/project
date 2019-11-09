@@ -49,15 +49,10 @@
         <main>
         {% block main %}
             <div class="container">
-                <div class="row">
+                <div class="row breadcrumbs">
                     {% block breadcrumbs %}
-                        <a class="breadcrumb-home" href='/'></a>
+                        <a class="breadcrumbs__item-home" href='/'></a>
                     {% endblock %}
-                </div>
-                <div class="row">
-                    <div>
-                        <h1>{% block content_title %}{% endblock %}</h1>
-                    </div>
                 </div>
                 <div class="row content">
                     {% block content %}{% endblock %}

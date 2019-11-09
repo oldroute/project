@@ -15,6 +15,3 @@ class TaskAdmin(admin.ModelAdmin):
 class SourceAdmin(SortableAdminMixin, admin.ModelAdmin):
 
     model = Source
-    list_display = ('order_key', 'title', 'author', 'show')
-    exclude = ('order_key', 'author')
-    raw_id_fields = ("author",)

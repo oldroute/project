@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.contrib.admin.templatetags.admin_urls import add_preserved_filters
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponseRedirect
+from django.forms import widgets
 from django.urls import reverse
 from django.utils.encoding import force_text
 from django.utils.html import format_html
@@ -39,6 +40,15 @@ class TopicInline(SortableInlineAdminMixin, admin.TabularInline):
 
 class ContentInline(SortableInlineAdminMixin, admin.StackedInline):
 
+    @property
+    def media(self):
+        return (
+            super(SortableInlineAdminMixin, self).media + widgets.Media(js=(
+                'adminsortable2/js/libs/jquery.ui.sortable-1.11.4.js',
+                'admin/training/inline-sortable.js',
+                'adminsortable2/js/inline-tabular.js')
+            )
+        )
     form = ContentAdminForm
     model = Content
     extra = 0

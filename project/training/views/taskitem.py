@@ -64,6 +64,6 @@ class SolutionView(View):
         solution = self.get_object(request)
         return render(
             request,
-            template_name='training/solution/template.html',
+            template_name='training/solution.html',
             context={'object': solution}
         )

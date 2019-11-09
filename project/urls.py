@@ -40,5 +40,5 @@ urlpatterns = [
 #     urlpatterns = [
 #         url('__debug__/', include(debug_toolbar.urls)),
 #     ] + urlpatterns
-
+#
 

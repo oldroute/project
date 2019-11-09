@@ -1,0 +1,32 @@
+{% extends 'training/base.html' %}
+
+
+{% block content %}
+    <div class="left-col">
+        <div class="white fp-content">
+            <h1 class="text-center">{{ object.title }}</h1>
+            {% if object.content %}
+                <div class ="content">{{ object.content|safe }}</div>
+            {% endif %}
+            <div class="course-topics">
+                {% for topic in object.topics %}
+                    <div class="topic-item">
+                        <div class="topic-item-title h3">
+                            <a href="{{ topic.url }}">{{ topic.numbered_title }}</a>
+                        </div>
+                        <ul class="topic-item-list">
+                            {% for taskitem in topic.taskitems %}
+                                <li class="topic-item-list-child">
+                                     <a href="{{ taskitem.url }}">{{ taskitem.numbered_title }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+
