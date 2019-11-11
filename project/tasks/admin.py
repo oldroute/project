@@ -10,6 +10,8 @@ class TaskAdmin(admin.ModelAdmin):
     exclude = ('order_key',)
     raw_id_fields = ("author",)
     list_filter = ('source',)
+    search_fields = ('title',)
+    list_display = ('title', 'source', 'show')
 
 @admin.register(Source)
 class SourceAdmin(SortableAdminMixin, admin.ModelAdmin):

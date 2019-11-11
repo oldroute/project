@@ -11,14 +11,14 @@ class OrderField(models.PositiveIntegerField):
         if getattr(instance, self.attname) is None:
             # Значение пусто
             qst = self.model.objects.all()
-            if qst.exists():
+            try:
                 if self.for_fields:
                     # Фильтруем обьекты с такими же значениями полей
                     # перечисленных в for_fields
                     query = {field: getattr(instance, field) for field in self.for_fields}
                     qst = qst.filter(**query)
                 value = qst.latest(self.attname).order_key + 1
-            else:
+            except:
                 value = 0
             setattr(instance, self.attname, value)
             return value

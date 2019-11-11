@@ -21,7 +21,7 @@ class Topic(models.Model):
     author = models.ForeignKey(UserModel, verbose_name="автор", on_delete=models.SET_NULL, blank=True, null=True)
 
     course = models.ForeignKey(Course, verbose_name='курс', related_name='_topics')
-    order_key = OrderField(verbose_name='порядок', blank=True)
+    order_key = OrderField(verbose_name='порядок', blank=True, for_fields=['course'])
     last_modified = models.DateTimeField(verbose_name="дата последнего изменения", auto_now=True)
     url = models.CharField(max_length=1000, blank=True, null=True)
 
@@ -89,7 +89,7 @@ class Content(models.Model):
     text = HTMLField(blank=True, null=True)
     type = models.CharField(verbose_name='тип', max_length=255, choices=CHOICES, default='text')
     topic = models.ForeignKey(Topic, related_name='_content')
-    order_key = OrderField(verbose_name='порядок', blank=True)
+    order_key = OrderField(verbose_name='порядок', blank=True, for_fields=['topic'])
 
     @property
     def lang(self):

@@ -25,7 +25,7 @@ class TaskItem(models.Model):
     task = models.ForeignKey(Task, verbose_name='задача', related_name='topics')
     slug = models.SlugField(verbose_name="слаг", max_length=255, blank=True, null=True)
 
-    order_key = OrderField(verbose_name='порядок', blank=True)
+    order_key = OrderField(verbose_name='порядок', blank=True, for_fields=['topic'])
     number = models.CharField(max_length=255, blank=True, null=True)
     topic = models.ForeignKey(Topic, verbose_name='тема', related_name='_taskitems')
     title = models.CharField(max_length=255, blank=True, null=True)

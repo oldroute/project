@@ -20,7 +20,7 @@ class CourseAdmin(SortableAdminMixin, admin.ModelAdmin):
     model = Course
     list_display = ('order_key', 'title', 'author', 'show')
     list_display_links = ('title',)
-    fields = ('show', 'title', 'slug', 'lang', 'author', 'about', 'content')
+    fields = ('show', 'title', 'slug', 'lang', 'author', 'about', 'content', 'content_bottom')
     prepopulated_fields = {'slug': ['title']}
     inlines = [TopicInline]
     raw_id_fields = ("author",)

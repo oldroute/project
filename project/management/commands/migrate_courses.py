@@ -4,13 +4,13 @@ from django.db.models import Case, When
 from django.core.management.base import BaseCommand
 from django.contrib.auth import get_user_model
 from project.courses.models import TreeItem
-from project.executors.models import Code, CodeTest
+from project.executors.models import Code, CodeTest, UserSolution
 from project.sources.models import Source
 from project.tasks.models import Source as TasksSourse
 from project.langs.models import Lang
 from project.tasks.models import Task
 
-from project.training.models import Course, Topic, Content
+from project.training.models import Course, Topic, Content, TaskItem, Solution
 
 UserModel = get_user_model()
 
@@ -85,13 +85,13 @@ class Command(BaseCommand):
 
         for node in nodes:
             if isinstance(node, str):
-                ct = Content.objects.create(
+                Content.objects.create(
                     text=node,
                     type=Content.TEXT,
                     topic=topic
                 )
             else:
-                ct = Content.objects.create(
+                Content.objects.create(
                     input=node.input,
                     content=node.content,
                     type=Content.ACE,
@@ -122,7 +122,7 @@ class Command(BaseCommand):
             self.create_theme(theme, csharp_course)
 
     def create_tasks(self):
-        for treeitem in TreeItem.objects.filter(type=TreeItem.TASK):
+        for treeitem in TreeItem.objects.filter(type=TreeItem.TASK).exclude(title='Задачи'):
             code = Code.objects.filter(treeitem=treeitem).first()
             tests = []
             if code is not None:
@@ -133,7 +133,7 @@ class Command(BaseCommand):
 
             source = None
             if treeitem.source:
-                source = TasksSourse.objects.get(title=treeitem.source.name)
+                source = TasksSourse.objects.filter(title=treeitem.source.name).first()
 
             Task.objects.create(
                 show=treeitem.show,
@@ -146,11 +146,49 @@ class Command(BaseCommand):
                 tests=tests
             )
 
+    def rename_duplicate_tasks(self):
+        tasks_original_ids = []
+        for task in Task.objects.all():
+            if task.id not in tasks_original_ids:
+                tasks_original_ids.append(task.id)
+                task_duplicates = Task.objects.filter(title=task.title, source=task.source).exclude(id__in=tasks_original_ids)
+                if task_duplicates.exists():
+                    for task_duplicate in task_duplicates:
+                        tasks_original_ids.append(task_duplicate.id)
+                        task_duplicate.title = task_duplicate.title + ' (Дубликат %s)'% task.id
+                        task_duplicate.show = False
+                        task_duplicate.save()
+                        print(task_duplicate.title)
+
+    def create_taskitems(self):
+        themes = TreeItem.objects.get(id=5).get_children().filter(type=TreeItem.THEME)
+        for theme in themes:
+            topic = Topic.objects.get(slug=theme.slug)
+            for treeitem in theme.get_descendants().filter(type=TreeItem.TASK):
+                try:
+                    task = Task.objects.get(title=treeitem.title, source__title=treeitem.source.name)
+                    TaskItem.objects.create(
+                        show=True,
+                        task=task,
+                        slug=treeitem.slug,
+                        topic=topic,
+                    )
+                except:
+                    print('taskitem not found', treeitem.title)
+
+    def create_solutions(self):
+        # for user_solution in UserSolution.objects.all():
+        #     Solution.objects.create(
+        #
+        #     )
+        pass
 
     def handle(self, *args, **options):
 
-        # self.create_sources()
-        # self.create_langs()
-        # self.create_courses()
-        # self.create_topics()
+        self.create_sources()
+        self.create_langs()
+        self.create_courses()
+        self.create_topics()
         self.create_tasks()
+        self.rename_duplicate_tasks()
+        self.create_taskitems()

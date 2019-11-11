@@ -1062,7 +1062,7 @@ main .content {
 .course-topics {
     position: relative;
     transition: height 600ms 0s ease;
-    margin: 40px 9px 40px 9px;
+    margin: 40px 9px 15px;
     -webkit-columns: 200px 3;
     columns: 200px 3;
 

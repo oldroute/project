@@ -21,7 +21,8 @@ class Course(models.Model):
     lang = models.ForeignKey(Lang, verbose_name="язык программирования")
     author = models.ForeignKey(UserModel, verbose_name="автор", on_delete=models.SET_NULL, blank=True, null=True)
     about = HTMLField(verbose_name="краткое описание", default="", blank=True, null=True)
-    content = HTMLField(verbose_name="содержимое", default="", blank=True, null=True)
+    content = HTMLField(verbose_name="текстовый контент", default="", blank=True, null=True)
+    content_bottom = HTMLField(verbose_name="текстовый контент под списком тем", default="", blank=True, null=True)
 
     order_key = OrderField(verbose_name='порядок', blank=True)
     last_modified = models.DateTimeField(verbose_name="дата последнего изменения", auto_now=True)

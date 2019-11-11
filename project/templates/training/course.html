@@ -6,7 +6,7 @@
         <div class="white fp-content">
             <h1 class="text-center">{{ object.title }}</h1>
             {% if object.content %}
-                <div class ="content">{{ object.content|safe }}</div>
+                <div class ="text">{{ object.content|safe }}</div>
             {% endif %}
             <div class="course-topics">
                 {% for topic in object.topics %}
@@ -24,6 +24,9 @@
                     </div>
                 {% endfor %}
             </div>
+            {% if object.content_bottom %}
+                <div class ="text">{{ object.content_bottom|safe }}</div>
+            {% endif %}
         </div>
     </div>
 {% endblock %}
