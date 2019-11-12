@@ -19,7 +19,7 @@ class OrderField(models.PositiveIntegerField):
                     qst = qst.filter(**query)
                 value = qst.latest(self.attname).order_key + 1
             except:
-                value = 0
+                value = 1
             setattr(instance, self.attname, value)
             return value
         else:

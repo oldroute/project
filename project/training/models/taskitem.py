@@ -102,7 +102,7 @@ class Solution(models.Model):
     url = models.CharField(max_length=255, blank=True, null=True)
     status = models.CharField(verbose_name='статус', max_length=255,  choices=Status.CHOICES, default=Status.NONE)
     progress = models.PositiveIntegerField(verbose_name='Прогресс решения', blank=True, default=0)
-    last_changes = models.CharField(verbose_name="последние изменения", max_length=255, blank=True, default='')
+    last_changes = models.TextField(verbose_name="последние изменения", blank=True, default='')
     version_best = JSONField(verbose_name="лучшее решение", blank=True, null=True)
     version_list = JSONField(verbose_name="список сохраненных решений", default=list, blank=True, null=True)
 

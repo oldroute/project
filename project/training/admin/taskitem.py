@@ -24,7 +24,13 @@ class TaskItemInline(SortableInlineAdminMixin, admin.TabularInline):
 
 @admin.register(Solution)
 class SolutionAdmin(admin.ModelAdmin):
+
+    def get_user(self, obj):
+        return obj.user.get_full_name() or obj.user.username
+
     model = Solution
     exclude = ('url', 'last_changes', 'version_list')
     readonly_fields = ('progress', 'status', 'taskitem', 'user')
     raw_id_fields = ('user',)
+    list_display = ('get_user', 'taskitem', 'progress')
+    search_fields = ('user__first_name', 'user__last_name')

@@ -177,11 +177,40 @@ class Command(BaseCommand):
                     print('taskitem not found', treeitem.title)
 
     def create_solutions(self):
-        # for user_solution in UserSolution.objects.all():
-        #     Solution.objects.create(
-        #
-        #     )
-        pass
+        for user_solution in UserSolution.objects.all():
+            status = Solution.Status.NONE
+            progress = 0
+            if user_solution.progress:
+                progress = user_solution.progress
+                if user_solution.progress == 0:
+                    status = Solution.Status.UNLUCK
+                elif user_solution.progress == 100:
+                    status = Solution.Status.SUCCESS
+                else:
+                    status = Solution.Status.PROCESS
+
+            if user_solution.code.treeitem:
+                try:
+                    title = user_solution.code.treeitem.title
+                    title2 = user_solution.code.treeitem.parent.parent.title
+                except:
+                    pass
+                else:
+                    try:
+                        Solution.objects.create(
+                            taskitem=TaskItem.objects.get(title=title, topic__title=title2),
+                            user=user_solution.user,
+                            status=status,
+                            progress=progress,
+                            last_changes=user_solution.last_changes,
+                            version_best=user_solution.best,
+                            version_list=user_solution.versions,
+                        )
+                    except TaskItem.DoesNotExist:
+                        print('--> нет taskitem', user_solution.code.id)
+            else:
+                print('--> нет treeitem', user_solution.code.id)
+
 
     def handle(self, *args, **options):
 
@@ -192,3 +221,4 @@ class Command(BaseCommand):
         self.create_tasks()
         self.rename_duplicate_tasks()
         self.create_taskitems()
+        self.create_solutions()
