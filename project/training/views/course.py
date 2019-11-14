@@ -28,13 +28,12 @@ class CourseView(View):
             raise Http404
 
     def get(self, request, *args, **kwargs):
-
-        context = {
-            'object': self.get_object(request)
-        }
+        course = self.get_object(request)
         return render(
             template_name='training/course.html',
-            context=context,
+            context={
+                'object': course,
+            },
             request=request
         )
 

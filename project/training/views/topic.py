@@ -18,7 +18,10 @@ class TopicView(View):
         return render(
             request=request,
             template_name='training/topic/template.html',
-            context={'object': topic}
+            context={
+                'object': topic,
+                'course': topic.course,
+            }
         )
 
     def post(self, request, *args, **kwargs):

@@ -6,7 +6,7 @@ from .utils import Response
 class TaskItemForm(forms.Form):
 
     input = forms.CharField(label="Ввод", required=False)
-    content = forms.CharField()
+    content = forms.CharField(label='')
     output = forms.CharField(
         label="Вывод", required=False,
         widget=forms.Textarea(attrs={'readonly': True})

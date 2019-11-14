@@ -37,9 +37,6 @@ class Topic(models.Model):
     def number(self):
         return self.order_key
 
-    def __str__(self):
-        return self.title
-
     @property
     def numbered_title(self):
         return '%s %s' % (self.number, self.title)
@@ -49,6 +46,13 @@ class Topic(models.Model):
             {'title': 'Курсы', 'url': reverse('training:courses')},
             {'title': self.course.title, 'url': self.course.url},
         ]
+
+    def get_data(self):
+        return {
+            'title': self.title,
+            'url': self.url,
+            'children': [taskitem.get_data() for taskitem in self.taskitems]
+        }
 
     def update_cache_data(self):
         self.url = reverse(
@@ -65,6 +69,9 @@ class Topic(models.Model):
 
     def get_absolute_url(self):
         return self.url
+
+    def __str__(self):
+        return self.title
 
 
 class Content(models.Model):

@@ -10,6 +10,11 @@ def date_format(str_datetime):
     return val.strftime('%Y.%m.%d: %H:%M')
 
 
-@register.inclusion_tag('training/breadcrumbs.html', takes_context=True)
+@register.inclusion_tag('training/parts/breadcrumbs.html', takes_context=True)
 def show_breadcrumbs(context):
     return context
+
+
+@register.inclusion_tag('training/parts/sidebar.html')
+def show_sidebar(course):
+    return {'data': course.get_cache_data()}

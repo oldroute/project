@@ -29,7 +29,12 @@ class TaskItemView(View):
         return render(
             request=request,
             template_name='training/taskitem/template.html',
-            context={'object': taskitem, 'solution': solution, 'form': form}
+            context={
+                'course': taskitem.topic.course,
+                'object': taskitem,
+                'solution': solution,
+                'form': form
+            }
         )
 
     def post(self, request, *args, **kwargs):
@@ -65,5 +70,8 @@ class SolutionView(View):
         return render(
             request,
             template_name='training/solution.html',
-            context={'object': solution}
+            context={
+                'object': solution,
+                'course': solution.taskitem.topic.course
+            }
         )

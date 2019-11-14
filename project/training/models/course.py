@@ -1,3 +1,5 @@
+import json
+from django.core.cache import cache
 from django.db import models
 from tinymce.models import HTMLField
 from django.contrib.auth import get_user_model
@@ -32,16 +34,34 @@ class Course(models.Model):
     def topics(self):
         return self._topics.filter(show=True)
 
-    def __str__(self):
-        return self.title
+    @property
+    def cache_key(self):
+        return 'course-%d' % self.id
 
     def get_breadcrumbs(self):
         return [
             {'title': 'Курсы', 'url': reverse('training:courses')},
         ]
 
+    def get_data(self):
+        return {
+            'title': self.title,
+            'url': self.url,
+            'children': [topic.get_data() for topic in self.topics]
+        }
+
+    def get_cache_data(self):
+        json_data = cache.get(self.cache_key)
+        if not json_data:
+            data = self.get_data()
+            cache.set(self.cache_key, json.dumps(data, ensure_ascii=False))
+        else:
+            data = json.loads(json_data)
+        return data
+
     def update_cache_data(self):
         self.url = reverse('training:course', kwargs={'course': self.slug})
+        cache.set(self.cache_key, json.dumps(self.get_data(), ensure_ascii=False))
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
@@ -52,3 +72,6 @@ class Course(models.Model):
 
     def get_absolute_url(self):
         return self.url
+
+    def __str__(self):
+        return self.title

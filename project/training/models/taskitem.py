@@ -45,6 +45,20 @@ class TaskItem(models.Model):
              slug += str(random.randint(0, 999))
         self.slug = slug
 
+    def get_breadcrumbs(self):
+        return [
+            {'title': 'Курсы', 'url': reverse('training:courses')},
+            {'title': self.topic.course.title,   'url': self.topic.course.url},
+            {'title': self.topic.numbered_title, 'url': self.topic.url},
+        ]
+
+    def get_data(self):
+        return {
+            'title': self.title,
+            'url': self.url,
+            'children': []
+        }
+
     def update_cache_data(self):
         if self.slug is None:
             self._set_slug()
@@ -59,13 +73,6 @@ class TaskItem(models.Model):
                 'taskitem': self.slug
             }
         )
-
-    def get_breadcrumbs(self):
-        return [
-            {'title': 'Курсы', 'url': reverse('training:courses')},
-            {'title': self.topic.course.title,   'url': self.topic.course.url},
-            {'title': self.topic.numbered_title, 'url': self.topic.url},
-        ]
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
@@ -160,6 +167,14 @@ class Solution(models.Model):
         else:
             self.version_list[9] = version
 
+    def get_breadcrumbs(self):
+        return [
+            {'title': 'Курсы', 'url': reverse('training:courses')},
+            {'title': self.taskitem.topic.course.title,   'url': self.taskitem.topic.course.url},
+            {'title': self.taskitem.topic.numbered_title, 'url': self.taskitem.topic.url},
+            {'title': self.taskitem.numbered_title,       'url': self.taskitem.url},
+        ]
+
     def update_cache_data(self):
         self.url = reverse(
             'training:solution',
@@ -175,19 +190,11 @@ class Solution(models.Model):
         self.update_cache_data()
         super().save()
 
-    def __str__(self):
-        return '%s: %s' % (self.user.get_full_name(), self.taskitem.title)
-
-    def get_breadcrumbs(self):
-        return [
-            {'title': 'Курсы', 'url': reverse('training:courses')},
-            {'title': self.taskitem.topic.course.title,   'url': self.taskitem.topic.course.url},
-            {'title': self.taskitem.topic.numbered_title, 'url': self.taskitem.topic.url},
-            {'title': self.taskitem.numbered_title,       'url': self.taskitem.url},
-        ]
-
     def get_absolute_url(self):
         return self.url
+
+    def __str__(self):
+        return '%s: %s' % (self.user.get_full_name(), self.taskitem.title)
 
 
 __all__ = ['TaskItem', 'Solution']
