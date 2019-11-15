@@ -5,47 +5,33 @@
     <meta charset="UTF-8">
     <title>{% block title %}CAPPA{% endblock %}</title>
     {% block css %}
+        <link rel="shortcut icon" href="{% static 'img/favicons/favicon.ico' %}">
+        <link rel="apple-touch-icon" sizes="180x180" href="{% static 'img/favicons/apple-touch-icon.png' %}">
+        <link rel="icon" type="image/png" sizes="32x32" href="{% static 'img/favicons/favicon-32x32.png' %}">
+        <link rel="icon" type="image/png" sizes="16x16" href="{% static 'img/favicons/favicon-16x16.png' %}"">
+        <link rel="manifest" href="/site.webmanifest">
         <link rel="stylesheet" href="{% static 'css/bootstrap-4.0.0.min.css' %}">
         <link rel="stylesheet" href="{% static 'css/style3.css' %}">
-
+        <link href="https://fonts.googleapis.com/css?family=Lemon&display=swap" rel="stylesheet">
     {% endblock %}
 </head>
 <body>
     <div class="wrapper">
-        <nav class="top-nav">
-            <div class="container">
-                <div class="top-nav-left">
-                    <div class="logo-container">
-                        <a href="/">CAPPA</a>
-                    </div>
-                    <ul class="col-lg-6 top-menu-container">
-                        <li><a class="logo-desc" href="/">комплекс автоматической проверки программ</a></li>
-                    </ul>
+        <div class="header__menu">
+            <nav class="header__menu-nav container">
+                <div class="header__menu-col-1">
+                    <a class="menu__item-home" href="/">CAPPA</a>
+                    <span class="menu__item-desc">комплекс автоматической проверки программ</span>
                 </div>
-                <div class="top-nav-right">
-                    {% if user.is_authenticated  %}
-                        {% if user.is_staff %}
-                            <a class="mr-5" href="/admin/">Управление сайтом</a>
-                        {% endif %}
-                        <a class="mr-5" href="">{{ user.get_full_name|default:user.username }}</a>
-                        <a class="profile" href="/logout/">Выйти</a>
-                    {% else %}
-                        <a class="profile" href="{% url 'account_login' %}">Войти</a>
-                        <a class="profile" href="{% url 'account_signup' %}">Зарегистрироваться</a>
-                    {% endif %}
+                <div class="header__menu-col-2">
+                    <a class="menu__item" href="{% url 'courses-root' %}">Курсы</a>
+                    <a class="menu__item" href="{% url 'modules:modules' %}">Олимпиады</a>
+                    <a class="menu__item" href="{% url 'groups:groups' %}">Группы</a>
                 </div>
-            </div>
-        </nav>
-        <nav class="top-nav menu">
-            <div class="container">
-                <ul class="col-lg-6 top-menu-container">
-                    <li><a href="{% url 'courses-root' %}">Курсы</a></li>
-                    <li><a href="{% url 'groups:groups' %}">Группы</a></li>
-                    <li><a href="{% url 'modules:modules' %}">Олимпиады</a></li>
-
-                </ul>
-            </div>
-        </nav>
+                <div class="header__menu-col-3"></div>
+            </nav>
+            <div class="header__menu-burger">123</div>
+        </div>
         <main>
         {% block main %}
             <div class="container">
