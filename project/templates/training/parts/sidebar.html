@@ -1,1 +1,26 @@
-{{ data }}
+<a href="{{ data.url }}">{{ data.title }}</a>
+<ul id="js__{{ data.id }}">
+    {% for topic in data.children %}
+    <li>
+        <div id="js__{{ topic.id }}-heading">
+            <a id="{{ topic.id }}"
+               class="collapsed"
+               data-toggle="collapse"
+               data-target="#js__{{ topic.id }}-collapse"
+               aria-expanded="false"
+               aria-controls="js__{{ topic.id }}-collapse"
+               href="{{ topic.url }}">{{ topic.title }}</a>
+        </div>
+        <ul id="js__{{ topic.id }}-collapse"
+            class="collapse"
+            aria-labelledby="js__{{ topic.id }}-heading"
+            data-parent="#js__{{ data.id }}">
+            {% for taskitem in topic.children %}
+            <li>
+                <a id="{{ taskitem.id }}" href="{{ taskitem.url }}">{{ taskitem.title }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </li>
+    {% endfor %}
+</ul>

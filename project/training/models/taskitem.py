@@ -54,7 +54,8 @@ class TaskItem(models.Model):
 
     def get_data(self):
         return {
-            'title': self.title,
+            'id': 'taskitem__%d' % self.id,
+            'title': self.numbered_title,
             'url': self.url,
             'children': []
         }

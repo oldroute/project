@@ -49,7 +49,8 @@ class Topic(models.Model):
 
     def get_data(self):
         return {
-            'title': self.title,
+            'id': 'topic__%d' % self.id,
+            'title': self.numbered_title,
             'url': self.url,
             'children': [taskitem.get_data() for taskitem in self.taskitems]
         }

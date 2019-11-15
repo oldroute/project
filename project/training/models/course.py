@@ -45,6 +45,7 @@ class Course(models.Model):
 
     def get_data(self):
         return {
+            'id': 'course__%d' % self.id,
             'title': self.title,
             'url': self.url,
             'children': [topic.get_data() for topic in self.topics]
