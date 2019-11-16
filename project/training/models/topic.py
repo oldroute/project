@@ -1,3 +1,5 @@
+import json
+from django.core.cache import cache
 from django.db import models
 from tinymce.models import HTMLField
 from django.contrib.auth import get_user_model
@@ -23,7 +25,6 @@ class Topic(models.Model):
     course = models.ForeignKey(Course, verbose_name='курс', related_name='_topics')
     order_key = OrderField(verbose_name='порядок', blank=True, for_fields=['course'])
     last_modified = models.DateTimeField(verbose_name="дата последнего изменения", auto_now=True)
-    url = models.CharField(max_length=1000, blank=True, null=True)
 
     @property
     def lang(self):
@@ -41,35 +42,37 @@ class Topic(models.Model):
     def numbered_title(self):
         return '%s %s' % (self.number, self.title)
 
-    def get_breadcrumbs(self):
-        return [
-            {'title': 'Курсы', 'url': reverse('training:courses')},
-            {'title': self.course.title, 'url': self.course.url},
-        ]
+    @property
+    def cache_key(self):
+        return 'topic__%d' % self.id
 
     def get_data(self):
         return {
-            'id': 'topic__%d' % self.id,
+            'id': self.cache_key,
             'numbered_title': self.numbered_title,
-            'url': self.url,
-            'taskitems': [taskitem.get_data() for taskitem in self.taskitems]
+            'url': reverse(
+                'training:topic',  kwargs={'course': self.course.slug, 'topic': self.slug}
+            ),
+            'taskitems': [taskitem.get_data() for taskitem in self.taskitems],
         }
 
-    def update_cache_data(self):
-        self.url = reverse(
-            'training:topic',
-            kwargs={'course': self.course.slug, 'topic': self.slug}
-        )
+    def get_cache_data(self):
+        json_data = cache.get(self.cache_key)
+        if not json_data:
+            data = self.get_data()
+            cache.set(self.cache_key, json.dumps(data, ensure_ascii=False))
+        else:
+            data = json.loads(json_data)
+        return data
 
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        self.update_cache_data()
-        super().save()
-        for taskitem in self.taskitems:
-            taskitem.update_cache_data()
+    def get_breadcrumbs(self):
+        return [
+            {'title': 'Курсы', 'url': reverse('training:courses')},
+            {'title': self.course.title, 'url': self.course.get_absolute_url()},
+        ]
 
     def get_absolute_url(self):
-        return self.url
+        return self.get_cache_data()['url']
 
     def __str__(self):
         return self.title

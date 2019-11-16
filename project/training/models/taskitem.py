@@ -1,14 +1,13 @@
-import random
-from unidecode import unidecode
+import json
+from django.core.cache import cache
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.contrib.postgres.fields import JSONField
 from datetime import datetime
 from django.urls import reverse
-from django.utils.text import slugify
 from project.tasks.models import Task
 from project.training.models import Topic
-from project.training.fields import OrderField
+from project.training.fields import OrderField, SlugField
 
 
 UserModel = get_user_model()
@@ -23,64 +22,57 @@ class TaskItem(models.Model):
 
     show = models.BooleanField(verbose_name="отображать", default=True)
     task = models.ForeignKey(Task, verbose_name='задача', related_name='topics')
-    slug = models.SlugField(verbose_name="слаг", max_length=255, blank=True, null=True)
+    slug = SlugField(verbose_name="слаг", max_length=255, blank=True , for_fields=['topic'])
 
     order_key = OrderField(verbose_name='порядок', blank=True, for_fields=['topic'])
-    number = models.CharField(max_length=255, blank=True, null=True)
     topic = models.ForeignKey(Topic, verbose_name='тема', related_name='_taskitems')
-    title = models.CharField(max_length=255, blank=True, null=True)
-    url = models.CharField(max_length=1000, blank=True, null=True)
 
     @property
     def lang(self):
         return self.topic.lang
 
     @property
-    def numbered_title(self):
-        return '%s %s' % (self.number, self.title)
+    def title(self):
+        return self.task.title
 
-    def _set_slug(self):
-        slug = slugify(unidecode(self.task.title))
-        if TaskItem.objects.filter(topic=self.topic, slug=slug).exclude(id=self.id).exists():
-             slug += str(random.randint(0, 999))
-        self.slug = slug
+    @property
+    def numbered_title(self):
+        return self.get_cache_data()['numbered_title']
+
+    @property
+    def cache_key(self):
+        return 'taskitem__%d' % self.id
+
+    def get_data(self):
+        return {
+            'id': self.cache_key,
+            'numbered_title': '%s.%s %s' % (self.topic.order_key, self.order_key, self.title),
+            'url': reverse('training:taskitem', kwargs={
+                    'course': self.topic.course.slug,
+                    'topic': self.topic.slug,
+                    'taskitem': self.slug
+                }
+            )
+        }
+
+    def get_cache_data(self):
+        json_data = cache.get(self.cache_key)
+        if not json_data:
+            data = self.get_data()
+            cache.set(self.cache_key, json.dumps(data, ensure_ascii=False))
+        else:
+            data = json.loads(json_data)
+        return data
 
     def get_breadcrumbs(self):
         return [
             {'title': 'Курсы', 'url': reverse('training:courses')},
-            {'title': self.topic.course.title,   'url': self.topic.course.url},
-            {'title': self.topic.numbered_title, 'url': self.topic.url},
+            {'title': self.topic.course.title,   'url': self.topic.course.get_absolute_url()},
+            {'title': self.topic.numbered_title, 'url': self.topic.get_absolute_url()},
         ]
 
-    def get_data(self):
-        return {
-            'id': 'taskitem__%d' % self.id,
-            'numbered_title': self.numbered_title,
-            'url': self.url,
-        }
-
-    def update_cache_data(self):
-        if self.slug is None:
-            self._set_slug()
-
-        self.number = '%s.%s' % (self.topic.order_key, self.order_key)
-        self.title = self.task.title
-        self.url = reverse(
-            'training:taskitem',
-            kwargs={
-                'course': self.topic.course.slug,
-                'topic': self.topic.slug,
-                'taskitem': self.slug
-            }
-        )
-
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        self.update_cache_data()
-        super().save()
-
     def get_absolute_url(self):
-        return self.url
+        return self.get_cache_data()['url']
 
     def __str__(self):
         return self.title
@@ -106,7 +98,6 @@ class Solution(models.Model):
 
     taskitem = models.ForeignKey(TaskItem, verbose_name='задача', related_name='_solution')
     user = models.ForeignKey(UserModel, verbose_name="пользователь")
-    url = models.CharField(max_length=255, blank=True, null=True)
     status = models.CharField(verbose_name='статус', max_length=255,  choices=Status.CHOICES, default=Status.NONE)
     progress = models.PositiveIntegerField(verbose_name='Прогресс решения', blank=True, default=0)
     last_changes = models.TextField(verbose_name="последние изменения", blank=True, default='')
@@ -170,13 +161,13 @@ class Solution(models.Model):
     def get_breadcrumbs(self):
         return [
             {'title': 'Курсы', 'url': reverse('training:courses')},
-            {'title': self.taskitem.topic.course.title,   'url': self.taskitem.topic.course.url},
-            {'title': self.taskitem.topic.numbered_title, 'url': self.taskitem.topic.url},
-            {'title': self.taskitem.numbered_title,       'url': self.taskitem.url},
+            {'title': self.taskitem.topic.course.title,   'url': self.taskitem.topic.course.get_absolute_url()},
+            {'title': self.taskitem.topic.numbered_title, 'url': self.taskitem.topic.get_absolute_url()},
+            {'title': self.taskitem.numbered_title,       'url': self.taskitem.get_absolute_url()},
         ]
 
-    def update_cache_data(self):
-        self.url = reverse(
+    def get_absolute_url(self):
+        return reverse(
             'training:solution',
             kwargs={
                 'course': self.taskitem.topic.course.slug,
@@ -184,14 +175,6 @@ class Solution(models.Model):
                 'taskitem': self.taskitem.slug
             }
         )
-
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        self.update_cache_data()
-        super().save()
-
-    def get_absolute_url(self):
-        return self.url
 
     def __str__(self):
         return '%s: %s' % (self.user.get_full_name(), self.taskitem.title)

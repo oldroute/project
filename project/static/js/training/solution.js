@@ -23,13 +23,24 @@ var getUserSolutions = function(e){
             var elem = document.querySelector('#' + key)
             elem && elem.classList.add('status__' + val)
         }
+        var currentPath = window.location.pathname
         document.querySelectorAll('.js__topic-item').forEach(function(elem){
-            var taskitems = elem.querySelectorAll('.js__taskitem-item.status__3')
-            var taskitems_success = elem.querySelectorAll('.js__taskitem-item')
-            if(taskitems.length != 0 && taskitems.length == taskitems_success.length){
-                elem.querySelector('.js__topic-item-title').classList.add('status__3')
+            var taskitems = elem.querySelectorAll('.js__taskitem-item')
+            var taskitems_success = elem.querySelectorAll('.js__taskitem-item.status__3')
+            if(taskitems.length != 0 ){
+                if(taskitems.length == taskitems_success.length){
+                    elem.classList.add('status__3')
+                }
             }
+
+            var currentElem = elem.querySelector('.js__current')
+            if(currentElem){
+                elem.querySelector('.topic__item-toggler').classList.remove('collapsed')
+                elem.querySelector('ul').classList.add('show')
+            }
+
         })
+
     })
 }
 

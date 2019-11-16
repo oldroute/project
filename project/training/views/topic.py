@@ -9,12 +9,13 @@ class TopicView(View):
 
     def get_object(self, request, *args, **kwargs):
         try:
-            return Topic.objects.select_related('course__lang').get(url=request.path)
+            return Topic.objects.select_related('course__lang')\
+                .get(slug=kwargs['topic'], course__slug=kwargs['course'])
         except Topic.DoesNotExist:
             raise Http404
 
-    def get(self, request, **kwargs):
-        topic = self.get_object(request)
+    def get(self, request, *args, **kwargs):
+        topic = self.get_object(request, *args, **kwargs)
         return render(
             request=request,
             template_name='training/topic/template.html',
@@ -25,7 +26,7 @@ class TopicView(View):
         )
 
     def post(self, request, *args, **kwargs):
-        topic = self.get_object(request)
+        topic = self.get_object(request, *args, **kwargs)
         form = ContentForm(data=request.POST)
         response = form.perform_operation(topic)
         return JsonResponse(response.__dict__)

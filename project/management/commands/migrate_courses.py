@@ -202,7 +202,7 @@ class Command(BaseCommand):
                             user=user_solution.user,
                             status=status,
                             progress=progress,
-                            last_changes=user_solution.last_changes,
+                            last_changes=user_solution.last_changes['content'],
                             version_best=user_solution.best,
                             version_list=user_solution.versions,
                         )

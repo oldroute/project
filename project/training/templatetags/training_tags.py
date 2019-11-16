@@ -18,6 +18,7 @@ def show_breadcrumbs(context):
     return context
 
 
-@register.inclusion_tag('training/parts/sidebar.html')
-def show_sidebar(course):
-    return {'data': course.get_cache_data()}
+@register.inclusion_tag('training/parts/sidebar.html', takes_context=True)
+def show_sidebar(context, course):
+    context['data'] = course.get_cache_data()
+    return context

@@ -23,14 +23,22 @@ class ProfileAppConfig(AppConfig):
         def get_cache_course_solutions_data(self, course):
             import json
             from django.core.cache import cache
-            json_data = cache.get(self.cache_course_key)
+            json_data = cache.get(self.cache_course_key(course))
             if not json_data:
                 data = self.get_course_solutions_data(course)
-                cache.set(self.cache_course_key, json.dumps(data, ensure_ascii=False))
+                cache.set(self.cache_course_key(course), json.dumps(data, ensure_ascii=False))
             else:
                 data = json.loads(json_data)
             return data
 
+        def update_cache_course_solutions_data(self, course, solution):
+            import json
+            from django.core.cache import cache
+            data = self.get_cache_course_solutions_data(course)
+            data['taskitem__%d' % solution.taskitem.id] = solution.status
+            cache.set(self.cache_course_key(course), json.dumps(data, ensure_ascii=False))
+
         setattr(UserModel, 'cache_course_key', cache_course_key)
         setattr(UserModel, 'get_course_solutions_data', get_course_solutions_data)
         setattr(UserModel, 'get_cache_course_solutions_data', get_cache_course_solutions_data)
+        setattr(UserModel, 'update_cache_course_solutions_data', update_cache_course_solutions_data)

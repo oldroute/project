@@ -19,16 +19,14 @@ class CourseListView(View):
 
 class CourseView(View):
 
-    def get_object(self, request):
+    def get_object(self, request, *args, **kwargs):
         try:
-            return Course.objects\
-                .select_related('lang')\
-                .get(url=request.path)
+            return Course.objects.select_related('lang').get(slug=kwargs['course'])
         except Course.DoesNotExist:
             raise Http404
 
     def get(self, request, *args, **kwargs):
-        course = self.get_object(request)
+        course = self.get_object(request, *args, **kwargs)
         return render(
             template_name='training/course.html',
             context={

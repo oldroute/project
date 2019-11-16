@@ -15,16 +15,16 @@ UserModel = get_user_model()
 
 class TaskItemView(View):
 
-    def get_object(self, request):
+    def get_object(self, request, *args, **kwargs):
         try:
             return TaskItem.objects \
                 .select_related('task', 'topic__course', 'topic__course__lang') \
-                .get(url=request.path)
+                .get(slug=kwargs['taskitem'], topic__slug=kwargs['topic'], topic__course__slug=kwargs['course'])
         except TaskItem.DoesNotExist:
             raise Http404
 
     def get(self, request, *args, **kwargs):
-        taskitem = self.get_object(request)
+        taskitem = self.get_object(request,  *args, **kwargs)
         solution = None
         form_initial = {'lang': taskitem.lang.provider}
         if request.user.is_active:
@@ -44,7 +44,7 @@ class TaskItemView(View):
         )
 
     def post(self, request, *args, **kwargs):
-        taskitem = self.get_object(request)
+        taskitem = self.get_object(request, *args, **kwargs)
         form = TaskItemForm(data=request.POST)
         response = form.perform_operation(request.user, taskitem)
         return JsonResponse(response.__dict__)
@@ -52,27 +52,37 @@ class TaskItemView(View):
 
 class SolutionView(View):
 
-    def get_object(self, request):
+    def get_object(self, request, *args, **kwargs):
         if request.user.is_active:
             solution_user_id = request.GET.get('user')
             if solution_user_id:
                 if request.user.is_superuser:
                     try:
-                        return Solution.objects.get(url=request.path, user_id=solution_user_id)
+                        return Solution.objects.get(
+                            taskitem__slug=kwargs['taskitem'],
+                            taskitem__topic__slug=kwargs['topic'],
+                            taskitem__topic__course__slug=kwargs['course'],
+                            user_id=solution_user_id
+                        )
                     except Solution.DoesNotExist:
                         raise Http404
                 else:
                     raise PermissionDenied
             else:
                 try:
-                    return Solution.objects.get(url=request.path, user_id=request.user.id)
+                    return Solution.objects.get(
+                        taskitem__slug=kwargs['taskitem'],
+                        taskitem__topic__slug=kwargs['topic'],
+                        taskitem__topic__course__slug=kwargs['course'],
+                        user_id=request.user.id
+                    )
                 except Solution.DoesNotExist:
                     raise Http404
         else:
             raise Http404
 
     def get(self, request, *args, **kwargs):
-        solution = self.get_object(request)
+        solution = self.get_object(request, *args, **kwargs)
         return render(
             request,
             template_name='training/solution.html',
