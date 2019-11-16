@@ -53,12 +53,6 @@ TEMPLATES = [
     },
 ]
 
-AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend',
-    # `allauth` specific authentication methods, such as login by e-mail
-    'allauth.account.auth_backends.AuthenticationBackend',
-]
-
 INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.auth',
@@ -67,9 +61,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
+    'project.profile',
     'tinymce',
     'mptt',
     'adminsortable2',
@@ -128,10 +120,3 @@ SITE_ID = 1
 # EMAIL_HOST_PASSWORD = 'pass'
 # EMAIL_USE_SSL = True
 DEFAULT_FROM_EMAIL = 'info@cappa.ru'
-
-# allauth
-ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
-ACCOUNT_EMAIL_REQUIRED = True
-# --- Executors config
-# Настройки профиля
-LOGIN_REDIRECT_URL = "/"

@@ -1,10 +1,16 @@
 # -*- coding:utf-8 -*-
+from django.contrib.auth import get_user_model
 from django.http import JsonResponse
 from django.shortcuts import render, Http404
 from django.core.exceptions import PermissionDenied
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
 from django.views.generic import View
-from project.training.models import TaskItem, Solution
+from project.training.models import TaskItem, Solution, Course
 from project.training.forms import TaskItemForm
+
+
+UserModel = get_user_model()
 
 
 class TaskItemView(View):
@@ -75,3 +81,16 @@ class SolutionView(View):
                 'course': solution.taskitem.topic.course
             }
         )
+
+
+@method_decorator(login_required, name='dispatch')
+class CourseSolutionsView(View):
+
+    def get(self, request, *args, **kwargs):
+        try:
+            course = Course.objects.get(slug=kwargs.get('course'))
+            user_id = request.GET['user_id']
+            user = UserModel.objects.get(id=user_id, is_active=True)
+            return JsonResponse(user.get_cache_course_solutions_data(course))
+        except:
+            raise Http404

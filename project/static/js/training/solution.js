@@ -17,4 +17,15 @@ var solutionPage = function(e){
     })
 }
 
+var getUserSolutions = function(e){
+    console.log()
+    $.get(e.target.userSolutionUrl, function(response){
+        for (const [key, val] of Object.entries(response)) {
+            var elem = document.querySelector('#' + key)
+            elem && elem.classList.add('status__' + val)
+        }
+    })
+}
+
 window.addEventListener('solutionPageLoaded', solutionPage)
+window.addEventListener('getUserSolutions', getUserSolutions)

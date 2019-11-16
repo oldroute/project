@@ -8,16 +8,14 @@
             {% if object.content %}
                 <div class ="text">{{ object.content|safe }}</div>
             {% endif %}
-            <div class="course-topics">
+            <div class="topic__list">
                 {% for topic in object.get_cache_data.topics %}
-                    <div class="topic-item">
-                        <div class="topic-item-title h3">
-                            <a href="{{ topic.url }}">{{ topic.numbered_title }}</a>
-                        </div>
+                    <div class="topic__item">
+                        <a class="topic_item-title h3" href="{{ topic.url }}">{{ topic.numbered_title }}</a>
                         {% if topic.taskitems %}
                         <ul>
                             {% for taskitem in topic.taskitems %}
-                                <li>
+                                <li id="{{ taskitem.id }}">
                                      <a href="{{ taskitem.url }}">{{ taskitem.numbered_title }}</a>
                                 </li>
                             {% endfor %}
@@ -34,5 +32,4 @@
 {% endblock %}
 
 {% block sidebar %}{% endblock %}
-
 

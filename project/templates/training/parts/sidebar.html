@@ -19,8 +19,8 @@
             aria-labelledby="js__{{ topic.id }}-heading"
             data-parent="#js__{{ data.id }}">
             {% for taskitem in topic.taskitems %}
-            <li>
-                <a id="{{ taskitem.id }}" href="{{ taskitem.url }}">{{ taskitem.numbered_title }}</a>
+            <li id="{{ taskitem.id }}" >
+                <a href="{{ taskitem.url }}">{{ taskitem.numbered_title }}</a>
             </li>
             {% endfor %}
         </ul>
@@ -28,18 +28,3 @@
     </div>
     {% endfor %}
 </div>
-
-
-
-<!--<div class="top-nav-right">-->
-    <!--{% if user.is_authenticated  %}-->
-        <!--{% if user.is_staff %}-->
-            <!--<a class="mr-5" href="/admin/">Управление сайтом</a>-->
-        <!--{% endif %}-->
-        <!--<a class="mr-5" href="">{{ user.get_full_name|default:user.username }}</a>-->
-        <!--<a class="profile" href="/logout/">Выйти</a>-->
-    <!--{% else %}-->
-        <!--<a class="profile" href="{% url 'account_login' %}">Войти</a>-->
-        <!--<a class="profile" href="{% url 'account_signup' %}">Зарегистрироваться</a>-->
-    <!--{% endif %}-->
-<!--</div>-->

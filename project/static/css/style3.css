@@ -1133,70 +1133,46 @@ main .content {
 
 /* course item */
 
-.course-topics {
+.topic__list {
     position: relative;
     transition: height 600ms 0s ease;
     margin: 40px 9px 15px;
     -webkit-columns: 200px 3;
     columns: 200px 3;
-
+    color: #40484a;
 }
 
-.topic-item {
+.topic__item {
     text-align: left;
     margin: 0px;
     padding: 9px;
     -webkit-column-break-inside: avoid;
     break-inside: avoid;
-
 }
 
-.topic-item-title a {
-    display: inline-block;
-    color: #333131;
-    line-height: 1;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-.topic-item-title a:after {
-    background-color: #333131;
-    display: block;
-    content: "";
-    height: 1px;
-    width: 0%;
-    -webkit-transition: width .3s ease-in-out;
-    -moz--transition: width .3s ease-in-out;
-    transition: width .3s ease-in-out;
-}
-
-.topic-item-title a:hover:after,
-.topic-item-title a:focus:after {
-    width: 100%;
-}
-
-.topic-item-content p {
-    margin: 12px 0;
-}
-
-.topic-item-list {
-    margin: 10px -19px;
-    line-height: 18px
-}
-
-.main ul.topic-item-list {
-    margin: 0px;
+.topic__item ul {
     list-style: none;
-
+    padding-left: 0;
+    margin: 0;
 }
 
-.topic-item-list-child a {
-    text-decoration: none; /* Убираем подчеркивание у ссылок */
+.topic__item ul li {
 }
 
-.topic-item-list-child a:hover {
-    color: #800000; /*  Цвет ссылки при наведении на нее курсора мыши */
-    text-decoration: underline; /* Добавляем подчеркивание */
+.topic__item ul li + li {
+}
+
+.topic__item a {
+    color: inherit;
+    padding: 0 5px;
+}
+
+.topic_item-title {
+    border-bottom: 1px solid #e5e6e6
+}
+
+.topic_item-title + ul {
+    margin-top: 10px;
 }
 
 /* footer */
@@ -1271,15 +1247,13 @@ main .content {
     margin: 5px;
 }
 
-.solution-info tr.status__3 {
+.status__3 {
     background-color: #96ff8e;
 }
-
-.solution-info tr.status__2 {
+.status__2 {
     background-color: #f7ff4b;
 }
-
-.solution-info tr.status__1 {
+.status__1 {
     background-color: #ffae95;
 }
 

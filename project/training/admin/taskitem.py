@@ -30,7 +30,7 @@ class SolutionAdmin(admin.ModelAdmin):
 
     model = Solution
     exclude = ('url', 'last_changes', 'version_list')
-    readonly_fields = ('progress', 'status', 'taskitem', 'user')
-    raw_id_fields = ('user',)
+    readonly_fields = ('progress', 'status')
+    raw_id_fields = ('user', 'taskitem')
     list_display = ('get_user', 'taskitem', 'progress')
     search_fields = ('user__first_name', 'user__last_name')
