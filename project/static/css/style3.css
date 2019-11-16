@@ -740,9 +740,9 @@ main .content {
 
 /* sidebar */
 .sidebar {
-    right: -305px;
+    right: -405px;
     position: fixed;
-    width: 350px;
+    width: 450px;
     height: 100vh;
     top: 50px;
     display: flex;
@@ -816,21 +816,28 @@ main .content {
     border-left: #eae8e8 1px solid;
 }
 
-.list__item-heading {
+.sidebar .topic__item + .topic__item {
+    margin-top: 5px;
+}
+
+.sidebar .topic__item-heading {
     display: flex;
 }
 
-.list__item ul {
+.sidebar .topic__item ul {
     margin: 0;
     list-style-type: none;
-    padding-left: 31px;
+    padding-left: 27px;
 }
 
-.list__item ul li a {
+.sidebar .topic__item ul li a {
     font-size: 15px;
+    padding: 3px 5px;
+    line-height: 1.2;
+    display: block;
 }
 
-.list__item-toggler {
+.sidebar .topic__item-toggler {
     -webkit-box-align: center;
     -webkit-align-items: center;
     -ms-flex-align: center;
@@ -841,7 +848,7 @@ main .content {
     display: flex;
 }
 
-.list__item-toggler:before {
+.sidebar .topic__item-toggler:before {
     display: block;
     content: "";
     width: 24px;
@@ -853,16 +860,18 @@ main .content {
     background-size: 24px 24px;
 }
 
-.list__item-toggler.collapsed:before {
+.sidebar .topic__item-toggler.collapsed:before {
     -webkit-transform: rotateX(180deg);
     transform: rotateX(180deg);
 }
 
-.list__item-title {
+.sidebar .topic__item-title {
     margin-left: 30px;
+    width: 100%;
+    padding-left: 5px;
 }
 
-.list__item-toggler + .list__item-title {
+.sidebar .topic__item-toggler + .topic__item-title {
     margin-left: 0;
 }
 
@@ -1142,7 +1151,7 @@ main .content {
     color: #40484a;
 }
 
-.topic__item {
+.topic__list .topic__item {
     text-align: left;
     margin: 0px;
     padding: 9px;
@@ -1150,28 +1159,22 @@ main .content {
     break-inside: avoid;
 }
 
-.topic__item ul {
+.topic__list .topic__item ul {
     list-style: none;
     padding-left: 0;
     margin: 0;
 }
 
-.topic__item ul li {
-}
-
-.topic__item ul li + li {
-}
-
-.topic__item a {
+.topic__list .topic__item a {
     color: inherit;
     padding: 0 5px;
 }
 
-.topic_item-title {
+.topic__list .topic__item-title {
     border-bottom: 1px solid #e5e6e6
 }
 
-.topic_item-title + ul {
+.topic__list .topic__item-title + ul {
     margin-top: 10px;
 }
 

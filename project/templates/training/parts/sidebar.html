@@ -1,9 +1,9 @@
 <div id="js__{{ data.id }}" class="list">
     {% for topic in data.topics %}
-    <div class="list__item">
-        <div id="js__{{ topic.id }}-heading" class="list__item-heading">
+    <div class="topic__item js__topic-item">
+        <div id="js__{{ topic.id }}-heading" class="topic__item-heading">
             {% if topic.taskitems %}
-                <div class="list__item-toggler collapsed"
+                <div class="topic__item-toggler collapsed"
                      id="{{ topic.id }}"
                      data-toggle="collapse"
                      data-target="#js__{{ topic.id }}-collapse"
@@ -11,7 +11,7 @@
                      aria-controls="js__{{ topic.id }}-collapse">
                 </div>
             {% endif %}
-            <a class="list__item-title" href="{{ topic.url }}">{{ topic.numbered_title }}</a>
+            <a class="topic__item-title js__topic-item-title" href="{{ topic.url }}">{{ topic.numbered_title }}</a>
         </div>
         {% if topic.taskitems %}
         <ul id="js__{{ topic.id }}-collapse"
@@ -19,7 +19,7 @@
             aria-labelledby="js__{{ topic.id }}-heading"
             data-parent="#js__{{ data.id }}">
             {% for taskitem in topic.taskitems %}
-            <li id="{{ taskitem.id }}" >
+            <li id="{{ taskitem.id }}" class="js__taskitem-item" >
                 <a href="{{ taskitem.url }}">{{ taskitem.numbered_title }}</a>
             </li>
             {% endfor %}
