@@ -1,38 +1,45 @@
-<div class="top-nav-right">
-    {% if user.is_authenticated  %}
-        {% if user.is_staff %}
-            <a class="mr-5" href="/admin/">Управление сайтом</a>
-        {% endif %}
-        <a class="mr-5" href="">{{ user.get_full_name|default:user.username }}</a>
-        <a class="profile" href="/logout/">Выйти</a>
-    {% else %}
-        <a class="profile" href="{% url 'account_login' %}">Войти</a>
-        <a class="profile" href="{% url 'account_signup' %}">Зарегистрироваться</a>
-    {% endif %}
-</div>
-<a href="{{ data.url }}">{{ data.title }}</a>
-<ul id="js__{{ data.id }}">
-    {% for topic in data.children %}
-    <li>
-        <div id="js__{{ topic.id }}-heading">
-            <a id="{{ topic.id }}"
-               class="collapsed"
-               data-toggle="collapse"
-               data-target="#js__{{ topic.id }}-collapse"
-               aria-expanded="false"
-               aria-controls="js__{{ topic.id }}-collapse"
-               href="{{ topic.url }}">{{ topic.title }}</a>
+<div id="js__{{ data.id }}" class="list">
+    {% for topic in data.topics %}
+    <div class="list__item">
+        <div id="js__{{ topic.id }}-heading" class="list__item-heading">
+            {% if topic.taskitems %}
+                <div class="list__item-toggler collapsed"
+                     id="{{ topic.id }}"
+                     data-toggle="collapse"
+                     data-target="#js__{{ topic.id }}-collapse"
+                     aria-expanded="false"
+                     aria-controls="js__{{ topic.id }}-collapse">
+                </div>
+            {% endif %}
+            <a class="list__item-title" href="{{ topic.url }}">{{ topic.numbered_title }}</a>
         </div>
+        {% if topic.taskitems %}
         <ul id="js__{{ topic.id }}-collapse"
             class="collapse"
             aria-labelledby="js__{{ topic.id }}-heading"
             data-parent="#js__{{ data.id }}">
-            {% for taskitem in topic.children %}
+            {% for taskitem in topic.taskitems %}
             <li>
-                <a id="{{ taskitem.id }}" href="{{ taskitem.url }}">{{ taskitem.title }}</a>
+                <a id="{{ taskitem.id }}" href="{{ taskitem.url }}">{{ taskitem.numbered_title }}</a>
             </li>
             {% endfor %}
         </ul>
-    </li>
+        {% endif %}
+    </div>
     {% endfor %}
-</ul>
+</div>
+
+
+
+<!--<div class="top-nav-right">-->
+    <!--{% if user.is_authenticated  %}-->
+        <!--{% if user.is_staff %}-->
+            <!--<a class="mr-5" href="/admin/">Управление сайтом</a>-->
+        <!--{% endif %}-->
+        <!--<a class="mr-5" href="">{{ user.get_full_name|default:user.username }}</a>-->
+        <!--<a class="profile" href="/logout/">Выйти</a>-->
+    <!--{% else %}-->
+        <!--<a class="profile" href="{% url 'account_login' %}">Войти</a>-->
+        <!--<a class="profile" href="{% url 'account_signup' %}">Зарегистрироваться</a>-->
+    <!--{% endif %}-->
+<!--</div>-->

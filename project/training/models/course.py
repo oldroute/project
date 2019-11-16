@@ -48,7 +48,7 @@ class Course(models.Model):
             'id': 'course__%d' % self.id,
             'title': self.title,
             'url': self.url,
-            'children': [topic.get_data() for topic in self.topics]
+            'topics': [topic.get_data() for topic in self.topics]
         }
 
     def get_cache_data(self):

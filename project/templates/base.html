@@ -30,7 +30,6 @@
                 </div>
                 <div class="header__menu-col-3"></div>
             </nav>
-            <div class="header__menu-burger">123</div>
         </div>
         <main>
         {% block main %}
@@ -44,9 +43,20 @@
                     {% block content %}{% endblock %}
                 </div>
             </div>
-            <div class="sidebar">
-                {% block sidebar %}{% endblock %}
+            {% block sidebar %}
+            <div class="sidebar js__sidebar">
+                <div class="sidebar__control">
+                    <div class="sidebar__control-btn sidebar__control-btn-menu js__sidebar-btn"></div>
+                </div>
+                <div class="sidebar__control-background"></div>
+                <div class="sidebar__body">
+                    <div class="sidebar__body-title">
+                        {% block sidebar_title %}{% endblock %}
+                    </div>
+                    {% block sidebar_body %}{% endblock %}
+                </div>
             </div>
+            {% endblock %}
         {% endblock %}
         </main>
     </div>

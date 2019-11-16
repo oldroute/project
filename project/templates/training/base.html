@@ -6,6 +6,8 @@
     {% show_breadcrumbs %}
 {% endblock %}
 
-{% block sidebar %}
+{% block sidebar_title %}{{ course.title }}{% endblock %}
+
+{% block sidebar_body %}
     {% show_sidebar course %}
 {% endblock %}
