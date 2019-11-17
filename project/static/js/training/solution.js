@@ -23,26 +23,26 @@ var getUserSolutions = function(e){
             var elem = document.querySelector('#' + key)
             elem && elem.classList.add('status__' + val)
         }
-        var currentPath = window.location.pathname
         document.querySelectorAll('.js__topic-item').forEach(function(elem){
             var taskitems = elem.querySelectorAll('.js__taskitem-item')
             var taskitems_success = elem.querySelectorAll('.js__taskitem-item.status__3')
-            if(taskitems.length != 0 ){
-                if(taskitems.length == taskitems_success.length){
-                    elem.classList.add('status__3')
-                }
+            if(taskitems.length != 0 && taskitems.length == taskitems_success.length){
+                elem.classList.add('status__3')
             }
-
-            var currentElem = elem.querySelector('.js__current')
-            if(currentElem){
-                elem.querySelector('.topic__item-toggler').classList.remove('collapsed')
-                elem.querySelector('ul').classList.add('show')
-            }
-
         })
+    })
+}
 
+var toggleSidebar = function(){
+    document.querySelectorAll('.js__topic-item').forEach(function(elem){
+        var currentElem = elem.querySelector('.js__current')
+        if(currentElem){
+            elem.querySelector('.topic__item-toggler').classList.remove('collapsed')
+            elem.querySelector('ul').classList.add('show')
+        }
     })
 }
 
 window.addEventListener('solutionPageLoaded', solutionPage)
 window.addEventListener('getUserSolutions', getUserSolutions)
+window.addEventListener('toggleSidebar', toggleSidebar)

@@ -198,7 +198,7 @@ class Command(BaseCommand):
                 else:
                     try:
                         Solution.objects.create(
-                            taskitem=TaskItem.objects.get(title=title, topic__title=title2),
+                            taskitem=TaskItem.objects.get(task__title=title, topic__title=title2),
                             user=user_solution.user,
                             status=status,
                             progress=progress,

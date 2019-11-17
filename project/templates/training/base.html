@@ -14,10 +14,11 @@
 
 {% block js %}
     {{ block.super }}
-    {% if request.user.is_active and course %}
-        <script>
+    <script>
+        {% if request.user.is_active and course %}
             window.userSolutionUrl = '{% url 'course-solutions' course=course.slug %}?user_id={{ request.user.id }}'
             window.dispatchEvent(new Event('getUserSolutions'))
-        </script>
-    {% endif %}
+        {% endif %}
+        window.dispatchEvent(new Event('toggleSidebar'))
+    </script>
 {% endblock %}
