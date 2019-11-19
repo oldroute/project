@@ -69,12 +69,11 @@ INSTALLED_APPS = (
     'project.sources',
     'project.courses',
     'project.executors',
-    'project.groups',
-    'project.modules',
     'project.news',
     'project.tasks',
     'project.training',
     'project.langs',
+    'project.groups',
 )
 
 MIDDLEWARE = [

@@ -37,7 +37,8 @@ class TaskItem(models.Model):
 
     @property
     def numbered_title(self):
-        return self.get_cache_data()['numbered_title']
+        data = self.get_cache_data()
+        return '%s %s' % (data['number'], data['title'])
 
     @property
     def cache_key(self):
@@ -46,7 +47,8 @@ class TaskItem(models.Model):
     def get_data(self):
         return {
             'id': self.cache_key,
-            'numbered_title': '%s.%s %s' % (self.topic.order_key, self.order_key, self.title),
+            'number': '%s.%s' % (self.topic.order_key, self.order_key),
+            'title': self.title,
             'url': reverse('training:taskitem', kwargs={
                     'course': self.topic.course.slug,
                     'topic': self.topic.slug,

@@ -49,7 +49,8 @@ class Topic(models.Model):
     def get_data(self):
         return {
             'id': self.cache_key,
-            'numbered_title': self.numbered_title,
+            'number': self.number,
+            'title': self.title,
             'url': reverse(
                 'training:topic',  kwargs={'course': self.course.slug, 'topic': self.slug}
             ),

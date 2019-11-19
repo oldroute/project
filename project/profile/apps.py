@@ -17,7 +17,12 @@ class ProfileAppConfig(AppConfig):
             from project.training.models import Solution
             data = {}
             for solution in Solution.objects.select_related('taskitem').filter(user=self, taskitem__topic__course=course):
-                data['taskitem__%d' % solution.taskitem.id] = solution.status
+                data['taskitem__%d' % solution.taskitem.id] = {
+                    'status': solution.status,
+                    'progress': solution.progress,
+                    'datetime': solution.version_best['datetime'],
+                    'url': '%s?user=%d' % (solution.get_absolute_url(), self.id)
+                }
             return data
 
         def get_cache_course_solutions_data(self, course):
@@ -31,14 +36,10 @@ class ProfileAppConfig(AppConfig):
                 data = json.loads(json_data)
             return data
 
-        def update_cache_course_solutions_data(self, course, solution):
-            import json
-            from django.core.cache import cache
-            data = self.get_cache_course_solutions_data(course)
-            data['taskitem__%d' % solution.taskitem.id] = solution.status
-            cache.set(self.cache_course_key(course), json.dumps(data, ensure_ascii=False))
+        def __str__(self):
+            return self.get_full_name()
 
         setattr(UserModel, 'cache_course_key', cache_course_key)
         setattr(UserModel, 'get_course_solutions_data', get_course_solutions_data)
         setattr(UserModel, 'get_cache_course_solutions_data', get_cache_course_solutions_data)
-        setattr(UserModel, 'update_cache_course_solutions_data', update_cache_course_solutions_data)
+        setattr(UserModel, '__str__', __str__)

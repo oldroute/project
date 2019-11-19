@@ -1,0 +1,47 @@
+{% extends 'groups/base.html' %}
+
+{% block breadcrumbs %}{% endblock %}
+
+{% block content %}
+    <div class="one-col groups">
+        <div class="white fp-content">
+            <h1 class="text-center">Учебные группы</h1>
+
+            <form class="search__form">
+                <div class="input-group input-group-sm">
+                    {% csrf_token %}
+                    {{ form.search }}
+                    <input type="submit" value="" title="поиск" />
+                </div>
+            </form>
+
+            <table class="js__tablesorter">
+                <thead>
+                    <tr>
+                        <th>Название</th>
+                        <th>Владелец</th>
+                        <th>Участников</th>
+                        <th>Год</th>
+                        <th>Статус</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for group in objects %}
+                        <tr>
+                            <td><a href="{% url 'groups:group' group_id=group.id %}" >{{ group.title }}</td>
+                            <td>{{ group.author }}</td>
+                            <td>{{ group.members.all.count }}</td>
+                            <td>{{ group.creation_date.year }}</td>
+                            <td>{{ group.get_status }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+    <script>window.dispatchEvent(new Event('initTablesorter'))</script>
+{% endblock %}

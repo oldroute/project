@@ -13,8 +13,8 @@ UserModel = get_user_model()
 
 class Course(models.Model):
     class Meta:
-        verbose_name = "курс"
-        verbose_name_plural = "курсы"
+        verbose_name = "учебный курс"
+        verbose_name_plural = "учебные курсы"
         ordering = ['order_key']
 
     show = models.BooleanField(verbose_name="отображать", default=True)

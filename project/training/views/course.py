@@ -1,4 +1,4 @@
-from django.shortcuts import render, Http404, HttpResponse
+from django.shortcuts import render, Http404
 from django.views.generic import View
 from project.training.models import Course
 
@@ -6,13 +6,9 @@ from project.training.models import Course
 class CourseListView(View):
 
     def get(self, request, *args, **kwargs):
-
-        context = {
-            'objects': Course.objects.filter(show=True)
-        }
         return render(
             template_name='training/course_list.html',
-            context=context,
+            context={'objects': Course.objects.filter(show=True)},
             request=request
         )
 

@@ -10,7 +10,8 @@
         <link rel="icon" type="image/png" sizes="32x32" href="{% static 'img/favicons/favicon-32x32.png' %}">
         <link rel="icon" type="image/png" sizes="16x16" href="{% static 'img/favicons/favicon-16x16.png' %}"">
         <link rel="manifest" href="/site.webmanifest">
-        <link rel="stylesheet" href="{% static 'css/bootstrap-4.0.0.min.css' %}">
+        <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+        <link rel="stylesheet" href="{% static 'css/jquery.tablesorter.css' %}">
         <link rel="stylesheet" href="{% static 'css/style3.css' %}">
         <link href="https://fonts.googleapis.com/css?family=Lemon&display=swap" rel="stylesheet">
     {% endblock %}
@@ -93,13 +94,16 @@
     </footer>
     
 {% block js %}
-    <script src="{% static 'js/jquery-3.3.1.js' %}"></script>
-    <script src="{% static 'js/bootstrap-4.js' %}"></script>
+    <script src="{% static 'js/jquery.js' %}"></script>
+    <script src="{% static 'js/bootstrap.js' %}"></script>
+    <script src="{% static 'js/jquery.tablesorter.js' %}"></script>
     <script src="{% static 'js/ace-1.4.7/ace.js' %}"></script>
     <script src="{% static 'js/main.js' %}"></script>
+    <script src="{% static 'js/training/main.js' %}"></script>
     <script src="{% static 'js/training/taskitem.js' %}"></script>
     <script src="{% static 'js/training/topic.js' %}"></script>
     <script src="{% static 'js/training/solution.js' %}"></script>
+    <script src="{% static 'js/groups/group_course.js' %}"></script>
 {% endblock %}
 
 </body>

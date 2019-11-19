@@ -2,12 +2,13 @@
 from django.contrib.auth import get_user_model
 from django.http import JsonResponse
 from django.shortcuts import render, Http404
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.views.generic import View
 from project.training.models import TaskItem, Solution, Course
 from project.training.forms import TaskItemForm
+from project.groups.models import GroupCourse
 
 
 UserModel = get_user_model()
@@ -53,32 +54,45 @@ class TaskItemView(View):
 class SolutionView(View):
 
     def get_object(self, request, *args, **kwargs):
-        if request.user.is_active:
-            solution_user_id = request.GET.get('user')
-            if solution_user_id:
-                if request.user.is_superuser:
-                    try:
-                        return Solution.objects.get(
-                            taskitem__slug=kwargs['taskitem'],
-                            taskitem__topic__slug=kwargs['topic'],
-                            taskitem__topic__course__slug=kwargs['course'],
-                            user_id=solution_user_id
-                        )
-                    except Solution.DoesNotExist:
-                        raise Http404
-                else:
-                    raise PermissionDenied
-            else:
-                try:
+
+        try:
+            user_id = request.GET.get('user')
+            if user_id and int(user_id) == request.user.id:
+                # Запрос решения участника сделан самим участником группы
+                print('========1========')
+                return Solution.objects.get(
+                    taskitem__slug=kwargs['taskitem'],
+                    taskitem__topic__slug=kwargs['topic'],
+                    taskitem__topic__course__slug=kwargs['course'],
+                    user_id=user_id
+                )
+            elif user_id:
+                # Запрос решения участника сделан владельцем группы
+                user = UserModel.objects.get(id=user_id)
+                group = user.member.filter(group__author=request.user).first().group
+                group_course = GroupCourse.objects.filter(course__slug=kwargs['course'], group=group)
+                print('========2========')
+                if group_course.exists():
+                    print('========2.1========')
                     return Solution.objects.get(
                         taskitem__slug=kwargs['taskitem'],
                         taskitem__topic__slug=kwargs['topic'],
                         taskitem__topic__course__slug=kwargs['course'],
-                        user_id=request.user.id
+                        user=user
                     )
-                except Solution.DoesNotExist:
+                else:
                     raise Http404
-        else:
+            else:
+                print('========3========')
+                # Запрос собственного решения
+                return Solution.objects.get(
+                    taskitem__slug=kwargs['taskitem'],
+                    taskitem__topic__slug=kwargs['topic'],
+                    taskitem__topic__course__slug=kwargs['course'],
+                    user_id=request.user.id
+                )
+
+        except (ObjectDoesNotExist, ValueError, AttributeError):
             raise Http404
 
     def get(self, request, *args, **kwargs):

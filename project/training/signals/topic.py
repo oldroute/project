@@ -7,4 +7,5 @@ from project.training.models import Topic
 @receiver(post_save, sender=Topic)
 @receiver(post_delete, sender=Topic)
 def topic_changed_handler(sender, instance, **kwargs):
+    # TODO order_key пересчитывать
     cache.clear()
