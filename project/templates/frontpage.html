@@ -8,34 +8,25 @@
     <div class="row content">
         <div class="one-col">
 
-        {% get_news as news %}
-        <div class="news">
-            <h2 class="fp-title">Новости</h2>
-            {% for new in news %}
-                <div class="one-col white">
-                    <div class="news-item">
-                        <div class="new-image">
-                            <img src="{{ new.image.url }}"/>
-                        </div>
-                        <div class="new-item-container">
-                            <div class="new-date">{{ new.date|date:"d.m.Y" }}</div>
-                            <div class="new-item-title">{{ new.title }}</div>
-                            <div class="new-content">{{ new.content|safe }}</div>
+            {% get_news as news %}
+            <div class="news">
+                <h2 class="fp-title">Новости</h2>
+                {% for new in news %}
+                    <div class="one-col white">
+                        <div class="news-item">
+                            <div class="new-image">
+                                <img src="{{ new.image.url }}"/>
+                            </div>
+                            <div class="new-item-container">
+                                <div class="new-date">{{ new.date|date:"d.m.Y" }}</div>
+                                <div class="new-item-title">{{ new.title }}</div>
+                                <div class="new-content">{{ new.content|safe }}</div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            {% endfor %}
+                {% endfor %}
+            </div>
         </div>
-
-    <div class="command">
-        <h2 class="fp-title">Наша команда</h2>
-        <div class="one-col white">
-            <img src="{{ STATIC_URL }}img/command-2.png">
-            <img src="{{ STATIC_URL }}img/command-3.png">
-            <img src="{{ STATIC_URL }}img/command-1.jpg">
-        </div>
-    </div>
-    </div>
     </div>
 </div>
 

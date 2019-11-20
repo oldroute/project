@@ -21,3 +21,4 @@ class GroupAdmin(admin.ModelAdmin):
     raw_id_fields = ['author']
     inlines = [GroupCourseInline, GroupMemberInline]
     list_display = ['title', 'author', 'show']
+    exclude = ('_members',)

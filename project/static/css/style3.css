@@ -459,6 +459,7 @@ pre {
 .header__menu-nav .menu__item {
     font-weight: 600;
     color: #40484a;
+    white-space: nowrap;
 }
 
 .header__menu-nav .menu__item:hover {
@@ -1331,13 +1332,45 @@ li.error {
 }
 
 .group .group__info {
-    margin-bottom: 30px;
+    margin-bottom: 15px;
 }
 
 .group .group__info tr td:first-child {
     width: 120px;
 }
 
+.group__invite-form {
+    margin-bottom: 20px;
+    display: flex;
+}
+
+.group__invite-form input[type=submit]{
+    margin: 0;
+    height: 38px;
+}
+
+.group__invite-form input[type=text]{
+    margin-right: 15px;
+}
+
+.group__invite-form .form__col .field__msg {
+    display: none;
+}
+
+.group__invite-form .form__col + .form__col {
+    margin-left: 15px;
+}
+
+.group__invite-form .form__col.error input[type=text]{
+    border-color: #dc3545;
+    color: #dc3545;
+}
+
+.group__invite-form .form__col.error .field__msg {
+    display: block;
+    color: #dc3545;
+    padding-left: 5px;
+}
 .group__table tr + tr {
     border-top: 1px solid #dee2e6;
 }

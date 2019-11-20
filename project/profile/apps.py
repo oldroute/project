@@ -36,6 +36,12 @@ class ProfileAppConfig(AppConfig):
                 data = json.loads(json_data)
             return data
 
+        def get_full_name(self):
+            if self.last_name or self.first_name:
+                return ('%s %s' % (self.last_name, self.first_name)).strip()
+            else:
+                return self.username
+
         def __str__(self):
             return self.get_full_name()
 
@@ -43,3 +49,4 @@ class ProfileAppConfig(AppConfig):
         setattr(UserModel, 'get_course_solutions_data', get_course_solutions_data)
         setattr(UserModel, 'get_cache_course_solutions_data', get_cache_course_solutions_data)
         setattr(UserModel, '__str__', __str__)
+        setattr(UserModel, 'get_full_name', get_full_name)

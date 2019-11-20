@@ -17,22 +17,26 @@ class Group(models.Model):
     CLOSE = '1'
     CODE = '2'
     CHOICES = (
-        (OPEN, 'Открыта'),
-        (CLOSE, 'Закрыта'),
-        (CODE, 'Кодовое слово'),
+        (OPEN, 'открыто'),
+        (CLOSE, 'закрыто'),
+        (CODE, 'по кодовому слову'),
     )
 
     show = models.BooleanField(verbose_name="отображать", default=True)
     title = models.CharField(verbose_name='название', max_length=255)
     author = models.ForeignKey(UserModel, verbose_name='автор')
-    status = models.CharField(verbose_name='cтатус', choices=CHOICES, default=CLOSE, max_length=255)
+    status = models.CharField(verbose_name='вступление в группу', choices=CHOICES, default=CLOSE, max_length=255)
     codeword = models.CharField(verbose_name='кодовое слово', blank=True, null=True, max_length=255)
     content = HTMLField(verbose_name='описание', blank=True, null=True)
     creation_date = models.DateTimeField(verbose_name="дата создания", auto_now_add=True)
-    members = models.ManyToManyField(UserModel, through='GroupMember', related_name='training_groups')
+    _members = models.ManyToManyField(UserModel, through='GroupMember', related_name='training_groups')
 
     def __str__(self):
         return self.title
+
+    @property
+    def members(self):
+        return self._members.all().order_by('last_name')
 
     def get_status(self):
         for choice in self.CHOICES:
@@ -53,6 +57,8 @@ class GroupMember(models.Model):
     class Meta:
         verbose_name = 'участник'
         verbose_name_plural = 'участники'
+        unique_together = ['group', 'user']
+        ordering = ['user__last_name']
 
     user = models.ForeignKey(UserModel, verbose_name='участник', related_name='member')
     group = models.ForeignKey(Group, related_name='member')

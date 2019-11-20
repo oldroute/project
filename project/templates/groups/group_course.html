@@ -27,7 +27,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for member in object.group.members.all %}
+                    {% for member in object.group.members %}
                         <tr id="js__member-{{ member.id }}">
                             <td title="{{ member }}" class="wide">{{ member.last_name }}</td>
                             <td class="js__score wide"></td>
