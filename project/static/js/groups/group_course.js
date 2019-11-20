@@ -43,6 +43,7 @@ var groupCoursePage = function(e){
             tr.querySelector('.js__score').innerHTML = score
         }
         $(".js__tablesorter").tablesorter()
+        document.querySelector('.js__loader').style.display = 'none';
 
     })
 

@@ -1,9 +1,9 @@
 {% extends "base.html" %}
-{# load training_tags #}
+{% load groups_tags %}
 
 {% block breadcrumbs %}
     {{ block.super }}
-    {# show_breadcrumbs #}
+    {% show_breadcrumbs object %}
 {% endblock %}
 
 {% block sidebar %}{% endblock %}

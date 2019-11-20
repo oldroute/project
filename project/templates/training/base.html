@@ -3,7 +3,7 @@
 
 {% block breadcrumbs %}
     {{ block.super }}
-    {% show_breadcrumbs %}
+    {% show_breadcrumbs object %}
 {% endblock %}
 
 {% block sidebar_title %}{{ course.title }}{% endblock %}

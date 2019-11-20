@@ -13,9 +13,9 @@ def date_format(str_datetime):
         return '-'
 
 
-@register.inclusion_tag('training/parts/breadcrumbs.html', takes_context=True)
-def show_breadcrumbs(context):
-    return context
+@register.inclusion_tag('training/parts/breadcrumbs.html')
+def show_breadcrumbs(obj):
+    return {'object': obj}
 
 
 @register.inclusion_tag('training/parts/sidebar.html', takes_context=True)
