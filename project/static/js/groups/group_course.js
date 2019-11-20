@@ -19,8 +19,10 @@ var groupCoursePage = function(e){
                 var td = tr.querySelector('.js__' + taskitem)
                 if(td){
                     var datetime = getFormatedDateTime(data.datetime)
-                    var title = document.querySelector('.js__col-' + td.getAttribute('data-col')).getAttribute('title')
-                    td.classList.add('status__' + data.status)
+                    var th = document.querySelector(td.getAttribute('data-th'))
+                    var title = th.getAttribute('title')
+                    var statusClass = 'status__' + data.status;
+                    td.classList.add(statusClass)
                     td.setAttribute('title', `${userName}\n${datetime}\n${title}`)
                     if(data.status == 3) score+=1
                     if(val.show_link){

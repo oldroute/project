@@ -26,7 +26,7 @@ class Course(models.Model):
     content = HTMLField(verbose_name="текстовый контент", default="", blank=True, null=True)
     content_bottom = HTMLField(verbose_name="текстовый контент под списком тем", default="", blank=True, null=True)
 
-    order_key = OrderField(verbose_name='порядок', blank=True)
+    order_key = OrderField(verbose_name='порядок', blank=True, null=True)
     last_modified = models.DateTimeField(verbose_name="дата последнего изменения", auto_now=True)
 
     @property

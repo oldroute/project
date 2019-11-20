@@ -17,7 +17,7 @@
                                     {% if forloop.first %}
                                         <div class="caption"><span>{{ topic.number }} {{ topic.title }}</span></div>
                                     {% endif %}
-                                    <a class="js__col-{{ forloop.counter }}" href="{{ taskitem.url }}"
+                                    <a class="js__th-{{ topic.number }}-{{ forloop.counter }}" href="{{ taskitem.url }}"
                                        target="_blank" title="{{ taskitem.number }} {{ taskitem.title }}">
                                         {{ taskitem.number }}
                                     </a>
@@ -33,7 +33,7 @@
                             <td class="js__score wide"></td>
                             {% for topic in course_data.topics %}
                                 {% for taskitem in topic.taskitems %}
-                                    <td class="js__{{ taskitem.id }}" data-col="{{ forloop.counter }}"></td>
+                                    <td class="js__{{ taskitem.id }}" data-th=".js__th-{{ topic.number }}-{{ forloop.counter }}"></td>
                                 {% endfor %}
                             {% endfor %}
                         </tr>

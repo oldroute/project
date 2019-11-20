@@ -65,8 +65,9 @@ var taskItemPage = function(e){
         },
         showLoader: function(msg){
             formControl.hideMsg();
-            $('#msg__loader').show();
-            $('#msg__loader-text').html(msg).show();
+            form.querySelector('.js__msg-loader').style.display = 'block'
+            form.querySelector('.js__msg-loader-text').innerHTML = msg
+            form.querySelector('.js__msg-loader-text').style.display = 'block'
         },
         showMsg(response){
             formControl.hideMsg()
@@ -126,8 +127,8 @@ var taskItemPage = function(e){
             return false
         },
         tests : function(e){
-            formControl.disableBtns()
             formControl.showLoader('Тестирование')
+            formControl.disableBtns()
             $.post(form.getAttribute('action'), formControl.serializeForm(operation='tests'), function(response){
                 formControl.showMsg(response)
                 formControl.enableVersionsBtn()

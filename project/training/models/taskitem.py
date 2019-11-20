@@ -22,9 +22,9 @@ class TaskItem(models.Model):
 
     show = models.BooleanField(verbose_name="отображать", default=True)
     task = models.ForeignKey(Task, verbose_name='задача', related_name='topics')
-    slug = SlugField(verbose_name="слаг", max_length=255, blank=True , for_fields=['topic'])
+    slug = SlugField(verbose_name="слаг", max_length=255, blank=True, null=True, for_fields=['topic'])
 
-    order_key = OrderField(verbose_name='порядок', blank=True, for_fields=['topic'])
+    order_key = OrderField(verbose_name='порядок', blank=True, null=True, for_fields=['topic'])
     topic = models.ForeignKey(Topic, verbose_name='тема', related_name='_taskitems')
 
     @property
@@ -101,7 +101,7 @@ class Solution(models.Model):
     taskitem = models.ForeignKey(TaskItem, verbose_name='задача', related_name='_solution')
     user = models.ForeignKey(UserModel, verbose_name="пользователь")
     status = models.CharField(verbose_name='статус', max_length=255,  choices=Status.CHOICES, default=Status.NONE)
-    progress = models.PositiveIntegerField(verbose_name='Прогресс решения', blank=True, default=0)
+    progress = models.PositiveIntegerField(verbose_name='Прогресс решения', blank=True, null=True)
     last_changes = models.TextField(verbose_name="последние изменения", blank=True, default='')
     version_best = JSONField(verbose_name="лучшее решение", blank=True, null=True)
     version_list = JSONField(verbose_name="список сохраненных решений", default=list, blank=True, null=True)
@@ -122,6 +122,8 @@ class Solution(models.Model):
         }
 
     def _set_status(self):
+        if self.progress is None:
+            self.status = self.Status.NONE
         if self.progress == 0:
             self.status = self.Status.UNLUCK
         elif self.progress == 100:

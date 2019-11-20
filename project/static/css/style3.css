@@ -1357,11 +1357,13 @@ li.error {
 .group-course .course__table {
     margin-top: 50px;
     border: none;
+    width: auto;
 }
 
 .group-course .course__table th {
     white-space: nowrap;
     min-width: 40px;
+    width: 40px;
     min-height: 40px;
     height: 40px;
     border: 1px #ddd solid;
@@ -1373,13 +1375,16 @@ li.error {
 
 .group-course .course__table tr th:first-child,
 .group-course .course__table tr td:first-child {
-    padding: 0 5px;
-    min-width: 120px;
+    padding: 0 5px 0 10px;
+    min-width: 150px;
+    width: 120px;
+    text-align: left;
 }
 
 .group-course .course__table tr th:nth-child(2),
 .group-course .course__table tr td:nth-child(2) {
     min-width: 90px;
+    width: 90px;
 }
 .group-course .course__table th .caption {
     position: relative;
@@ -1413,6 +1418,9 @@ li.error {
 }
 
 .group-course .course__table td {
+    min-width: 40px;
+    width: 40px;
+    min-height: 40px;
     height: 40px;
     border: 1px #ddd solid;
     font-size: 14px;

@@ -8,7 +8,6 @@ from project.training.models import Solution, TaskItem
 def solution_saved_handler(sender, instance, **kwargs):
     instance.user.get_cache_course_solutions_data(
         course=instance.taskitem.topic.course,
-        solution=instance
     )
 
 
