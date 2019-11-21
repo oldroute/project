@@ -40,15 +40,6 @@ class TopicInline(SortableInlineAdminMixin, admin.TabularInline):
 
 class ContentInline(SortableInlineAdminMixin, admin.StackedInline):
 
-    @property
-    def media(self):
-        return (
-            super(SortableInlineAdminMixin, self).media + widgets.Media(js=(
-                'adminsortable2/js/libs/jquery.ui.sortable-1.11.4.js',
-                'admin/training/inline-sortable.js',
-                'adminsortable2/js/inline-tabular.js')
-            )
-        )
     form = ContentAdminForm
     model = Content
     extra = 0
