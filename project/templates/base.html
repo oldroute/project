@@ -30,6 +30,19 @@
                     <a class="menu__item" href="{% url 'groups:groups' %}">Учебные группы</a>
                 </div>
                 <div class="header__menu-col-3">
+                    <div class="profile__bar">
+                        {% if request.user.is_active %}
+                            {% if request.user.is_staff %}
+                                <a href="/admin/">{{ request.user.get_full_name }}</a>
+                            {% else %}
+                                <span>{{ request.user.get_full_name }}</span>
+                            {% endif %}
+                            <span> /</span>
+                            <a href="{% url 'profile:logout' %}">Выйти</a>
+                        {% else %}
+                            <a href="{% url 'profile:login' %}">Войти</a>
+                        {% endif %}
+                    </div>
                 </div>
             </nav>
         </div>

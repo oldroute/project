@@ -13,6 +13,7 @@ urlpatterns = [
     url(r'^groups/', include('project.groups.urls', namespace='groups')),
     url(r'^tinymce/', include('tinymce.urls')),
     url(r'^training/', include('project.training.urls')),
+    url(r'^', include('project.profile.urls', namespace='profile')),
     url(r'^$', TemplateView.as_view(template_name='frontpage.html'))
 ]
 

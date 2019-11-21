@@ -119,3 +119,5 @@ SITE_ID = 1
 # EMAIL_HOST_PASSWORD = 'pass'
 # EMAIL_USE_SSL = True
 DEFAULT_FROM_EMAIL = 'info@cappa.ru'
+
+AUTHENTICATION_BACKENDS = ['project.profile.backends.CustomModelBackend']
