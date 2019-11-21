@@ -105,7 +105,13 @@ class Command(BaseCommand):
         python_themes = TreeItem.objects.filter(type=TreeItem.THEME, parent=python)
         python_course = Course.objects.get(slug='python')
         for theme in python_themes:
-            self.create_topic(theme, python_course)
+            if theme.id == 1470:
+                theme1 = TreeItem.objects.get(id=1469)
+                self.create_topic(theme1, python_course)
+                theme2 = TreeItem.objects.get(id=1468)
+                self.create_topic(theme2, python_course)
+            else:
+                self.create_topic(theme, python_course)
 
         # C++
         cpp = TreeItem.objects.get(id=1355)
@@ -163,7 +169,10 @@ class Command(BaseCommand):
     def create_taskitems(self):
         themes = TreeItem.objects.get(id=5).get_children().filter(type=TreeItem.THEME)
         for theme in themes:
-            topic = Topic.objects.get(slug=theme.slug)
+            if theme.id == 1470:
+                topic = Topic.objects.get(slug='72-spiski')
+            else:
+                topic = Topic.objects.get(slug=theme.slug)
             for treeitem in theme.get_descendants().filter(type=TreeItem.TASK):
                 try:
                     task = Task.objects.get(title=treeitem.title, source__title=treeitem.source.name)
@@ -209,8 +218,7 @@ class Command(BaseCommand):
                     except TaskItem.DoesNotExist:
                         print('--> нет taskitem', user_solution.code.id)
             else:
-                print('--> нет treeitem', user_solution.code.id)
-
+                print('--> у решения нет treeitem', user_solution.code.id)
 
     def handle(self, *args, **options):
 
