@@ -129,7 +129,7 @@ MIDDLEWARE += ['project.middleware.CustomModelAdminReorder']
 ADMIN_REORDER = (
     {
         'app': 'training', 'label': u'Учебные курсы',
-        'models': ('training.Course', 'groups.Group', 'langs.Lang', )
+        'models': ('training.Course', 'groups.Group', 'training.Solution', 'langs.Lang', )
     },
     {
         'app': 'tasks', 'label': u'Задачник',

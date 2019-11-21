@@ -29,7 +29,7 @@ class SolutionAdmin(admin.ModelAdmin):
         return obj.user.get_full_name() or obj.user.username
 
     model = Solution
-    exclude = ('url', 'last_changes', 'version_list')
+    exclude = ('last_changes', 'version_list')
     readonly_fields = ('progress', 'status')
     raw_id_fields = ('user', 'taskitem')
     list_display = ('get_user', 'taskitem', 'progress')

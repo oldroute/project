@@ -20,7 +20,7 @@ class ProfileAppConfig(AppConfig):
                 data['taskitem__%d' % solution.taskitem.id] = {
                     'status': solution.status,
                     'progress': solution.progress,
-                    'datetime': solution.version_best['datetime'],
+                    'datetime': solution.version_best['datetime'] if solution.version_best else '',
                     'url': '%s?user=%d' % (solution.get_absolute_url(), self.id)
                 }
             return data
