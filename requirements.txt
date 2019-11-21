@@ -4,4 +4,5 @@ Unidecode==1.1.1
 django-mptt==0.9.0
 django-tinymce==2.7.0
 django-allauth==0.39.1
+django-modeladmin-reorder==0.3.1
 # установить системно postgresql 9.6.9 и psycopg2

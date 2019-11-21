@@ -53,7 +53,7 @@ TEMPLATES = [
     },
 ]
 
-INSTALLED_APPS = (
+INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.sites',
@@ -74,7 +74,7 @@ INSTALLED_APPS = (
     'project.training',
     'project.langs',
     'project.groups',
-)
+]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -121,3 +121,22 @@ SITE_ID = 1
 DEFAULT_FROM_EMAIL = 'info@cappa.ru'
 
 AUTHENTICATION_BACKENDS = ['project.profile.backends.CustomModelBackend']
+
+
+# ~========== ADMIN REORDER ===========~
+INSTALLED_APPS += ['admin_reorder']
+MIDDLEWARE += ['project.middleware.CustomModelAdminReorder']
+ADMIN_REORDER = (
+    {
+        'app': 'training', 'label': u'Учебные курсы',
+        'models': ('training.Course', 'groups.Group', 'langs.Lang', )
+    },
+    {
+        'app': 'tasks', 'label': u'Задачник',
+        'models': ('tasks.Task', 'tasks.Source',)
+    },
+    {
+        'app': 'news', 'label': u'Контент',
+        'models': ('news.News',)
+    },
+)
