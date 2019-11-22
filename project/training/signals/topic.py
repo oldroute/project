@@ -4,8 +4,14 @@ from django.dispatch import receiver
 from project.training.models import Topic
 
 
-@receiver(post_save, sender=Topic)
 @receiver(post_delete, sender=Topic)
+@receiver(post_save, sender=Topic)
 def topic_changed_handler(sender, instance, **kwargs):
-    # TODO order_key пересчитывать
+    post_save.disconnect(topic_changed_handler, sender=Topic)
+    number = 1
+    for topic in Topic.objects.filter(show=True, course=instance.course):
+        topic.number = number
+        topic.save()
+        number += 1
+    post_save.connect(topic_changed_handler, sender=Topic)
     cache.clear()

@@ -23,6 +23,7 @@ class Topic(models.Model):
     author = models.ForeignKey(UserModel, verbose_name="автор", on_delete=models.SET_NULL, blank=True, null=True)
 
     course = models.ForeignKey(Course, verbose_name='курс', related_name='_topics')
+    number = models.PositiveIntegerField(verbose_name='порядковый номер', blank=True, null=True)
     order_key = OrderField(verbose_name='порядок', blank=True,  null=True, for_fields=['course'])
     last_modified = models.DateTimeField(verbose_name="дата последнего изменения", auto_now=True)
 
@@ -33,10 +34,6 @@ class Topic(models.Model):
     @property
     def taskitems(self):
         return self._taskitems.filter(show=True)
-
-    @property
-    def number(self):
-        return self.order_key
 
     @property
     def numbered_title(self):

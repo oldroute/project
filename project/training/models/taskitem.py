@@ -24,6 +24,7 @@ class TaskItem(models.Model):
     task = models.ForeignKey(Task, verbose_name='задача', related_name='topics')
     slug = SlugField(verbose_name="слаг", max_length=255, blank=True, null=True, for_fields=['topic'])
 
+    number = models.PositiveIntegerField(verbose_name='порядковый номер', blank=True, null=True)
     order_key = OrderField(verbose_name='порядок', blank=True, null=True, for_fields=['topic'])
     topic = models.ForeignKey(Topic, verbose_name='тема', related_name='_taskitems')
 
@@ -47,7 +48,7 @@ class TaskItem(models.Model):
     def get_data(self):
         return {
             'id': self.cache_key,
-            'number': '%s.%s' % (self.topic.order_key, self.order_key),
+            'number': '%s.%s' % (self.topic.number, self.number),
             'title': self.title,
             'url': reverse('training:taskitem', kwargs={
                     'course': self.topic.course.slug,

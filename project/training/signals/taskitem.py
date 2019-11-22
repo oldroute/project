@@ -6,7 +6,7 @@ from project.training.models import Solution, TaskItem
 
 @receiver(post_save, sender=Solution)
 def solution_saved_handler(sender, instance, **kwargs):
-    instance.user.get_cache_course_solutions_data(
+    instance.user.update_cache_course_solutions_data(
         course=instance.taskitem.topic.course,
     )
 
@@ -14,5 +14,12 @@ def solution_saved_handler(sender, instance, **kwargs):
 @receiver(post_save, sender=TaskItem)
 @receiver(post_delete, sender=TaskItem)
 def taskitem_changed_handler(sender, instance, **kwargs):
-    # TODO order_key пересчитывать
+    post_save.disconnect(taskitem_changed_handler, sender=TaskItem)
+    number = 1
+    for taskitem in TaskItem.objects.filter(show=True, topic=instance.topic):
+        taskitem.number = number
+        taskitem.save()
+        number += 1
+    post_save.connect(taskitem_changed_handler, sender=TaskItem)
     cache.clear()
+
