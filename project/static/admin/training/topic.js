@@ -108,9 +108,8 @@ $(document).ready(function(){
 
     /* инициализировать ace для нового блока кода */
     $('#_content-group .add-row a').on('click', function(e){
-        aceInit()
+         aceInit()
          $('#_content-group .field-type select').each(toggleWidget)
-         $('#_content-group .field-show_input input[type=checkbox]').each(toggleWidgetAceInput)
     })
 
     /* Показать/скрыть блок ввода редактора */
