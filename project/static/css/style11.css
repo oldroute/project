@@ -730,6 +730,7 @@ main .content {
     background-color: #edeff0;
     background-image: url('../img/close.svg');
     border-left: #eae8e8 1px solid;
+    z-index: 50px;
 }
 
 .sidebar .topic__item + .topic__item {
@@ -1809,4 +1810,8 @@ li.error {
         font-size: 18px;
     }
 
+    .js__editor-btn-tests,
+    .js__editor-btn-debug {
+        width: 60px;
+    }
 }
