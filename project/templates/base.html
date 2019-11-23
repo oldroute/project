@@ -3,6 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}CAPPA{% endblock %}</title>
     {% block css %}
         <link rel="shortcut icon" href="{% static 'img/favicons/favicon.ico' %}">
@@ -33,14 +34,19 @@
                     <div class="profile__bar">
                         {% if request.user.is_active %}
                             {% if request.user.is_staff %}
-                                <a href="/admin/">{{ request.user.get_full_name }}</a>
+                                <a class="profile__bar-username-icon" target="_blank" href="/admin/"></a>
+                                <a class="profile__bar-username" target="_blank" href="/admin/">{{ request.user.get_full_name }}</a>
                             {% else %}
-                                <span>{{ request.user.get_full_name }}</span>
+                                <span class="profile__bar-username-icon"></span>
+                                <span class="profile__bar-username">{{ request.user.get_full_name }}</span>
                             {% endif %}
-                            <span> /</span>
-                            <a href="{% url 'profile:logout' %}">Выйти</a>
+
+                        {% endif %}
+                        {% if request.user.is_active %}
+                            <a class="profile__bar-logout-icon" href="{% url 'profile:logout' %}"></a>
+                            <a class="profile__bar-logout" href="{% url 'profile:logout' %}">Выйти</a>
                         {% else %}
-                            <a href="{% url 'profile:login' %}">Войти</a>
+                            <a class="profile__bar-login" href="{% url 'profile:login' %}">Войти</a>
                         {% endif %}
                     </div>
                 </div>
@@ -79,29 +85,8 @@
     <footer>
         <div class="container">
             <div class="row footer-nav">
-                <div class="col-lg-3">
-                    CSU Math 2018
-                </div>
-                <div class="col-lg-3">
-                    <div class="footer-nav-title">О нас</div>
-                    <ul>
-                        <li><a href="">Команда проекта</a></li>
-                        <li><a href="">О проекте</a></li>
-                        <li><a href="">Контакты</a></li>
-                        <li><a href="">Помощь</a></li>
-
-                    </ul>
-                </div>
-                <div class="col-lg-3">
-                    <div class="footer-nav-title">Разработчикам</div>
-                    <ul>
-                        <li><a href="">Быстрый старт</a></li>
-                        <li><a href="">Обратная связь</a></li>
-                        <li><a href="">Документация</a></li>
-                        <li><a href="//github.com/oldroute/project">Репозиторий</a></li>
-                    </ul>
-                </div>
-                <div class="copyright col-lg-3">
+                <div class="">
+                   © CSU Math {% now 'Y' %}
                 </div>
             </div>
         </div>

@@ -63,7 +63,7 @@ a:hover {
 .row {
     margin: 0;
 }
-
+/*
 @media (min-width: 1270px){
     .container {
         max-width: 1180px;
@@ -75,7 +75,7 @@ a:hover {
     .container {
         max-width: 1240px;
     }
-}
+}*/
 
 .tr-close {
     background: gainsboro;
@@ -182,6 +182,7 @@ div.row .btn {
     border-radius: 2px;
     cursor: pointer;
     height: 30px;
+    min-width: 30px;
     width: 30px;
     transition: all 400ms ease;
 }
@@ -480,6 +481,8 @@ pre {
     align-items: center;
     justify-content: flex-end;
     position: relative;
+    min-width: 310px;
+    width: 310px;
 }
 
 
@@ -487,11 +490,10 @@ pre {
     display: flex;
     justify-content: center;
     flex: 1 1;
-    margin: 0 60px;
 }
 
 .header__menu-nav .menu__item + .menu__item {
-    margin-left: 60px;
+   margin-left: 50px;
 }
 
 .header__menu-burger {
@@ -512,8 +514,24 @@ pre {
 
 .profile__bar {
     font-weight: 800;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
 }
 
+.profile__bar-username-icon {
+    display: none;
+}
+
+.profile__bar-username:after {
+    content: '/';
+    width: 10px;
+    height: auto;
+    text-align: center;
+    position: relative;
+    display: inline-block;
+    margin:0 5px;
+}
 
 /* breadcrumbs */
 .breadcrumbs {
@@ -575,6 +593,10 @@ main .content {
     width: 100%;
 }
 
+.text {
+    overflow: hidden;
+}
+
 .text table tr td {
     padding: 5px 10px;
 }
@@ -609,9 +631,9 @@ main .content {
 
 /* sidebar */
 .sidebar {
-    right: -405px;
+    right: -385px;
     position: fixed;
-    width: 450px;
+    width: 425px;
     height: 100vh;
     top: 50px;
     display: flex;
@@ -892,6 +914,7 @@ main .content {
     text-align: left;
     margin-bottom: 15px;
     position: relative;
+    overflow: hidden;
 }
 
 .fp-content h3 {
@@ -1298,6 +1321,10 @@ li.error {
     background-color: #337ab7;
 }
 
+.groups__table-container {
+    overflow-x: auto;
+}
+
 .groups__table tr + tr {
     border-top: 1px solid #dee2e6;
 }
@@ -1319,12 +1346,15 @@ li.error {
     display: flex;
     flex-direction: column;
     flex: 1 1 auto;
-    min-width: 450px;
     margin: 0 15px;
 }
 
 .group .group__info {
     margin-bottom: 15px;
+}
+
+.group .group__info tr td a {
+    display: inline-block;
 }
 
 .group .group__info tr td:first-child {
@@ -1363,6 +1393,11 @@ li.error {
     color: #dc3545;
     padding-left: 5px;
 }
+
+.group__table-container {
+    overflow-x: auto;
+}
+
 .group__table tr + tr {
     border-top: 1px solid #dee2e6;
 }
@@ -1586,4 +1621,101 @@ li.error {
     margin-bottom: 5px;
     height: 20px;
     width: 100%;
+}
+
+/* адаптив */
+
+@media screen and (max-width: 1200px) {
+
+    .header__menu-col-1 {
+        min-width: 290px;
+        width: 290px;
+    }
+    .header__menu-col-3 {
+        min-width: 250px;
+        width: 250px;
+    }
+
+    .header__menu-nav .menu__item + .menu__item {
+        margin-left: 30px;
+    }
+
+@media screen and (max-width: 1200px) {
+    .header__menu-nav .menu__item-desc {
+        display: none;
+    }
+    .header__menu-col-1 {
+        min-width: 115px;
+        width: 115px;
+    }
+
+    .header__menu-col-3 {
+        min-width: 115px;
+        width: 115px;
+    }
+
+}
+
+@media screen and (max-width: 991px) {
+
+    .profile__bar-username,
+    .profile__bar-logout {
+        display: none;
+    }
+    .profile__bar-username-icon {
+        display: inline-block;
+        width: 35px;
+        height: 35px;
+        background: url('../img/author.svg') no-repeat center;
+        margin: -3px 10px 0 0;
+    }
+    .profile__bar-logout-icon {
+        display: inline-block;
+        width: 35px;
+        height: 35px;
+        background: url('../img/logout.svg') no-repeat center;
+        margin-top: -3px;
+    }
+
+    .header__menu-col-3 {
+        min-width: 80px;
+        width: 80px;
+    }
+
+    .header__menu-nav .menu__item + .menu__item {
+        margin-left: 30px;
+    }
+
+    .header__menu-nav .menu__item + .menu__item {
+        margin-left: 15px;
+    }
+
+}
+
+@media screen and (max-width: 768px) {
+
+   .header__menu-col-1 {
+        min-width: 100px;
+        width: 100px;
+   }
+
+   .header__menu-nav .menu__item {
+        font-size: 14px;
+   }
+
+   .header__menu-nav .menu__item-home {
+        font-size: 22px;
+   }
+
+}
+
+@media screen and (max-width: 768px) {
+
+    .header__menu-col-2 .menu__item:not(:first-child) {
+        display: none;
+    }
+
+    .header__menu-nav .menu__item {
+        font-size: 16px;
+    }
 }

@@ -45,10 +45,12 @@
                 {% for group_course in object.group_courses.all %}
                     <tr>
                         <td>Курс:</td>
-                        <td><a href="{{ group_course.course.get_absolute_url }}">{{ group_course.course }}</a></td>
-                        {% if request.user == object.author or request.user in object.members %}
-                           <td><a href="{% url 'groups:group-course' object.id group_course.id %}">Таблица результатов</a></td>
-                        {% endif %}
+                        <td>
+                            <a href="{{ group_course.course.get_absolute_url }}">{{ group_course.course }}</a>
+                            {% if request.user == object.author or request.user in object.members %}
+                               <a href="{% url 'groups:group-course' object.id group_course.id %}"> [таблица результатов]</a></td>
+                            {% endif %}
+                        </td>
                     </tr>
                 {% endfor %}
             </table>
@@ -58,24 +60,26 @@
         <div class="group__col white">
             <h3 class="text-center">Список участников</h3>
             {% if object.members %}
-                <table class="group__table js__tablesorter">
-                    <thead>
-                        <tr>
-                            <th>№</th>
-                            <th>Фамилия</th>
-                            <th>Имя</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for member in object.members %}
+                <div class="group__table-container">
+                    <table class="group__table js__tablesorter">
+                        <thead>
                             <tr>
-                                <td>{{ forloop.counter }}</td>
-                                <td>{{ member.last_name }}</td>
-                                <td>{{ member.first_name }}</td>
+                                <th>№</th>
+                                <th>Фамилия</th>
+                                <th>Имя</th>
                             </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {% for member in object.members %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ member.last_name }}</td>
+                                    <td>{{ member.first_name }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             {% endif %}
         </div>
     </div>
