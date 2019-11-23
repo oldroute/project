@@ -155,6 +155,11 @@ var taskItemPage = function(e){
 
                         }
                     }
+                    if(response.tests_result.id){
+                        var sidebarItem = document.querySelector('#js__' + response.tests_result.id)
+                        sidebarItem && sidebarItem.classList.remove('status__0', 'status__1', 'status__2', 'status__3')
+                        sidebarItem && sidebarItem.classList.add('status__'+ response.tests_result.status)
+                    }
                 }
                 formControl.aceInit();
 

@@ -59,7 +59,6 @@ class SolutionView(View):
             user_id = request.GET.get('user')
             if user_id and int(user_id) == request.user.id:
                 # Запрос решения участника сделан самим участником группы
-                print('========1========')
                 return Solution.objects.get(
                     taskitem__slug=kwargs['taskitem'],
                     taskitem__topic__slug=kwargs['topic'],
@@ -71,9 +70,7 @@ class SolutionView(View):
                 user = UserModel.objects.get(id=user_id)
                 group = user.member.filter(group__author=request.user).first().group
                 group_course = GroupCourse.objects.filter(course__slug=kwargs['course'], group=group)
-                print('========2========')
                 if group_course.exists():
-                    print('========2.1========')
                     return Solution.objects.get(
                         taskitem__slug=kwargs['taskitem'],
                         taskitem__topic__slug=kwargs['topic'],
@@ -83,7 +80,6 @@ class SolutionView(View):
                 else:
                     raise Http404
             else:
-                print('========3========')
                 # Запрос собственного решения
                 return Solution.objects.get(
                     taskitem__slug=kwargs['taskitem'],

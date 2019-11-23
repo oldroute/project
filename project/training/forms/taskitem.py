@@ -48,6 +48,8 @@ class TaskItemForm(forms.Form):
                 solution, _ = Solution.objects.get_or_create(user=user, taskitem=taskitem)
                 solution.update(data['content'], tests_result)
                 solution.save()
+                tests_result['status'] = solution.status
+                tests_result['id'] = 'taskitem__%d' % taskitem.id
 
             if tests_result['success']:
                 return Response(200, 'Тесты пройдены', tests_result=tests_result)
