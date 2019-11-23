@@ -1731,7 +1731,6 @@ li.error {
         min-width: 200px;
         height: auto;
         background-repeat: no-repeat;
-        background-position: left center;
         background-size: auto 100%;
     }
 
@@ -1739,6 +1738,10 @@ li.error {
 
 @media screen and (max-width: 768px) {
 
+    .sidebar {
+        right: calc(45px - 100%);
+        width: 100%;
+    }
 
     .header__menu-nav .menu__item {
         font-size: 14px;
@@ -1789,11 +1792,6 @@ li.error {
 }
 
 @media screen and (max-width: 600px) {
-
-    .sidebar {
-        right: -385px;
-        width: 425px;
-    }
 
     .breadcrumbs {
         width: calc(100% - 25px);
