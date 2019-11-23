@@ -7,15 +7,13 @@ from django.conf import settings
 
 class TmpFile:
 
-    def __init__(self, ext):
-        self.filename = "%s.%s" % (uuid.uuid4(), ext)
+    def __init__(self, content):
+        self.filename = "%s.py" % (uuid.uuid4())
         self.filedir = os.path.join(settings.TMP_DIR, self.filename)
 
-    def create(self, file_content):
         file = open(self.filedir, "wb")
-        file.write(bytes(file_content, 'utf-8'))
+        file.write(bytes(content, 'utf-8'))
         file.close()
-        return self.filename
 
     def remove(self):
         os.remove(self.filedir)
@@ -24,11 +22,9 @@ class TmpFile:
 
 def debug(input, content):
     stdin = bytes(input, 'utf-8')
-    tmp_file = TmpFile(ext='py')
-    filename = tmp_file.create(content)
-    args = [settings.PYTHON_PATH, filename]
+    tmp_file = TmpFile(content)
     proc = subprocess.Popen(
-        args=args,
+        args=[settings.PYTHON_PATH, tmp_file.filename],
         stdin=subprocess.PIPE,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
@@ -91,9 +87,8 @@ def check_test(python_out, test_out):
 
 
 def tests(content, tests):
-    tmp_file = TmpFile(ext='py')
-    filename = tmp_file.create(content)
-    args = [settings.PYTHON_PATH, filename]
+    tmp_file = TmpFile(content)
+    args = [settings.PYTHON_PATH, tmp_file.filename]
     tests_data = []
     tests_num = len(tests)
     tests_num_success = 0
