@@ -56,7 +56,7 @@ def debug(input, content):
             cwd=settings.TMP_DIR,
         )
         try:
-            stdout, stderr = p2.communicate(stdin, timeout=code.timeout)
+            stdout, stderr = p2.communicate(stdin)
             error = stderr.decode('UTF-8')
             output = stdout.decode("UTF-8")
         except subprocess.TimeoutExpired:
@@ -104,7 +104,7 @@ def tests(content, tests):
                 cwd=settings.TMP_DIR,
             )
             try:
-                stdout, stderr = p2.communicate(stdin, timeout=code.timeout)
+                stdout, stderr = p2.communicate(stdin)
                 error = stderr.decode('UTF-8')
                 output = stdout.decode("UTF-8")
                 tmp.remove_file_out()
