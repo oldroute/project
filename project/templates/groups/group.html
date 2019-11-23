@@ -25,7 +25,7 @@
                         <input type="submit" class="btn btn-primary" value="Стать участником" />
                     </form>
                 {% elif object.status == '1' %}
-                    <p>Группа закрыта, для участия обратитесь к владельцу группы</p>
+                    <p>Закрытая группа</p>
                 {% elif object.status == '2' %}
                     <p>Для участия в группе введите кодовое слово</p>
                     <form class="group__invite-form" method="POST">
@@ -48,7 +48,7 @@
                         <td>
                             <a href="{{ group_course.course.get_absolute_url }}">{{ group_course.course }}</a>
                             {% if request.user == object.author or request.user in object.members %}
-                               <a href="{% url 'groups:group-course' object.id group_course.id %}"> [таблица результатов]</a></td>
+                               <a href="{% url 'groups:group-course' object.id group_course.id %}">[таблица результатов]</a></td>
                             {% endif %}
                         </td>
                     </tr>

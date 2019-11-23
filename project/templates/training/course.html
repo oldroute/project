@@ -24,10 +24,11 @@
                     </div>
                 {% endfor %}
             </div>
-            {% if object.content_bottom %}
-                <div class ="text">{{ object.content_bottom|safe }}</div>
-            {% endif %}
         </div>
+
+        {% if object.content_bottom %}
+            <div class ="white fp-content text">{{ object.content_bottom|safe }}</div>
+        {% endif %}
     </div>
 {% endblock %}
 

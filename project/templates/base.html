@@ -44,7 +44,6 @@
                         {% endif %}
                         {% if request.user.is_active %}
                             <a class="profile__bar-logout-icon" href="{% url 'profile:logout' %}"></a>
-                            <a class="profile__bar-logout" href="{% url 'profile:logout' %}">Выйти</a>
                         {% else %}
                             <a class="profile__bar-login" href="{% url 'profile:login' %}">Войти</a>
                         {% endif %}
