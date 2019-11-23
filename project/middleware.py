@@ -1,17 +1,6 @@
 # -*- coding: utf-8 -*-
 from copy import deepcopy
-from django.http import HttpResponseRedirect
-from django.utils.deprecation import MiddlewareMixin
 from admin_reorder.middleware import ModelAdminReorder
-
-
-class LoginRequiredMiddleware(MiddlewareMixin):
-
-    def process_request(self, request):
-        if not request.user.is_authenticated():
-            path = request.path_info.lstrip('/')
-            if path != 'login/':
-                return HttpResponseRedirect("/login/")
 
 
 class CustomModelAdminReorder(ModelAdminReorder):

@@ -163,7 +163,7 @@ div.row .btn {
 }
 
 .control__bar-col.col__1 {
-    min-width: calc(30% - 10px);
+    width: calc(30% - 10px);
     justify-content: flex-start;
 }
 
@@ -174,7 +174,8 @@ div.row .btn {
 }
 
 .control__bar-col.col__3 {
-    min-width: calc(30% - 10px);
+    width: calc(30% - 10px);
+    min-width: 90px;
     justify-content: flex-end;
 }
 /* editor btns */
@@ -246,6 +247,7 @@ div.row .btn {
     color: #337ab7;
     align-items: center;
     font-weight: 600;
+    height: 30px;
 }
 
 @keyframes pulse {
@@ -1690,6 +1692,7 @@ li.error {
     .control__bar.taskitem {
         flex-wrap: wrap;
         background-color: #fff;
+        margin-bottom: 0;
     }
 
     .control__bar.taskitem .js__editor-btn-versions {
@@ -1712,7 +1715,7 @@ li.error {
 
     .control__bar.taskitem .control__bar-col.col__3 {
         width: 100%;
-        margin-top: 10px;
+        margin: 10px 0;
         background-color: #f5f2f0;
         justify-content: center;
     }
@@ -1791,7 +1794,16 @@ li.error {
         width: calc(100% - 25px);
     }
 
-   .breadcrumbs__item {
+    .breadcrumbs__item {
         font-size: 12px;
     }
+
+    .js__msg {
+        font-size: 14px;
+    }
+
+    .js__msg-loader {
+        font-size: 18px;
+    }
+
 }

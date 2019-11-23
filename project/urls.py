@@ -10,11 +10,8 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
     url(r'^courses/', include('project.training.urls', namespace='training')),
-    url(r'^courses/', include('project.courses.urls')),
-    url(r'^executor/', include('project.executors.urls')),
     url(r'^groups/', include('project.groups.urls', namespace='groups')),
     url(r'^tinymce/', include('tinymce.urls')),
-    url(r'^training/', include('project.training.urls')),
     url(r'^', include('project.profile.urls', namespace='profile')),
     url(r'^$', TemplateView.as_view(template_name='frontpage.html'))
 ]

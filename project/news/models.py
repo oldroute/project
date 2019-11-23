@@ -1,11 +1,6 @@
 # -*- coding:utf-8 -*-
-import os
-import json
 from django.db import models
-from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import User
-from project.courses.models import TreeItem
-from django.contrib.postgres.fields import JSONField
 from tinymce.models import HTMLField
 
 

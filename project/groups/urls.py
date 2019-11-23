@@ -1,9 +1,6 @@
 # -*- coding:utf-8 -*-
 from django.conf.urls import url
 from project.groups import views
-# from django.contrib.auth.decorators import login_required
-# from project.groups import views
-# from project.modules.views import ModuleProgressView
 
 urlpatterns = [
     url(r'^$', views.GroupListView.as_view(), name='groups'),

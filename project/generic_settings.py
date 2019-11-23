@@ -66,9 +66,6 @@ INSTALLED_APPS = [
     'mptt',
     'adminsortable2',
     'project',
-    'project.sources',
-    'project.courses',
-    'project.executors',
     'project.news',
     'project.tasks',
     'project.training',
@@ -84,7 +81,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # 'project.middleware.LoginRequiredMiddleware',
 ]
 
 DATABASES = {
@@ -113,15 +109,9 @@ TINYMCE_DEFAULT_CONFIG = {
 
 
 SITE_ID = 1
-# EMAIL_HOST = 'smtp.yandex.ru'
-# EMAIL_PORT = 465
-# EMAIL_HOST_USER = 'mailUser'
-# EMAIL_HOST_PASSWORD = 'pass'
-# EMAIL_USE_SSL = True
 DEFAULT_FROM_EMAIL = 'info@cappa.ru'
 
 AUTHENTICATION_BACKENDS = ['project.profile.backends.CustomModelBackend']
-
 
 # ~========== ADMIN REORDER ===========~
 INSTALLED_APPS += ['admin_reorder']

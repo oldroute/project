@@ -1,17 +1,8 @@
 # -*- coding: utf-8 -*-
-import re
-from django.forms.models import model_to_dict
-from django.db.models import Case, When
 from django.core.management.base import BaseCommand
 from django.contrib.auth import get_user_model
-from project.courses.models import TreeItem
-from project.executors.models import Code, CodeTest, UserSolution
-from project.sources.models import Source
-from project.tasks.models import Source as TasksSourse
-from project.langs.models import Lang
-from project.tasks.models import Task
 
-from project.training.models import Course, Topic, Content, TaskItem, Solution
+from project.training.models import Topic
 
 UserModel = get_user_model()
 
