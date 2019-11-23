@@ -22,4 +22,7 @@
     </div>
 {% endblock %}
 
-{% block sidebar %}{% endblock %}
+{% block sidebar_control %}
+    <a href="{% url 'groups:groups' %}" class="sidebar__control-btn sidebar__control-btn-groups" title="Учебные группы"></a>
+    <a href="{% url 'training:course' course='python' %}" class="sidebar__control-btn sidebar__control-btn-python" title="Учебный курс Python"></a>
+{% endblock %}

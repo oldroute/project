@@ -437,6 +437,7 @@ pre {
 
 .header__menu-nav {
     display: flex;
+    justify-content: space-between;
     align-items: center;
     height: 50px;
 }
@@ -665,6 +666,11 @@ main .content {
     background-color: #f7f7f7;
     width: 45px;
     height: 100%;
+    opacity: 0.5;
+}
+
+.sidebar.active .sidebar__control-background {
+    opacity: 1;
 }
 
 .sidebar__control-btn {
@@ -673,10 +679,24 @@ main .content {
     background-size: 25px;
     cursor: pointer;
     z-index: 11;
+    opacity: 0.8;
+    transition: .3s;
+}
+
+.sidebar__control-btn:hover {
+    opacity: 1;
 }
 
 .sidebar__control-btn-menu {
     background: url('../img/menu.svg') no-repeat center;
+}
+
+.sidebar__control-btn-groups {
+    background: url('../img/groups.svg') no-repeat center;
+}
+
+.sidebar__control-btn-python {
+    background: url('../img/python.svg') no-repeat center;
 }
 
 .sidebar__body-title {
@@ -1635,13 +1655,6 @@ li.error {
     }
 
 @media screen and (max-width: 1200px) {
-    .header__menu-nav .menu__item-desc {
-        display: none;
-    }
-    .header__menu-col-1 {
-        min-width: 115px;
-        width: 115px;
-    }
 
     .header__menu-col-3 {
         min-width: 115px;
@@ -1664,15 +1677,8 @@ li.error {
         font-size: 18px;
     }
 
-    .profile__bar-username {
+    .header__menu-col-2 {
         display: none;
-    }
-    .profile__bar-username-icon {
-        display: inline-block;
-        width: 35px;
-        height: 35px;
-        background: url('../img/author.svg') no-repeat center;
-        margin: -3px 10px 0 0;
     }
 
     .header__menu-col-3 {
@@ -1733,10 +1739,6 @@ li.error {
 
 @media screen and (max-width: 768px) {
 
-    .header__menu-col-1 {
-        min-width: 100px;
-        width: 100px;
-    }
 
     .header__menu-nav .menu__item {
         font-size: 14px;
@@ -1752,6 +1754,17 @@ li.error {
 
     .header__menu-col-2 .menu__item:not(:first-child) {
        display: none;
+    }
+
+    .profile__bar-username {
+        display: none;
+    }
+    .profile__bar-username-icon {
+        display: inline-block;
+        width: 35px;
+        height: 35px;
+        background: url('../img/user.svg') no-repeat center;
+        margin: -3px 10px 0 0;
     }
 
     .header__menu-nav .menu__item {
@@ -1776,14 +1789,6 @@ li.error {
 }
 
 @media screen and (max-width: 600px) {
-
-    .sidebar__control-background {
-        opacity: 0.5;
-    }
-
-    .sidebar.active .sidebar__control-background {
-        opacity: 1;
-    }
 
     .sidebar {
         right: -385px;

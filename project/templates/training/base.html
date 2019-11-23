@@ -8,8 +8,15 @@
 
 {% block sidebar_title %}{{ course.title }}{% endblock %}
 
+{% block sidebar_control %}
+    <div class="sidebar__control-btn sidebar__control-btn-menu js__sidebar-btn"></div>
+    {{ block.super }}
+{% endblock %}
+
 {% block sidebar_body %}
-    {% show_sidebar course %}
+    {% if course %}
+        {% show_sidebar course %}
+    {% endif %}
 {% endblock %}
 
 {% block js %}
