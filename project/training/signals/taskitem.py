@@ -5,6 +5,7 @@ from project.training.models import Solution, TaskItem
 
 
 @receiver(post_save, sender=Solution)
+@receiver(post_delete, sender=Solution)
 def solution_saved_handler(sender, instance, **kwargs):
     instance.user.update_cache_course_solutions_data(
         course=instance.taskitem.topic.course,

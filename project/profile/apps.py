@@ -8,8 +8,6 @@ class ProfileAppConfig(AppConfig):
     def ready(self):
         from django.contrib.auth import get_user_model
 
-        UserModel = get_user_model()
-
         def cache_course_key(self, course):
             return 'user-%d-course-%d' % (self.id, course.id)
 
@@ -37,6 +35,8 @@ class ProfileAppConfig(AppConfig):
             return data
 
         def update_cache_course_solutions_data(self, course):
+            from django.core.cache import cache
+            cache.delete(self.cache_course_key(course))
             _ = self.get_cache_course_solutions_data(course)
 
         def get_full_name(self):
@@ -48,6 +48,7 @@ class ProfileAppConfig(AppConfig):
         def __str__(self):
             return self.get_full_name()
 
+        UserModel = get_user_model()
         setattr(UserModel, 'cache_course_key', cache_course_key)
         setattr(UserModel, 'get_course_solutions_data', get_course_solutions_data)
         setattr(UserModel, 'get_cache_course_solutions_data', get_cache_course_solutions_data)
