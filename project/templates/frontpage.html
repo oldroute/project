@@ -12,15 +12,13 @@
             <div class="news">
                 <h2 class="fp-title">Новости</h2>
                 {% for new in news %}
-                    <div class="one-col white">
-                        <div class="news-item">
-                            <div class="new-image">
-                                <img src="{{ new.image.url }}"/>
-                            </div>
-                            <div class="new-item-container">
-                                <div class="new-date">{{ new.date|date:"d.m.Y" }}</div>
-                                <div class="new-item-title">{{ new.title }}</div>
-                                <div class="new-content">{{ new.content|safe }}</div>
+                    <div class="one-col white news">
+                        <div class="news__item">
+                            <div class="news__item-img" style="background-image: url('{{ new.image.url }}')"></div>
+                            <div class="news__item-info">
+                                <div class="news__item-date">{{ new.date|date:"d.m.Y" }}</div>
+                                <div class="news__item-title">{{ new.title }}</div>
+                                <div class="news__item-content">{{ new.content|safe }}</div>
                             </div>
                         </div>
                     </div>
