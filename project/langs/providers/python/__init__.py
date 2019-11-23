@@ -44,22 +44,36 @@ def debug(input, content):
     }
 
 
-def normalize_fract_part(val1, val2, limit=8):
-    parts1 = val1.split('.')
-    if len(parts1) < 2:
-        parts1.append('0')
+def normalize_fract_part(python_out, test_out, limit=8):
 
-    parts2 = val2.split('.')
-    if len(parts2) < 2:
-        parts2.append('0')
+    """
+        Нормирование дробных частей (ДЧ) теста и вывода питона
+        1. Приведение ДЧ к единому виду: добавление нуля в дробную часть если ее нет  1 => 1.0
+        2. Ограничение дробной части в limit символов
+        3. Если в ДЧ вывода питона > ДЧ теста: округляем вывод питона до того же кол-ва разрядов в дробной части:
+    """
 
-    parts1[1] = parts1[1][:limit]
-    parts2[1] = parts2[1][:limit]
+    t_parts = test_out.split('.')
+    if len(t_parts) < 2:
+        t_parts.append('0')
+    else:
+        t_parts[1] = t_parts[1][:limit]
+    t_digig = float('.'.join(t_parts))
 
-    return '.'.join(parts1), '.'.join(parts2)
+    p_parts = python_out.split('.')
+    if len(p_parts) < 2:
+        p_parts.append('0')
+    else:
+        p_parts[1] = p_parts[1][:limit]
+    p_digit = float('.'.join(p_parts))
+
+    if len(p_parts[1]) > len(t_parts[1]):
+        p_digit = round(p_digit, len(t_parts[1]))
+
+    return p_digit, t_digig
 
 
-def check_test(output, error, test_output):
+def check_test(python_out, test_out):
 
     """ Проверка вывода программы на тесте
         Нормализация:
@@ -67,14 +81,13 @@ def check_test(output, error, test_output):
             - для дробных чисел проверка только до восьмого символа дробной части
             - для дробных числе 1.0 == 1
     """
-    if error:
-        return False
-    else:
-        out = output.replace('\r', '').strip()
-        t_out = test_output.replace('\r', '').strip()
-        if t_out.replace('.', '').isdigit():
-            out, t_out = normalize_fract_part(out, t_out)
-        return t_out == out
+
+    p_out = python_out.replace('\r', '').strip()
+    t_out = test_out.replace('\r', '').strip()
+    is_fract_test = t_out.find('.') > -1 and t_out.replace('.', '').isdigit()
+    if is_fract_test:
+        p_out, t_out = normalize_fract_part(p_out, t_out)
+    return p_out == t_out
 
 
 def tests(content, tests):
@@ -96,7 +109,11 @@ def tests(content, tests):
         stdout, stderr = proc.communicate(stdin)
         output = stdout.decode("utf-8")
         error = re.sub(r'\s*File.+.py",', "", stderr.decode("utf-8"))
-        success = check_test(output, error, tests[i]['output'])
+        if error:
+            success = False
+        else:
+            success = check_test(output, tests[i]['output'])
+
         if success:
             tests_num_success += 1
 
