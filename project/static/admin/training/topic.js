@@ -62,7 +62,7 @@ var aceInit = function(){
         }
 
         // вписать код из textarea в ace editor
-        editor.setValue(textarea.innerHTML, - 1)
+        editor.setValue(textarea.textContent, - 1)
 
         // после записи кода в ace editor скопировать его в textarea
         editor.addEventListener('change', function(e){
